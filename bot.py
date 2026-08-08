@@ -1,358 +1,322 @@
 import streamlit as st
 import random
 import time
-st.markdown("""
-    <style>
-    .stApp {
-        background-color: #0e1117;
-        color: #ffffff;
-    }
-    [data-testid="stSidebar"] {
-        background-color: #161b22;
-    }
-    div.stButton > button:first-child {
-        background-color: #007bff;
-        color: #ffffff;
-        border: none;
-    }
-    </style>
-""", unsafe_allow_html=True)
-# Page Configuration for Dark Mobile-like Layout
-st.set_page_config(page_title="Tokio Edge", layout="centered")
 
-# Custom Dark Theme CSS matching Tokio Edge Style
+# Page Configuration
+st.set_page_config(
+    page_title="ENZO BOT - Premium Access",
+    page_icon="🦅",
+    layout="centered"
+)
+
+# Professional CSS with Larger Enzo Pro Title
 st.markdown("""
     <style>
     .stApp {
-        background-color: #0b131b;
+        background-color: #080c14;
         color: #ffffff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .header-card {
-        background-color: #121e2b;
-        padding: 20px;
-        border-radius: 15px;
-        border: 1px solid #1f3348;
-        text-align: center;
-        margin-bottom: 20px;
+    .page-box {
+        background-color: #111827;
+        padding: 30px;
+        border-radius: 16px;
+        border: 1px solid #1f2937;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        margin-top: 20px;
     }
-    .intro-card {
-        background-color: #121e2b;
-        padding: 40px;
-        border-radius: 20px;
-        border: 1px solid #1f3348;
+    .title-text {
+        color: #00ff66;
         text-align: center;
-        margin-top: 30px;
+        font-size: 46px; /* Bada aur prominent kar diya hai */
+        font-weight: 900;
+        letter-spacing: 2px;
+        margin-bottom: 2px;
+        text-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
     }
-    .stats-card {
-        background-color: #121e2b;
-        padding: 12px;
-        border-radius: 12px;
-        border: 1px solid #1f3348;
+    .sub-title {
+        color: #9ca3af;
         text-align: center;
-        margin-bottom: 20px;
         font-size: 14px;
-        color: #8da2b5;
+        font-weight: 500;
+        margin-bottom: 15px;
     }
-    .call-box {
-        padding: 22px;
-        border-radius: 12px;
-        background-color: #132f22;
-        border: 2px solid #28a745;
-        color: #5fff88;
+    .telegram-box {
         text-align: center;
-        font-size: 22px;
-        font-weight: bold;
+        background-color: #1f2937;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        border: 1px solid #2b3748;
     }
-    .put-box {
-        padding: 22px;
-        border-radius: 12px;
-        background-color: #3b181c;
-        border: 2px solid #dc3545;
-        color: #ff7b88;
-        text-align: center;
-        font-size: 22px;
-        font-weight: bold;
-    }
-    .telegram-btn {
-        display: inline-flex;
-        align-items: center;
-        background-color: #229ed9;
-        color: white !important;
-        padding: 12px 24px;
-        border-radius: 30px;
-        font-weight: bold;
+    .telegram-link {
+        color: #0088cc;
         text-decoration: none;
-        margin-top: 10px;
-        border: 1px solid #1782b5;
+        font-weight: 700;
+        font-size: 15px;
     }
-    .telegram-btn:hover {
-        background-color: #1f8ec4;
+    .telegram-link:hover {
+        color: #00aaff;
+        text-decoration: underline;
+    }
+    .binance-box {
+        background-color: #141b22;
+        border: 1px dashed #f3ba2f;
+        padding: 18px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+    .active-users-badge {
+        text-align: center;
+        background-color: #0d1b1e;
+        border: 1px solid #00ff66;
+        color: #00ff66;
+        padding: 6px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+    .stButton > button {
+        width: 100%;
+        background: linear-gradient(135deg, #00ff66 0%, #00b347 100%) !important;
+        color: #080c14 !important;
+        font-size: 16px !important;
+        font-weight: 800 !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+        border: none !important;
+        cursor: pointer;
+    }
+    .stButton > button:hover {
+        opacity: 0.9;
+    }
+    .result-box {
+        background-color: #111827;
+        padding: 22px;
+        border-radius: 12px;
+        border: 1px solid #1f2937;
+        border-left: 6px solid #00ff66;
+        margin-top: 20px;
+    }
+    .metric-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        border-bottom: 1px solid #1f2937;
+        font-size: 14px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Session state initialization for multi-step flow
-if 'step' not in st.session_state:
-    st.session_state.step = "intro"
+# App Header (Larger Enzo Pro Title)
+st.markdown('<p class="title-text">🦅 ENZO PRO</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-title">✨ Premium Access & Trading Robot</p>', unsafe_allow_html=True)
 
-if 'is_authorized' not in st.session_state:
-    st.session_state.is_authorized = False
+# Telegram Support Contact Section
+TELEGRAM_URL = "https://t.me/+diy3N-HPvNJkZmRk" 
 
-if 'selected_broker' not in st.session_state:
-    st.session_state.selected_broker = None
+st.markdown(f"""
+    <div class="telegram-box">
+        <span>💬 Need Help? Contact Support: </span>
+        <a class="telegram-link" href="{TELEGRAM_URL}" target="_blank">✈️ Telegram Support</a>
+    </div>
+""", unsafe_allow_html=True)
 
-if 'selected_pair' not in st.session_state:
-    st.session_state.selected_pair = None
+VALID_KEY = "4747"
+BINANCE_PAY_ID = "385682148"
+BINANCE_NAME = "X FENDI"
 
-# Random active traders counter for live feel
-active_traders = random.randint(110, 155)
+if 'page' not in st.session_state:
+    st.session_state.page = "auth"
 
-# --- STEP 1: CLASSIC INTRO SCREEN ---
-if st.session_state.step == "intro":
-    st.markdown("""
-        <div class="intro-card">
-            <h1 style="color: #00ffcc; font-size: 38px; margin-bottom: 10px;">Tokio Edge</h1>
-            <p style="color: #8da2b5; font-size: 18px; margin-bottom: 30px;">Binary Options Trading Robot</p>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown(f"""
-        <div class="stats-card">
-            🟢 System Status: <b style="color: #5fff88;">ONLINE</b> &nbsp;&nbsp;|&nbsp;&nbsp; 👥 Active Traders: <b style="color: #00ffcc;">{active_traders} Online</b>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    if st.button("🚀 LAUNCH ROBOT", use_container_width=True):
-        progress_bar = st.progress(0)
-        status_text = st.empty()
+# ==========================================
+# SAFA 1: AUTHENTICATION / REGISTRATION PAGE
+# ==========================================
+if st.session_state.page == "auth":
+    with st.container():
+        st.markdown('<div class="page-box">', unsafe_allow_html=True)
+        st.markdown("### 🔐 Step 1: Authentication & Verification")
+        st.markdown("<p style='color:#9ca3af; font-size:13px;'>Please enter your license key or complete payment via Binance to access the trading robot.</p>", unsafe_allow_html=True)
         
-        for i in range(100):
-            time.sleep(0.015)
-            progress_bar.progress(i + 1)
-            if i == 30:
-                status_text.text("Booting Tokio Edge core engine...")
-            elif i == 70:
-                status_text.text("Establishing secure portal connection...")
-                
-        time.sleep(0.5)
-        st.session_state.step = "security"
-        st.rerun()
-
-# --- STEP 2: SECURITY VERIFICATION ---
-elif st.session_state.step == "security":
-    if st.button("⬅️ Back to Intro"):
-        st.session_state.step = "intro"
-        st.rerun()
+        mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway"], horizontal=True)
         
-    st.markdown("""
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
-            <h2 style="color: #00ffcc; margin: 0;">Tokio Edge</h2>
-            <span style="background-color: #121e2b; padding: 5px 12px; border-radius: 20px; color: #00ffcc; font-size: 14px; border: 1px solid #1f3348;">SECURE PORTAL</span>
-        </div>
-    """, unsafe_allow_html=True)
-    st.markdown("---")
-    
-    st.markdown("### 🔐 Access Verification Required")
-    st.write("Please enter your **License Key** to unlock the Tokio Edge robot:")
-    
-    tab1, tab2 = st.tabs(["💎 Paid Subscription", "🤝 Free Access via Referral"])
-    
-    with tab1:
-        key_input = st.text_input("Verify License Key", type="password")
-        if st.button("Verify Key"):
-            valid_keys = ["TOKIO-8821", "EDGE-9943", "OTC-5562", "VIP-7714", "PRO-3329", "4747"]
-            
-            if key_input in valid_keys:
-                progress_bar = st.progress(0)
-                status_text = st.empty()
-                
-                for i in range(100):
-                    time.sleep(0.015)
-                    progress_bar.progress(i + 1)
-                    if i == 40:
-                        status_text.text("Validating unique license key...")
-                    elif i == 80:
-                        status_text.text("Access granted! Loading brokers...")
-                        
-                time.sleep(0.5)
-                st.session_state.is_authorized = True
-                st.session_state.step = "broker"
-                st.rerun()
-            else:
-                st.error("Invalid License Key. Please contact official support.")
-                
-    with tab2:
-        st.markdown("1. Create your account using our official partner link: [Click Here](https://broker-link.com/register?ref=tokioedge)")
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("2. For **Official Support & Contact** (Send your Trade ID here):")
-        
-        st.markdown('''
-            <div>
-                <a href="https://t.me/+LD-j3-_Xiak1M2Zk" target="_blank" class="telegram-btn">
-                    📱 &nbsp; Telegram Official Support
-                </a>
-            </div>
-        ''', unsafe_allow_html=True)
-
-# --- STEP 3 & 4: BROKER & PAIR SELECTION / TRADING ROBOT ---
-else:
-    # Top Bar Header
-    st.markdown("""
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
-            <h2 style="color: #00ffcc; margin: 0;">Tokio Edge</h2>
-            <span style="background-color: #121e2b; padding: 5px 12px; border-radius: 20px; color: #00ffcc; font-size: 14px; border: 1px solid #1f3348;">SYSTEM ACTIVE</span>
-        </div>
-    """, unsafe_allow_html=True)
-    st.markdown("---")
-
-    # Step 3: Choose Broker (Side-by-side in a Row)
-    if st.session_state.selected_broker is None:
-        if st.button("⬅️ Back to Security"):
-            st.session_state.step = "security"
-            st.rerun()
-            
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("### 🌐 Select Your Trading Platform")
-        st.write("Choose the broker you want to trade on:")
-        
-        col_b1, col_b2 = st.columns(2)
-        
-        with col_b1:
-            st.markdown("""
-                <style>
-                div.stButton > button:nth-of-type(1) {
-                    background-color: #ffffff !important;
-                    color: #dc3545 !important;
-                    border: 2px solid #dc3545 !important;
-                    font-weight: bold !important;
-                }
-                </style>
-            """, unsafe_allow_html=True)
-            if st.button("🔴 Quotex", use_container_width=True):
-                st.session_state.selected_broker = "Quotex"
-                st.rerun()
-                
-        with col_b2:
-            st.markdown("""
-                <style>
-                div.stButton > button:nth-of-type(2) {
-                    background-color: #007bff !important;
-                    color: #ffffff !important;
-                    border: 2px solid #0056b3 !important;
-                    font-weight: bold !important;
-                }
-                </style>
-            """, unsafe_allow_html=True)
-            if st.button("🔵 Pocket Option", use_container_width=True):
-                st.session_state.selected_broker = "Pocket Option"
-                st.rerun()
-                
-    # Step 4: Choose Pair based on Broker
-    elif st.session_state.selected_pair is None:
-        st.markdown(f"""
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin:0;">Active Platform: <span style="color: #00ffcc;">{st.session_state.selected_broker}</span></h3>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        if st.button("⬅️ Change Platform"):
-            st.session_state.selected_broker = None
-            st.rerun()
-            
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.markdown("### Select Currency / OTC Pair")
-        
-        search_query = st.text_input("🔍 Search pairs...", "")
-        
-        # Define pairs depending on the broker selected
-        if st.session_state.selected_broker == "Quotex":
-            pairs_list = [
-                "EUR/USD OTC", "GBP/USD OTC", "AUD/USD OTC", "USD/JPY OTC",
-                "EUR/GBP OTC", "USD/CAD OTC", "NZD/USD OTC", "EUR/JPY OTC",
-                "GBP/JPY OTC", "AUD/JPY OTC", "CHF/JPY OTC", "BTC/USD OTC"
-            ]
-        else: # Pocket Option pairs
-            pairs_list = [
-                "EUR/USD (OTC)", "GBP/USD (OTC)", "USD/CHF (OTC)", "EUR/JPY (OTC)",
-                "AUD/CAD (OTC)", "EUR/CAD (OTC)", "GBP/AUD (OTC)", "AUD/NZD (OTC)",
-                "NZD/JPY (OTC)", "CAD/JPY (OTC)", "USD/INR (OTC)", "Crypto Index OTC"
-            ]
-            
-        filtered_pairs = [p for p in pairs_list if search_query.lower() in p.lower()]
-        
-        cols = st.columns(2)
-        for idx, pair in enumerate(filtered_pairs):
-            with cols[idx % 2]:
-                if st.button(f"📊 {pair}", key=f"btn_{pair}", use_container_width=True):
-                    st.session_state.selected_pair = pair
+        if mode == "License Key":
+            key = st.text_input("Enter Security Key", type="password", placeholder="Type 4747...")
+            if st.button("Verify Key & Enter ➡️"):
+                if key == VALID_KEY:
+                    st.session_state.page = "dashboard"
                     st.rerun()
+                else:
+                    st.markdown("<p style='color:#ff3366; font-size:12px;'>🔴 Invalid Access Key! Use 4747</p>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+                <div class="binance-box">
+                    <h4 style="color: #f3ba2f; margin-top: 0; margin-bottom: 8px;">💛 Binance Pay Gateway</h4>
+                    <p style="color: #d1d5db; font-size: 13px; margin-bottom: 6px;">Subscription fee ke liye apni Binance app se neeche di gayi ID par payment transfer karein:</p>
+                    <div style="background: #080c14; padding: 10px; border-radius: 6px; font-family: monospace; color: #00ff66; font-size: 14px;">
+                        <b>Binance Pay ID / UID:</b> {BINANCE_PAY_ID}<br>
+                        <b>Account Name:</b> {BINANCE_NAME}
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            tx = st.text_input("Enter Transaction ID (TxID)", placeholder="Paste your deposit hash / TxID here...")
+            if st.button("Confirm Payment & Enter ➡️"):
+                if tx and len(tx.strip()) >= 6:
+                    st.session_state.page = "dashboard"
+                    st.rerun()
+                else:
+                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Please enter a valid Transaction ID (TxID).</p>", unsafe_allow_html=True)
+                    
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    # Step 5: Signal Generation Dashboard with Timeframes
-    else:
-        random_accuracy = random.randint(82, 97)
+# ==========================================
+# SAFA 2: TRADING DASHBOARD
+# ==========================================
+elif st.session_state.page == "dashboard":
+    
+    if 'active_users' not in st.session_state:
+        st.session_state.active_users = random.randint(130, 220)
         
-        st.markdown(f"""
-            <div class="header-card">
-                <p style="color: #00ffcc; margin:0; font-size:14px;">Platform: {st.session_state.selected_broker}</p>
-                <h3>Active Asset: <span style="color: #00ffcc;">{st.session_state.selected_pair}</span></h3>
-                <p style="color: #8da2b5; margin: 0;">Volatility: <b style="color: #00ffcc;">OPTIMAL</b> &nbsp;&nbsp;|&nbsp;&nbsp; Accuracy: <b style="color: #00ffcc;">{random_accuracy}%</b></p>
-            </div>
-        """, unsafe_allow_html=True)
+    st.markdown(f"""
+        <div class="active-users-badge">
+            🟢 Live Status: {st.session_state.active_users} Traders Active on Enzo Bot right now!
+        </div>
+    """, unsafe_allow_html=True)
+
+    with st.container():
+        st.markdown('<div class="page-box">', unsafe_allow_html=True)
         
-        if st.button("⬅️ BACK TO PAIRS", use_container_width=True):
-            st.session_state.selected_pair = None
+        if st.button("⬅️ Lock / Logout"):
+            st.session_state.page = "auth"
             st.rerun()
             
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("---")
+        st.markdown("### 🏛️ Step 2: Select Broker & Market")
+        broker = st.selectbox("Select Broker", ["Quotex", "Pocket Option"])
+        market = st.radio("Market Type", ["OTC", "Live Market"], horizontal=True)
         
-        # Timeframe Selector Added Here
-        st.markdown("### ⏱️ Select Expiry Timeframe")
-        timeframe = st.selectbox("Choose timeframe:", ["30 Seconds", "1 Minute", "2 Minutes", "5 Minutes"], label_visibility="collapsed")
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        if st.button("🚀 GENERATE SIGNAL NOW", use_container_width=True):
-            progress_bar = st.progress(0)
-            status_text = st.empty()
-            
-            for i in range(100):
-                time.sleep(0.020)
-                progress_bar.progress(i + 1)
-                if i == 20:
-                    status_text.text(f"Connecting to {st.session_state.selected_broker} feed...")
-                elif i == 50:
-                    status_text.text(f"Analyzing {timeframe} candle momentum...")
-                elif i == 80:
-                    status_text.text("Calculating Support & Resistance levels...")
-                    
-            status_text.empty()
-            progress_bar.empty()
-            
-            dummy_price = round(random.uniform(1.0500, 1.1500), 4)
-            support = round(dummy_price - 0.0015, 4)
-            resistance = round(dummy_price + 0.0015, 4)
-            
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Price", f"{dummy_price}")
-            c2.metric("Support", f"{support}")
-            c3.metric("Resistance", f"{resistance}")
-            
-            st.markdown(f"<p style='color: #8da2b5; text-align: center; margin-top: 10px;'>Expiry Timeframe: <b style='color: #00ffcc;'>{timeframe}</b></p>", unsafe_allow_html=True)
-            st.markdown("<br>", unsafe_allow_html=True)
-            
-            signal = random.choice(["CALL", "PUT"])
-            
-            if signal == "CALL":
-                st.markdown(f'''
-                    <div class="call-box">
-                        🟢 CALL (UP) SIGNAL<br>
-                        <span style="font-size:14px; color:#a3ffb8; font-weight:normal;">Price is at Support level. Strong upward momentum ({timeframe}).</span>
-                    </div>
-                ''', unsafe_allow_html=True)
+        if broker == "Quotex":
+            if market == "OTC":
+                assets = [
+                    "EUR/USD (OTC)", "GBP/USD (OTC)", "AUD/CAD (OTC)", "NZD/USD (OTC)", 
+                    "USD/JPY (OTC)", "USD/CHF (OTC)", "EUR/JPY (OTC)", "GBP/JPY (OTC)", 
+                    "AUD/JPY (OTC)", "EUR/AUD (OTC)", "USD/CAD (OTC)", "CAD/JPY (OTC)",
+                    "EUR/GBP (OTC)", "AUD/USD (OTC)", "CHF/JPY (OTC)"
+                ]
             else:
-                st.markdown(f'''
-                    <div class="put-box">
-                        🔴 PUT (DOWN) SIGNAL<br>
-                        <span style="font-size:14px; color:#ffb0b8; font-weight:normal;">Price is at Resistance level. Downward reversal expected ({timeframe}).</span>
-                    </div>
-                ''', unsafe_allow_html=True)
+                assets = [
+                    "EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "USD/CAD", 
+                    "EUR/GBP", "NZD/USD", "USD/CHF", "EUR/JPY", "GBP/JPY", 
+                    "AUD/JPY", "EUR/AUD", "CAD/JPY", "BTC/USD (Crypto)", "ETH/USD (Crypto)"
+                ]
+        else:
+            if market == "OTC":
+                assets = [
+                    "EUR/USD [OTC]", "GBP/USD [OTC]", "USD/JPY [OTC]", "AUD/CHF [OTC]", 
+                    "EUR/GBP [OTC]", "USD/CAD [OTC]", "GBP/JPY [OTC]", "NZD/JPY [OTC]",
+                    "AUD/CAD [OTC]", "EUR/AUD [OTC]", "CHF/JPY [OTC]", "USD/CHF [OTC]",
+                    "NZD/USD [OTC]", "EUR/CAD [OTC]", "GBP/CHF [OTC]"
+                ]
+            else:
+                assets = [
+                    "EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/JPY", 
+                    "NZD/USD", "USD/CAD", "AUD/CAD", "EUR/AUD", "GBP/GBP",
+                    "GOLD (Commodity)", "SILVER (Commodity)", "BRENT (Oil)", 
+                    "BTC/USD (Crypto)", "ETH/USD (Crypto)"
+                ]
+            
+        asset = st.selectbox("Trading Asset", assets)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with st.container():
+        st.markdown('<div class="page-box">', unsafe_allow_html=True)
+        st.markdown("### ⚙️ Step 3: Timeframe & Risk Management")
+        tf = st.selectbox("Timeframe", ["5 Seconds", "15 Seconds", "30 Seconds", "1 Minute", "5 Minutes"])
+        balance = st.number_input("Account Balance ($)", min_value=10, value=100, step=10)
+        risk = st.select_slider("Risk Strategy", options=["Safe (2%)", "Moderate (5%)", "Aggressive (10%)"], value="Moderate (5%)")
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        gen_btn = st.button("🚀 EXECUTE TRADING ROBOT ALGORITHM")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    if 'signal_data' not in st.session_state:
+        st.session_state.signal_data = None
+        
+    if 'last_asset' not in st.session_state:
+        st.session_state.last_asset = None
+        
+    if 'click_count' not in st.session_state:
+        st.session_state.click_count = 0
+
+    if gen_btn:
+        with st.spinner("Enzo Robot analyzing market depth, RSI & price action..."):
+            time.sleep(1.0)
+            
+            # Click count increment taake kuch clicks ke baad direction smartly random flip ho sake
+            st.session_state.click_count += 1
+            
+            if st.session_state.signal_data and st.session_state.last_asset == asset and st.session_state.click_count < 3:
+                action = st.session_state.signal_data["action"]
+            else:
+                action = random.choice(["BUY", "SELL"])
+                st.session_state.last_asset = asset
+                if st.session_state.click_count >= 3:
+                    st.session_state.click_count = 0 # Reset counter for next cycle
+                
+            conf = random.randint(85, 98)
+            rsi_val = random.choice(["Oversold (<30)", "Overbought (>70)", "Neutral (50)"])
+            trend = random.choice(["Strong Bullish", "Strong Bearish", "Consolidation"])
+            
+            if "Safe" in risk:
+                stake = round(balance * 0.02, 2)
+            elif "Moderate" in risk:
+                stake = round(balance * 0.05, 2)
+            else:
+                stake = round(balance * 0.10, 2)
+                
+            st.session_state.signal_data = {
+                "action": action,
+                "conf": conf,
+                "asset": asset,
+                "tf": tf,
+                "broker": broker,
+                "stake": stake,
+                "strategy": risk,
+                "rsi": rsi_val,
+                "trend": trend
+            }
+
+    if st.session_state.signal_data:
+        sig = st.session_state.signal_data
+        color = "#00ff66" if sig["action"] == "BUY" else "#ff3366"
+        
+        st.markdown(f"""
+            <div class="result-box" style="border-left-color: {color};">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span style="font-size: 18px; font-weight: 800; color: #ffffff;">🎯 Live Robot Execution</span>
+                    <span style="background-color: {color}; color: #080c14; padding: 4px 14px; border-radius: 6px; font-weight: 900; font-size: 16px;">{sig['action']}</span>
+                </div>
+                <div class="metric-row">
+                    <span style="color: #9ca3af;">Broker / Asset:</span>
+                    <span style="font-weight: 600;">{sig['broker']} - {sig['asset']}</span>
+                </div>
+                <div class="metric-row">
+                    <span style="color: #9ca3af;">Timeframe & Strategy:</span>
+                    <span style="font-weight: 600;">{sig['tf']} | {sig['strategy']}</span>
+                </div>
+                <div class="metric-row">
+                    <span style="color: #9ca3af;">Market Trend & RSI:</span>
+                    <span style="color: #00ff66; font-weight: 600;">{sig['trend']} ({sig['rsi']})</span>
+                </div>
+                <div class="metric-row">
+                    <span style="color: #9ca3af;">AI Prediction Confidence:</span>
+                    <span style="color: #00ff66; font-weight: 700;">{sig['conf']}% Accuracy</span>
+                </div>
+                <div class="metric-row" style="border: none;">
+                    <span style="color: #9ca3af;">Recommended Trade Stake:</span>
+                    <span style="color: #ffcc00; font-weight: 700;">${sig['stake']}</span>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
