@@ -9,7 +9,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Professional CSS with Larger Enzo Pro Title
+# Professional CSS
 st.markdown("""
     <style>
     .stApp {
@@ -28,7 +28,7 @@ st.markdown("""
     .title-text {
         color: #00ff66;
         text-align: center;
-        font-size: 46px; /* Bada aur prominent kar diya hai */
+        font-size: 46px;
         font-weight: 900;
         letter-spacing: 2px;
         margin-bottom: 2px;
@@ -109,7 +109,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# App Header (Larger Enzo Pro Title)
+# App Header
 st.markdown('<p class="title-text">🦅 ENZO PRO</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">✨ Premium Access & Trading Robot</p>', unsafe_allow_html=True)
 
@@ -123,7 +123,20 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-VALID_KEY = "4747"
+# --- 30 VALID LICENSE KEYS ONLY (4747 REMOVED) ---
+VALID_KEYS = [
+    "ENZO-9842-XF89-76QW", "ENZO-4747-PRO-8891", "ENZO-5521-TRD-3342",
+    "ENZO-8893-SEC-1102", "ENZO-6614-VIP-9983", "ENZO-3350-AI88-4412",
+    "ENZO-7729-SYS-5567", "ENZO-1145-NET-2234", "ENZO-9988-LOG-6671",
+    "ENZO-2233-ACC-7789", "ENZO-4411-DEV-9900", "ENZO-6655-MTR-1234",
+    "ENZO-7788-BTC-5678", "ENZO-3322-ETH-4321", "ENZO-1199-USD-8765",
+    "ENZO-8822-EUR-2468", "ENZO-5544-GBP-1357", "ENZO-6677-OTC-9876",
+    "ENZO-9911-LIV-5432", "ENZO-2244-BOT-1122", "ENZO-7733-MLK-3344",
+    "ENZO-5566-QTX-5566", "ENZO-4488-PKT-7788", "ENZO-1122-SIG-9999",
+    "ENZO-6633-RSK-1020", "ENZO-9944-STK-3040", "ENZO-3377-API-5060",
+    "ENZO-8855-KEY-7080", "ENZO-2211-PRO-9010", "ENZO-4747-ULTRA-99"
+]
+
 BINANCE_PAY_ID = "385682148"
 BINANCE_NAME = "X FENDI"
 
@@ -142,13 +155,13 @@ if st.session_state.page == "auth":
         mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway"], horizontal=True)
         
         if mode == "License Key":
-            key = st.text_input("Enter Security Key", type="password", placeholder="Type 4747...")
+            key = st.text_input("Enter Security Key", type="password", placeholder="Type license key...")
             if st.button("Verify Key & Enter ➡️"):
-                if key == VALID_KEY:
+                if key in VALID_KEYS:
                     st.session_state.page = "dashboard"
                     st.rerun()
                 else:
-                    st.markdown("<p style='color:#ff3366; font-size:12px;'>🔴 Invalid Access Key! Use 4747</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#ff3366; font-size:12px;'>🔴 Invalid Access Key! Please enter a valid key.</p>", unsafe_allow_html=True)
         else:
             st.markdown(f"""
                 <div class="binance-box">
@@ -254,7 +267,6 @@ elif st.session_state.page == "dashboard":
         with st.spinner("Enzo Robot analyzing market depth, RSI & price action..."):
             time.sleep(1.0)
             
-            # Click count increment taake kuch clicks ke baad direction smartly random flip ho sake
             st.session_state.click_count += 1
             
             if st.session_state.signal_data and st.session_state.last_asset == asset and st.session_state.click_count < 3:
@@ -263,7 +275,7 @@ elif st.session_state.page == "dashboard":
                 action = random.choice(["BUY", "SELL"])
                 st.session_state.last_asset = asset
                 if st.session_state.click_count >= 3:
-                    st.session_state.click_count = 0 # Reset counter for next cycle
+                    st.session_state.click_count = 0
                 
             conf = random.randint(85, 98)
             rsi_val = random.choice(["Oversold (<30)", "Overbought (>70)", "Neutral (50)"])
