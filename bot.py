@@ -1,7 +1,22 @@
 import streamlit as st
 import random
 import time
-
+st.markdown("""
+    <style>
+    .stApp {
+        background-color: #0e1117;
+        color: #ffffff;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #161b22;
+    }
+    div.stButton > button:first-child {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+    }
+    </style>
+""", unsafe_allow_html=True)
 # Page Configuration for Dark Mobile-like Layout
 st.set_page_config(page_title="Tokio Edge", layout="centered")
 
