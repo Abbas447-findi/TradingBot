@@ -1,6 +1,7 @@
 import streamlit as st
 import random
 import time
+import sqlite3
 
 # Page Configuration
 st.set_page_config(
@@ -9,7 +10,40 @@ st.set_page_config(
     layout="centered"
 )
 
-# Professional CSS
+# Database Setup for Single-Device License Lock
+def init_db():
+    conn = sqlite3.connect('enzo_licenses.db', check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS licenses (
+            key TEXT PRIMARY KEY,
+            device_id TEXT
+        )
+    ''')
+    conn.commit()
+    return conn, cursor
+
+conn, cursor = init_db()
+
+# Pre-load 30 keys into database if not already present
+VALID_KEYS = [
+    "ENZO-9842-XF89-76QW", "ENZO-4747-PRO-8891", "ENZO-5521-TRD-3342",
+    "ENZO-8893-SEC-1102", "ENZO-6614-VIP-9983", "ENZO-3350-AI88-4412",
+    "ENZO-7729-SYS-5567", "ENZO-1145-NET-2234", "ENZO-9988-LOG-6671",
+    "ENZO-2233-ACC-7789", "ENZO-4411-DEV-9900", "ENZO-6655-MTR-1234",
+    "ENZO-7788-BTC-5678", "ENZO-3322-ETH-4321", "ENZO-1199-USD-8765",
+    "ENZO-8822-EUR-2468", "ENZO-5544-GBP-1357", "ENZO-6677-OTC-9876",
+    "ENZO-9911-LIV-5432", "ENZO-2244-BOT-1122", "ENZO-7733-MLK-3344",
+    "ENZO-5566-QTX-5566", "ENZO-4488-PKT-7788", "ENZO-1122-SIG-9999",
+    "ENZO-6633-RSK-1020", "ENZO-9944-STK-3040", "ENZO-3377-API-5060",
+    "ENZO-8855-KEY-7080", "ENZO-2211-PRO-9010", "ENZO-4747-ULTRA-99"
+]
+
+for k in VALID_KEYS:
+    cursor.execute("INSERT OR IGNORE INTO licenses (key, device_id) VALUES (?, NULL)", (k,))
+conn.commit()
+
+# Professional CSS with Pop-up Alert Styling
 st.markdown("""
     <style>
     .stApp {
@@ -65,6 +99,41 @@ st.markdown("""
         padding: 18px;
         border-radius: 10px;
         margin-bottom: 15px;
+    }
+    .popup-error-box {
+        background-color: #2a1215;
+        border: 2px solid #ff3366;
+        padding: 22px;
+        border-radius: 12px;
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 0 25px rgba(255, 51, 102, 0.5);
+    }
+    .popup-title {
+        color: #ff3366;
+        font-size: 20px;
+        font-weight: 900;
+        margin-bottom: 8px;
+    }
+    .popup-desc {
+        color: #d1d5db;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+    .popup-btn {
+        display: inline-block;
+        background: linear-gradient(135deg, #0088cc 0%, #005588 100%);
+        color: #ffffff !important;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 15px;
+        box-shadow: 0 4px 12px rgba(0, 136, 204, 0.4);
+    }
+    .popup-btn:hover {
+        opacity: 0.9;
     }
     .active-users-badge {
         text-align: center;
@@ -123,25 +192,18 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# --- 30 VALID LICENSE KEYS ONLY (4747 REMOVED) ---
-VALID_KEYS = [
-    "ENZO-9842-XF89-76QW", "ENZO-4747-PRO-8891", "ENZO-5521-TRD-3342",
-    "ENZO-8893-SEC-1102", "ENZO-6614-VIP-9983", "ENZO-3350-AI88-4412",
-    "ENZO-7729-SYS-5567", "ENZO-1145-NET-2234", "ENZO-9988-LOG-6671",
-    "ENZO-2233-ACC-7789", "ENZO-4411-DEV-9900", "ENZO-6655-MTR-1234",
-    "ENZO-7788-BTC-5678", "ENZO-3322-ETH-4321", "ENZO-1199-USD-8765",
-    "ENZO-8822-EUR-2468", "ENZO-5544-GBP-1357", "ENZO-6677-OTC-9876",
-    "ENZO-9911-LIV-5432", "ENZO-2244-BOT-1122", "ENZO-7733-MLK-3344",
-    "ENZO-5566-QTX-5566", "ENZO-4488-PKT-7788", "ENZO-1122-SIG-9999",
-    "ENZO-6633-RSK-1020", "ENZO-9944-STK-3040", "ENZO-3377-API-5060",
-    "ENZO-8855-KEY-7080", "ENZO-2211-PRO-9010", "ENZO-4747-ULTRA-99"
-]
-
 BINANCE_PAY_ID = "385682148"
 BINANCE_NAME = "X FENDI"
 
 if 'page' not in st.session_state:
     st.session_state.page = "auth"
+
+if 'auth_error' not in st.session_state:
+    st.session_state.auth_error = None
+
+# Generate a unique session token for the current device/browser
+if 'device_token' not in st.session_state:
+    st.session_state.device_token = str(random.getrandbits(64))
 
 # ==========================================
 # SAFA 1: AUTHENTICATION / REGISTRATION PAGE
@@ -157,11 +219,47 @@ if st.session_state.page == "auth":
         if mode == "License Key":
             key = st.text_input("Enter Security Key", type="password", placeholder="Type license key...")
             if st.button("Verify Key & Enter ➡️"):
-                if key in VALID_KEYS:
-                    st.session_state.page = "dashboard"
-                    st.rerun()
+                cursor.execute("SELECT device_id FROM licenses WHERE key = ?", (key,))
+                row = cursor.fetchone()
+                
+                if row is None:
+                    st.session_state.auth_error = "invalid"
                 else:
-                    st.markdown("<p style='color:#ff3366; font-size:12px;'>🔴 Invalid Access Key! Please enter a valid key.</p>", unsafe_allow_html=True)
+                    db_device = row[0]
+                    if db_device is None:
+                        # First time use: Bind key to this device
+                        cursor.execute("UPDATE licenses SET device_id = ? WHERE key = ?", (st.session_state.device_token, key))
+                        conn.commit()
+                        st.session_state.auth_error = None
+                        st.session_state.page = "dashboard"
+                        st.rerun()
+                    elif db_device == st.session_state.device_token:
+                        # Already bound to this exact device
+                        st.session_state.auth_error = None
+                        st.session_state.page = "dashboard"
+                        st.rerun()
+                    else:
+                        # Key is already active on another device!
+                        st.session_state.auth_error = "in_use"
+            
+            # --- PERSISTENT POP-UP ALERT FOR WRONG OR ALREADY USED KEY ---
+            if st.session_state.auth_error == "invalid":
+                st.markdown(f"""
+                    <div class="popup-error-box">
+                        <div class="popup-title">❌ INVALID ACCESS KEY</div>
+                        <div class="popup-desc">You have entered a wrong or unregistered license key. Please purchase an official key from support!</div>
+                        <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Buy From Official (Telegram)</a>
+                    </div>
+                """, unsafe_allow_html=True)
+            elif st.session_state.auth_error == "in_use":
+                st.markdown(f"""
+                    <div class="popup-error-box">
+                        <div class="popup-title">⚠️ KEY ALREADY IN USE</div>
+                        <div class="popup-desc">This license key is already activated and locked on another device/browser.</div>
+                        <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Contact Official Support</a>
+                    </div>
+                """, unsafe_allow_html=True)
+
         else:
             st.markdown(f"""
                 <div class="binance-box">
@@ -177,6 +275,7 @@ if st.session_state.page == "auth":
             tx = st.text_input("Enter Transaction ID (TxID)", placeholder="Paste your deposit hash / TxID here...")
             if st.button("Confirm Payment & Enter ➡️"):
                 if tx and len(tx.strip()) >= 6:
+                    st.session_state.auth_error = None
                     st.session_state.page = "dashboard"
                     st.rerun()
                 else:
@@ -202,6 +301,7 @@ elif st.session_state.page == "dashboard":
         st.markdown('<div class="page-box">', unsafe_allow_html=True)
         
         if st.button("⬅️ Lock / Logout"):
+            st.session_state.auth_error = None
             st.session_state.page = "auth"
             st.rerun()
             
@@ -264,8 +364,8 @@ elif st.session_state.page == "dashboard":
         st.session_state.click_count = 0
 
     if gen_btn:
-        with st.spinner("Enzo Robot analyzing market depth, RSI & price action..."):
-            time.sleep(1.0)
+        with st.spinner("Enzo Robot analyzing market depth, RSI & price action... (Please wait 8-10 seconds)"):
+            time.sleep(9.0)
             
             st.session_state.click_count += 1
             
