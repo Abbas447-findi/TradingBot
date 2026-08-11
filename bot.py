@@ -51,7 +51,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-TELEGRAM_URL = "https://t.me/+diy3N-HPvNJkZmRk" 
+TELEGRAM_URL = "https://t.me/Enzosupport47" 
 TELEGRAM_BOT_TOKEN = "8962828738:AAH787ztmRyKM6bRIGHdfVbiI6eeX7U0oFs"
 TELEGRAM_CHAT_ID = "8633830998"
 
