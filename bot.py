@@ -97,6 +97,12 @@ def init_db():
             order_id TEXT PRIMARY KEY
         )
     ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS pending_approvals (
+            order_id TEXT PRIMARY KEY,
+            username TEXT
+        )
+    ''')
     try: cursor.execute("ALTER TABLE licenses ADD COLUMN username TEXT")
     except sqlite3.OperationalError: pass
     try: cursor.execute("ALTER TABLE licenses ADD COLUMN email TEXT")
@@ -254,6 +260,7 @@ if st.session_state.page == "auth":
                         with st.spinner("Submitting payment proof & sending instant Telegram notification..."):
                             time.sleep(1.0)
                             cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_order,))
+                            cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_order, clean_name))
                             conn.commit()
                             
                             # Instant Telegram Alert & Photo with User Name
@@ -275,11 +282,38 @@ if st.session_state.page == "auth":
             st.success("Admin Access Granted Successfully!")
             
             st.markdown("---")
-            st.markdown("### 🔑 License Key Management (Add / Remove)")
-            
-            # Add New Key
-            new_key_input = st.text_input("Add New License Key", placeholder="e.g., ENZO-NEW-KEY-1234")
-            if st.button("➕ Add Key to Database"):
+            st.markdown("### 📥 Pending Payment Approvals")
+            cursor.execute("SELECT order_id, username FROM pending_approvals")
+            pending_list = cursor.fetchall()
+            if pending_list:
+                for p in pending_list:
+                    st.markdown(f"""
+                        <div style="background: #1f2937; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px;">
+                            👤 <b>User:</b> {p[1]}<br>
+                            🆔 <b>Order ID:</b> <span style="color:#f3ba2f;">{p[0]}</span>
+                        </div>
+                    """, unsafe_allow_html=True)
+                    
+                    col_app, col_dec = st.columns(2)
+                    with col_app:
+                        if st.button(f"✅ Approve {p[0]}", key=f"app_{p[0]}"):
+                            cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
+                            conn.commit()
+                            st.success(f"Payment {p[0]} Approved!")
+                            st.rerun()
+                    with col_dec:
+                        if st.button(f"❌ Decline {p[0]}", key=f"dec_{p[0]}"):
+                            cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
+                            conn.commit()
+                            st.warning(f"Payment {p[0]} Declined!")
+                            st.rerun()
+            else:
+                st.info("No pending payments right now.")
+
+            st.markdown("---")
+            st.markdown("### ➕ Add New License Key")
+            new_key_input = st.text_input("Enter New Key", placeholder="e.g., ENZO-NEW-1234")
+            if st.button("Add Key to Database"):
                 if new_key_input.strip():
                     try:
                         cursor.execute("INSERT INTO licenses (key, username, email) VALUES (?, NULL, NULL)", (new_key_input.strip(),))
@@ -288,23 +322,24 @@ if st.session_state.page == "auth":
                     except Exception as e:
                         st.error(f"Error: Key already exists or invalid.")
                 else:
-                    st.warning("Please enter a valid key.")
-
-            st.markdown("---")
+                    st.warning("Please enter a valid key text.")
             
-            # Remove Existing Key
+            st.markdown("---")
+            st.markdown("### 🗑️ Remove License Key")
             cursor.execute("SELECT key FROM licenses")
             all_keys = [row[0] for row in cursor.fetchall()]
             if all_keys:
-                key_to_remove = st.selectbox("Select Key to Remove", all_keys)
-                if st.button("🗑️ Remove Selected Key"):
+                key_to_remove = st.selectbox("Select Key to Delete", all_keys)
+                if st.button("Remove Selected Key"):
                     cursor.execute("DELETE FROM licenses WHERE key = ?", (key_to_remove,))
                     conn.commit()
-                    st.success(f"Key '{key_to_remove}' deleted successfully!")
+                    st.success(f"Key '{key_to_remove}' has been deleted!")
                     st.rerun()
-            
+            else:
+                st.info("No keys available to remove.")
+
             st.markdown("---")
-            st.markdown("### 👥 Active Users List")
+            st.markdown("### 👥 Active Logged-in Users")
             cursor.execute("SELECT key, username, email FROM licenses WHERE username IS NOT NULL")
             logged_users = cursor.fetchall()
             if logged_users:
