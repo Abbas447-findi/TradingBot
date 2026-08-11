@@ -263,7 +263,6 @@ if st.session_state.page == "auth":
                             cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_order, clean_name))
                             conn.commit()
                             
-                            # Instant Telegram Alert & Photo with User Name
                             send_telegram_alert(clean_order, clean_name)
                             send_telegram_photo(screenshot.getvalue(), f"📸 Payment Screenshot\n👤 User: `{clean_name}`\n🆔 Order ID: `{clean_order}`")
                             
@@ -297,10 +296,15 @@ if st.session_state.page == "auth":
                     col_app, col_dec = st.columns(2)
                     with col_app:
                         if st.button(f"✅ Approve {p[0]}", key=f"app_{p[0]}"):
-                            cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
-                            conn.commit()
-                            st.success(f"Payment {p[0]} Approved! You can now assign an unused key from the database to user '{p[1]}'.")
-                            st.rerun()
+                            cursor.execute("SELECT key FROM licenses WHERE username IS NULL LIMIT 1")
+                            free_key = cursor.fetchone()
+                            if free_key:
+                                assigned_key = free_key[0]
+                                cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
+                                conn.commit()
+                                st.success(f"Approved! Assigned Key for {p[1]} is: {assigned_key}")
+                            else:
+                                st.error("No free keys available in database!")
                     with col_dec:
                         if st.button(f"❌ Decline {p[0]}", key=f"dec_{p[0]}"):
                             cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
