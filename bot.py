@@ -55,10 +55,11 @@ TELEGRAM_URL = "https://t.me/Enzosupport47"
 TELEGRAM_BOT_TOKEN = "8962828738:AAH787ztmRyKM6bRIGHdfVbiI6eeX7U0oFs"
 TELEGRAM_CHAT_ID = "8633830998"
 
-def send_telegram_alert(order_id):
+def send_telegram_alert(order_id, user_name):
     try:
         message = (
             f"🚨 *New Binance Payment Submitted - ENZO PRO*\n\n"
+            f"👤 *User Name:* {user_name}\n"
             f"🆔 *Order ID:* `{order_id}`\n"
             f"🕒 *Time:* {time.ctime()}"
         )
@@ -231,13 +232,17 @@ if st.session_state.page == "auth":
                 </div>
             """, unsafe_allow_html=True)
             
+            user_input_name = st.text_input("Enter Your Name / Username", placeholder="Type your name here...")
             order_id = st.text_input("Enter Binance Order ID", placeholder="Paste genuine Order ID here...")
             screenshot = st.file_uploader("Upload Payment Screenshot", type=["png", "jpg", "jpeg"])
             
             if st.button("Submit Payment Proof Instantly ➡️"):
                 clean_order = order_id.strip()
+                clean_name = user_input_name.strip()
                 
-                if not clean_order or len(clean_order) < 6:
+                if not clean_name:
+                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Please enter your name!</p>", unsafe_allow_html=True)
+                elif not clean_order or len(clean_order) < 6:
                     st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Please enter a valid Binance Order ID!</p>", unsafe_allow_html=True)
                 elif screenshot is None:
                     st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Please upload the payment screenshot!</p>", unsafe_allow_html=True)
@@ -251,11 +256,11 @@ if st.session_state.page == "auth":
                             cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_order,))
                             conn.commit()
                             
-                            # Instant Telegram Alert
-                            send_telegram_alert(clean_order)
-                            send_telegram_photo(screenshot.getvalue(), f"📸 Payment Screenshot for Order ID: `{clean_order}`")
+                            # Instant Telegram Alert with Username and Order ID
+                            send_telegram_alert(clean_order, clean_name)
+                            send_telegram_photo(screenshot.getvalue(), f"📸 Payment Screenshot\n👤 User: `{clean_name}`\n🆔 Order ID: `{clean_order}`")
                             
-                            st.success("✅ Payment proof submitted successfully! Your details have been sent instantly to Telegram support. Please contact support to get your access key.")
+                            st.success("✅ Payment proof submitted successfully! Your details and name have been sent to Telegram support. Please contact support to get your access key.")
                     
         st.markdown('</div>', unsafe_allow_html=True)
 
