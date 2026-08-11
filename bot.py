@@ -7,12 +7,22 @@ import requests
 st.set_page_config(
     page_title="ENZO BOT - Premium Access",
     page_icon="🦅",
-    layout="centered"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
 st.markdown("""
     <style>
-    .stApp { background-color: #080c14; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    /* Force Dark Theme & Disable Light Mode completely */
+    :root {
+        color-scheme: dark;
+    }
+    .stApp { background-color: #080c14 !important; color: #ffffff !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    
+    /* Hide Streamlit default theme toggles and header menus if any */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
     .page-box { background-color: #111827; padding: 30px; border-radius: 16px; border: 1px solid #1f2937; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); margin-top: 20px; }
     .title-text { color: #00ff66; text-align: center; font-size: 42px; font-weight: 900; letter-spacing: 2px; margin-bottom: 0px; text-shadow: 0 0 15px rgba(0, 255, 102, 0.4); }
     .sub-title { color: #9ca3af; text-align: center; font-size: 14px; font-weight: 500; margin-bottom: 20px; }
@@ -222,7 +232,6 @@ if st.session_state.page == "auth":
                     
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- ADMIN MANAGEMENT PANEL (View, Reset/Delete User & Add/Remove Keys) ---
     with st.expander("🛠️ Admin Management Panel (Click to Open)"):
         admin_pass = st.text_input("Enter Admin Password", type="password")
         if admin_pass == "Umarali4747":
