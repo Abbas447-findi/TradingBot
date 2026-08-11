@@ -208,7 +208,7 @@ if st.session_state.page == "auth":
                 <div class="binance-box">
                     <h4 style="color: #f3ba2f; margin-top: 0; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
                         <span>{binance_svg} Binance Pay Gateway</span>
-                        <span style="background: #f3ba2f; color: #080c14; padding: 2px 10px; border-radius: 6px; font-size: 14px; font-weight: 800;">$10</span>
+                        <span style="background: #f3ba2f; color: #080c14; padding: 2px 10px; border-radius: 6px; font-size: 14px; font-weight: 800;">$10 USDT</span>
                     </h4>
                     <p style="color: #d1d5db; font-size: 13px; margin-bottom: 6px;">Transfer to Binance Pay ID:</p>
                     <div style="background: #080c14; padding: 10px; border-radius: 6px; font-family: monospace; color: #00ff66; font-size: 14px;">
