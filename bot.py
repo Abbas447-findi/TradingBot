@@ -299,7 +299,7 @@ if st.session_state.page == "auth":
                         if st.button(f"✅ Approve {p[0]}", key=f"app_{p[0]}"):
                             cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
                             conn.commit()
-                            st.success(f"Payment {p[0]} Approved!")
+                            st.success(f"Payment {p[0]} Approved! You can now assign an unused key from the database to user '{p[1]}'.")
                             st.rerun()
                     with col_dec:
                         if st.button(f"❌ Decline {p[0]}", key=f"dec_{p[0]}"):
