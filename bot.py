@@ -12,11 +12,17 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* Force 100% Dark Theme Only */
+    /* Force 100% Dark Theme & Fix iPhone Safari White Screen Bug */
     :root {
         color-scheme: dark;
     }
-    .stApp { background-color: #080c14 !important; color: #ffffff !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp {
+        background-color: #080c14 !important;
+        color: #ffffff !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        -webkit-text-size-adjust: 100%;
+    }
     
     .page-box { background-color: #111827; padding: 30px; border-radius: 16px; border: 1px solid #1f2937; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); margin-top: 20px; }
     .title-text { color: #00ff66; text-align: center; font-size: 42px; font-weight: 900; letter-spacing: 2px; margin-bottom: 0px; text-shadow: 0 0 15px rgba(0, 255, 102, 0.4); }
@@ -49,13 +55,13 @@ TELEGRAM_URL = "https://t.me/+diy3N-HPvNJkZmRk"
 TELEGRAM_BOT_TOKEN = "8962828738:AAH787ztmRyKM6bRIGHdfVbiI6eeX7U0oFs"
 TELEGRAM_CHAT_ID = "8633830998"
 
-def send_telegram_alert(username, email, license_key):
+def send_telegram_alert(username, email, details):
     try:
         message = (
-            f"🚨 *New Login Alert - ENZO PRO*\n\n"
+            f"🚨 *Secure Login Alert - ENZO PRO*\n\n"
             f"👤 *Username:* {username}\n"
             f"📧 *Email:* {email}\n"
-            f"🔑 *License Key:* `{license_key}`\n"
+            f"🔑 *Verification Details:* `{details}`\n"
             f"🕒 *Time:* {time.ctime()}"
         )
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -74,6 +80,13 @@ def init_db():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS licenses (
             key TEXT PRIMARY KEY,
+            username TEXT,
+            email TEXT
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS binance_orders (
+            order_id TEXT PRIMARY KEY,
             username TEXT,
             email TEXT
         )
@@ -146,7 +159,7 @@ if st.session_state.page == "auth":
                 clean_email = email.strip()
                 clean_key = key.strip()
                 
-                if not clean_user or not clean_email:
+                if not clean_user or not clean_email or not clean_key:
                     st.session_state.auth_error = "empty_fields"
                 elif "@" not in clean_email or "." not in clean_email:
                     st.session_state.auth_error = "invalid_email"
@@ -164,7 +177,7 @@ if st.session_state.page == "auth":
                             if db_user is None:
                                 cursor.execute("UPDATE licenses SET username = ?, email = ? WHERE key = ?", (clean_user, clean_email, clean_key))
                                 conn.commit()
-                                send_telegram_alert(clean_user, clean_email, clean_key)
+                                send_telegram_alert(clean_user, clean_email, f"License Key: {clean_key}")
                                 st.session_state.current_user = clean_user
                                 st.session_state.auth_error = None
                                 st.session_state.page = "dashboard"
@@ -178,7 +191,7 @@ if st.session_state.page == "auth":
                                 st.session_state.auth_error = "wrong_user"
             
             if st.session_state.auth_error == "empty_fields":
-                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter both Username and Email!</p>", unsafe_allow_html=True)
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please fill in all required fields (Username, Email & Key)!</p>", unsafe_allow_html=True)
             elif st.session_state.auth_error == "invalid_email":
                 st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid email address!</p>", unsafe_allow_html=True)
             elif st.session_state.auth_error == "invalid":
@@ -192,8 +205,8 @@ if st.session_state.page == "auth":
             elif st.session_state.auth_error == "wrong_user":
                 st.markdown(f"""
                     <div class="popup-error-box">
-                        <div class="popup-title">⚠️ USERNAME/EMAIL MISMATCH</div>
-                        <div class="popup-desc">This license key is already permanently registered with another Username or Email! Please purchase your official key from Telegram.</div>
+                        <div class="popup-title">⚠️ SECURITY ALERT: USER MISMATCH</div>
+                        <div class="popup-desc">This license key is already locked and permanently registered with another Username or Email! Unauthorized bypass is strictly prohibited.</div>
                         <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Official Purchase (Telegram)</a>
                     </div>
                 """, unsafe_allow_html=True)
@@ -216,20 +229,43 @@ if st.session_state.page == "auth":
                     </div>
                 </div>
             """, unsafe_allow_html=True)
-            tx = st.text_input("Enter Transaction ID (TxID)", placeholder="Paste TxID here...")
+            
+            order_id = st.text_input("Enter Binance Order ID", placeholder="Paste genuine Order ID here...")
+            
             if st.button("Confirm Payment & Enter ➡️"):
-                if not bin_username.strip() or not bin_email.strip():
-                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Enter both Username and Email!</p>", unsafe_allow_html=True)
-                elif tx and len(tx.strip()) >= 6:
-                    with st.spinner("Verifying Binance Transaction..."):
-                        time.sleep(1.0)
-                        send_telegram_alert(bin_username.strip(), bin_email.strip(), "Binance Pay Tx: " + tx.strip())
-                        st.session_state.current_user = bin_username.strip()
-                        st.session_state.auth_error = None
-                        st.session_state.page = "dashboard"
-                        st.rerun()
+                clean_bin_user = bin_username.strip()
+                clean_bin_email = bin_email.strip()
+                clean_order = order_id.strip()
+                
+                if not clean_bin_user or not clean_bin_email or not clean_order:
+                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Please fill in all fields (Username, Email & Order ID)!</p>", unsafe_allow_html=True)
+                elif "@" not in clean_bin_email or "." not in clean_bin_email:
+                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Please enter a valid email address!</p>", unsafe_allow_html=True)
+                elif len(clean_order) < 6:
+                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Invalid Order ID length! Please enter a valid Binance Order ID.</p>", unsafe_allow_html=True)
                 else:
-                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Enter valid TxID!</p>", unsafe_allow_html=True)
+                    cursor.execute("SELECT username FROM binance_orders WHERE order_id = ?", (clean_order,))
+                    existing_order = cursor.fetchone()
+                    
+                    if existing_order:
+                        st.markdown(f"""
+                            <div class="popup-error-box">
+                                <div class="popup-title">❌ SECURITY ALERT: DUPLICATE ORDER ID</div>
+                                <div class="popup-desc">This Order ID has already been utilized and locked by user ({existing_order[0]})! Multiple uses of a single payment ID are blocked.</div>
+                                <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Contact Support (Telegram)</a>
+                            </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        with st.spinner("Verifying Binance Payment & Securing Session..."):
+                            time.sleep(1.5)
+                            cursor.execute("INSERT INTO binance_orders (order_id, username, email) VALUES (?, ?, ?)", (clean_order, clean_bin_user, clean_bin_email))
+                            conn.commit()
+                            
+                            send_telegram_alert(clean_bin_user, clean_bin_email, f"Binance Pay Order ID: {clean_order}")
+                            st.session_state.current_user = clean_bin_user
+                            st.session_state.auth_error = None
+                            st.session_state.page = "dashboard"
+                            st.rerun()
                     
         st.markdown('</div>', unsafe_allow_html=True)
 
