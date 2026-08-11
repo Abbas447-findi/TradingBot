@@ -7,29 +7,41 @@ import requests
 st.set_page_config(
     page_title="ENZO BOT - Premium Access",
     page_icon="🦅",
-    layout="centered",
-    initial_sidebar_state="collapsed"
+    layout="centered"
 )
 
 st.markdown("""
     <style>
-    /* Force Dark Theme & Disable Light Mode completely */
     :root {
-        color-scheme: dark;
+        --bg-color: #080c14;
+        --box-bg: #111827;
+        --text-color: #ffffff;
+        --sub-text: #9ca3af;
+        --border-color: #1f2937;
+        --telegram-bg: #1f2937;
+        --binance-bg: #141b22;
     }
-    .stApp { background-color: #080c14 !important; color: #ffffff !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    
-    /* Hide Streamlit default theme toggles and header menus if any */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    
-    .page-box { background-color: #111827; padding: 30px; border-radius: 16px; border: 1px solid #1f2937; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); margin-top: 20px; }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --bg-color: #f8fafc;
+            --box-bg: #ffffff;
+            --text-color: #0f172a;
+            --sub-text: #64748b;
+            --border-color: #e2e8f0;
+            --telegram-bg: #f1f5f9;
+            --binance-bg: #fef9c3;
+        }
+    }
+
+    .stApp { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background 0.3s ease; }
+    .page-box { background-color: var(--box-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); margin-top: 20px; }
     .title-text { color: #00ff66; text-align: center; font-size: 42px; font-weight: 900; letter-spacing: 2px; margin-bottom: 0px; text-shadow: 0 0 15px rgba(0, 255, 102, 0.4); }
-    .sub-title { color: #9ca3af; text-align: center; font-size: 14px; font-weight: 500; margin-bottom: 20px; }
-    .telegram-box { text-align: center; background-color: #1f2937; padding: 12px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #2b3748; }
+    .sub-title { color: var(--sub-text); text-align: center; font-size: 14px; font-weight: 500; margin-bottom: 20px; }
+    .telegram-box { text-align: center; background-color: var(--telegram-bg); padding: 12px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border-color); }
     .telegram-link { color: #0088cc; text-decoration: none; font-weight: 700; font-size: 15px; }
     .telegram-link:hover { color: #00aaff; text-decoration: underline; }
-    .binance-box { background-color: #141b22; border: 1px dashed #f3ba2f; padding: 18px; border-radius: 10px; margin-bottom: 15px; }
+    .binance-box { background-color: var(--binance-bg); border: 1px dashed #f3ba2f; padding: 18px; border-radius: 10px; margin-bottom: 15px; }
     .popup-error-box { background-color: #2a1215; border: 2px solid #ff3366; padding: 30px; border-radius: 16px; text-align: center; margin-top: 25px; margin-bottom: 25px; box-shadow: 0 0 35px rgba(255, 51, 102, 0.6); }
     .popup-title { color: #ff3366; font-size: 24px; font-weight: 900; margin-bottom: 12px; }
     .popup-desc { color: #d1d5db; font-size: 15px; margin-bottom: 20px; line-height: 1.5; }
@@ -38,15 +50,10 @@ st.markdown("""
     .active-users-badge { text-align: center; background-color: #0d1b1e; border: 1px solid #00ff66; color: #00ff66; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: 700; margin-bottom: 25px; box-shadow: 0 0 15px rgba(0, 255, 102, 0.15); }
     .logout-btn > button { background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important; color: #ffffff !important; }
     .logout-btn > button:hover { opacity: 0.9; }
-    .stSelectbox label, .stRadio label, .stTextInput label, .stNumberInput label, .stSlider label { color: #ffffff !important; font-weight: 600 !important; font-size: 15px !important; }
-    div[data-baseweb="select"] > div { background-color: #1f2937 !important; color: #ffffff !important; border-color: #374151 !important; }
-    div[data-baseweb="select"] span { color: #ffffff !important; }
-    div[data-baseweb="popover"] div { background-color: #111827 !important; color: #ffffff !important; }
-    li[role="option"] { background-color: #111827 !important; color: #ffffff !important; }
-    li[role="option"]:hover { background-color: #1f2937 !important; color: #00ff66 !important; }
+    .stSelectbox label, .stRadio label, .stTextInput label, .stNumberInput label, .stSlider label { font-weight: 600 !important; font-size: 15px !important; }
     .stButton > button { width: 100%; background: linear-gradient(135deg, #00ff66 0%, #00b347 100%) !important; color: #080c14 !important; font-size: 16px !important; font-weight: 800 !important; padding: 12px !important; border-radius: 8px !important; border: none !important; cursor: pointer; }
-    .result-box { background-color: #111827; padding: 22px; border-radius: 12px; border: 1px solid #1f2937; border-left: 6px solid #00ff66; margin-top: 20px; }
-    .metric-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1f2937; font-size: 14px; }
+    .result-box { background-color: var(--box-bg); padding: 22px; border-radius: 12px; border: 1px solid var(--border-color); border-left: 6px solid #00ff66; margin-top: 20px; }
+    .metric-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-color); font-size: 14px; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -137,7 +144,7 @@ if st.session_state.page == "auth":
     with st.container():
         st.markdown('<div class="page-box">', unsafe_allow_html=True)
         st.markdown("### 🔐 Step 1: Authentication & Verification")
-        st.markdown("<p style='color:#9ca3af; font-size:13px;'>Please enter your username, email, license key or complete payment via Binance to access the trading robot.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size:13px;'>Please enter your username, email, license key or complete payment via Binance to access the trading robot.</p>", unsafe_allow_html=True)
         
         mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway"], horizontal=True)
         
@@ -206,10 +213,16 @@ if st.session_state.page == "auth":
         else:
             bin_username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
             bin_email = st.text_input("Enter Your Email Address", placeholder="Type your email address...")
+            
+            binance_svg = """<svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 6px;"><path d="M12.2155 14.1287L16.0022 10.342L19.7888 14.1287L22.9555 10.962L16.0022 4.00871L9.04883 10.962L12.2155 14.1287Z" fill="#FCD535"/><path d="M6.55548 13.5087L9.72215 16.6754L13.5088 12.8887L10.3422 9.72205L6.55548 13.5087Z" fill="#FCD535"/><path d="M25.4488 13.5087L21.6622 9.72205L18.4955 12.8887L22.2822 16.6754L25.4488 13.5087Z" fill="#FCD535"/><path d="M12.2155 17.8754L16.0022 21.6621L19.7888 17.8754L22.9555 21.0421L16.0022 27.9954L9.04883 21.0421L12.2155 17.8754Z" fill="#FCD535"/><path d="M4.00883 16.0021L7.1755 19.1687L10.3422 16.0021L7.1755 12.8354L4.00883 16.0021Z" fill="#FCD535"/><path d="M24.8255 12.8354L21.6588 16.0021L24.8255 19.1687L27.9922 16.0021L24.8255 12.8354Z" fill="#FCD535"/><path d="M16.0022 13.5087L13.5088 16.0021L16.0022 18.4954L18.4955 16.0021L16.0022 13.5087Z" fill="#FCD535"/></svg>"""
+            
             st.markdown(f"""
                 <div class="binance-box">
-                    <h4 style="color: #f3ba2f; margin-top: 0; margin-bottom: 8px;">💛 Binance Pay Gateway</h4>
-                    <p style="color: #d1d5db; font-size: 13px; margin-bottom: 6px;">Transfer to Binance Pay ID:</p>
+                    <h4 style="color: #f3ba2f; margin-top: 0; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                        <span>{binance_svg} Binance Pay Gateway</span>
+                        <span style="background: #f3ba2f; color: #080c14; padding: 2px 10px; border-radius: 6px; font-size: 14px; font-weight: 800;">$10 USD</span>
+                    </h4>
+                    <p style="font-size: 13px; margin-bottom: 6px;">Transfer to Binance Pay ID:</p>
                     <div style="background: #080c14; padding: 10px; border-radius: 6px; font-family: monospace; color: #00ff66; font-size: 14px;">
                         <b>Binance Pay ID / UID:</b> {BINANCE_PAY_ID}<br><b>Account Name:</b> {BINANCE_NAME}
                     </div>
@@ -246,7 +259,7 @@ if st.session_state.page == "auth":
                     st.write(f"Total Active Users: {len(logged_users)}")
                     for u in logged_users:
                         st.markdown(f"""
-                            <div style="background: #1f2937; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px;">
+                            <div style="background: #1f2937; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; color: #fff;">
                                 👤 <b>Username:</b> {u[1]}<br>
                                 📧 <b>Email:</b> {u[2]}<br>
                                 🔑 <b>Key Used:</b> <span style="color:#00ff66;">{u[0]}</span>
@@ -308,7 +321,7 @@ elif st.session_state.page == "dashboard":
         col1, col2 = st.columns([3, 1])
         with col1:
             st.markdown(f"<h2 style='color: #00ff66; margin:0;'>🦅 ENZO PRO ({st.session_state.current_user})</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #9ca3af; font-size: 13px; margin:0;'>AI Trading Robot & Market Signal Generator</p>", unsafe_allow_html=True)
+            st.markdown("<p style='color: var(--sub-text); font-size: 13px; margin:0;'>AI Trading Robot & Market Signal Generator</p>", unsafe_allow_html=True)
         with col2:
             st.markdown('<div class="logout-btn">', unsafe_allow_html=True)
             if st.button("🔒 Logout"):
@@ -411,13 +424,13 @@ elif st.session_state.page == "dashboard":
         st.markdown(f"""
             <div class="result-box" style="border-left-color: {color};">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <span style="font-size: 18px; font-weight: 800; color: #ffffff;">🎯 Live Robot Execution</span>
+                    <span style="font-size: 18px; font-weight: 800;">🎯 Live Robot Execution</span>
                     <span style="background-color: {color}; color: #080c14; padding: 4px 14px; border-radius: 6px; font-weight: 900; font-size: 16px;">{sig['action']}</span>
                 </div>
-                <div class="metric-row"><span style="color: #9ca3af;">Broker / Asset:</span><span style="font-weight: 600;">{sig['broker']} - {sig['asset']}</span></div>
-                <div class="metric-row"><span style="color: #9ca3af;">Timeframe & Strategy:</span><span style="font-weight: 600;">{sig['tf']} | {sig['strategy']}</span></div>
-                <div class="metric-row"><span style="color: #9ca3af;">Market Trend & RSI:</span><span style="color: #00ff66; font-weight: 600;">{sig['trend']} ({sig['rsi']})</span></div>
-                <div class="metric-row"><span style="color: #9ca3af;">AI Prediction Confidence:</span><span style="color: #00ff66; font-weight: 700;">{sig['conf']}% Accuracy</span></div>
-                <div class="metric-row" style="border: none;"><span style="color: #9ca3af;">Recommended Trade Stake:</span><span style="color: #ffcc00; font-weight: 700;">${sig['stake']}</span></div>
+                <div class="metric-row"><span style="color: var(--sub-text);">Broker / Asset:</span><span style="font-weight: 600;">{sig['broker']} - {sig['asset']}</span></div>
+                <div class="metric-row"><span style="color: var(--sub-text);">Timeframe & Strategy:</span><span style="font-weight: 600;">{sig['tf']} | {sig['strategy']}</span></div>
+                <div class="metric-row"><span style="color: var(--sub-text);">Market Trend & RSI:</span><span style="color: #00ff66; font-weight: 600;">{sig['trend']} ({sig['rsi']})</span></div>
+                <div class="metric-row"><span style="color: var(--sub-text);">AI Prediction Confidence:</span><span style="color: #00ff66; font-weight: 700;">{sig['conf']}% Accuracy</span></div>
+                <div class="metric-row" style="border: none;"><span style="color: var(--sub-text);">Recommended Trade Stake:</span><span style="color: #ffcc00; font-weight: 700;">${sig['stake']}</span></div>
             </div>
         """, unsafe_allow_html=True)
