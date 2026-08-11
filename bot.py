@@ -256,11 +256,16 @@ if st.session_state.page == "auth":
                             cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_order,))
                             conn.commit()
                             
-                            # Instant Telegram Alert with Username and Order ID
+                            # Instant Telegram Alert & Photo with User Name
                             send_telegram_alert(clean_order, clean_name)
                             send_telegram_photo(screenshot.getvalue(), f"📸 Payment Screenshot\n👤 User: `{clean_name}`\n🆔 Order ID: `{clean_order}`")
                             
-                            st.success("✅ Payment proof submitted successfully! Your details and name have been sent to Telegram support. Please contact support to get your access key.")
+                            st.success("✅ Payment proof submitted successfully! Your details have been sent to Telegram.")
+                            st.markdown(f"""
+                                <div style="text-align: center; margin-top: 15px;">
+                                    <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Click here to message on Telegram for Access Key</a>
+                                </div>
+                            """, unsafe_allow_html=True)
                     
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -269,6 +274,37 @@ if st.session_state.page == "auth":
         if admin_pass == "Umarali4747":
             st.success("Admin Access Granted Successfully!")
             
+            st.markdown("---")
+            st.markdown("### 🔑 License Key Management (Add / Remove)")
+            
+            # Add New Key
+            new_key_input = st.text_input("Add New License Key", placeholder="e.g., ENZO-NEW-KEY-1234")
+            if st.button("➕ Add Key to Database"):
+                if new_key_input.strip():
+                    try:
+                        cursor.execute("INSERT INTO licenses (key, username, email) VALUES (?, NULL, NULL)", (new_key_input.strip(),))
+                        conn.commit()
+                        st.success(f"Key '{new_key_input.strip()}' successfully added!")
+                    except Exception as e:
+                        st.error(f"Error: Key already exists or invalid.")
+                else:
+                    st.warning("Please enter a valid key.")
+
+            st.markdown("---")
+            
+            # Remove Existing Key
+            cursor.execute("SELECT key FROM licenses")
+            all_keys = [row[0] for row in cursor.fetchall()]
+            if all_keys:
+                key_to_remove = st.selectbox("Select Key to Remove", all_keys)
+                if st.button("🗑️ Remove Selected Key"):
+                    cursor.execute("DELETE FROM licenses WHERE key = ?", (key_to_remove,))
+                    conn.commit()
+                    st.success(f"Key '{key_to_remove}' deleted successfully!")
+                    st.rerun()
+            
+            st.markdown("---")
+            st.markdown("### 👥 Active Users List")
             cursor.execute("SELECT key, username, email FROM licenses WHERE username IS NOT NULL")
             logged_users = cursor.fetchall()
             if logged_users:
