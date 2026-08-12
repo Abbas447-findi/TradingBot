@@ -163,37 +163,33 @@ if st.session_state.page == "auth":
         
         if mode == "License Key":
             username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
-            email = st.text_input("Enter Your Email Address", placeholder="Type your email address...")
             key = st.text_input("Enter Security Key", type="password", placeholder="Type license key...")
             
             if st.button("Verify Key & Enter ➡️"):
                 clean_user = username.strip()
-                clean_email = email.strip()
                 clean_key = key.strip()
                 
-                if not clean_user or not clean_email or not clean_key:
+                if not clean_user or not clean_key:
                     st.session_state.auth_error = "empty_fields"
-                elif "@" not in clean_email or "." not in clean_email:
-                    st.session_state.auth_error = "invalid_email"
                 else:
                     with st.spinner("Verifying License Key... Please wait"):
                         time.sleep(1.2)
-                        cursor.execute("SELECT username, email FROM licenses WHERE key = ?", (clean_key,))
+                        cursor.execute("SELECT username FROM licenses WHERE key = ?", (clean_key,))
                         row = cursor.fetchone()
                         
                         if row is None:
                             st.session_state.auth_error = "invalid"
                         else:
-                            db_user, db_email = row[0], row[1]
+                            db_user = row[0]
                             
                             if db_user is None:
-                                cursor.execute("UPDATE licenses SET username = ?, email = ? WHERE key = ?", (clean_user, clean_email, clean_key))
+                                cursor.execute("UPDATE licenses SET username = ? WHERE key = ?", (clean_user, clean_key))
                                 conn.commit()
                                 st.session_state.current_user = clean_user
                                 st.session_state.auth_error = None
                                 st.session_state.page = "dashboard"
                                 st.rerun()
-                            elif db_user == clean_user and db_email == clean_email:
+                            elif db_user == clean_user:
                                 st.session_state.current_user = clean_user
                                 st.session_state.auth_error = None
                                 st.session_state.page = "dashboard"
@@ -203,8 +199,6 @@ if st.session_state.page == "auth":
             
             if st.session_state.auth_error == "empty_fields":
                 st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please fill in all required fields!</p>", unsafe_allow_html=True)
-            elif st.session_state.auth_error == "invalid_email":
-                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid email address!</p>", unsafe_allow_html=True)
             elif st.session_state.auth_error == "invalid":
                 st.markdown(f"""
                     <div class="popup-error-box">
@@ -302,7 +296,15 @@ if st.session_state.page == "auth":
                                 assigned_key = free_key[0]
                                 cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
                                 conn.commit()
-                                st.success(f"Approved! Assigned Key for {p[1]} is: {assigned_key}")
+                                st.markdown(f"""
+                                    <div style="background: #0d1b1e; border: 2px solid #00ff66; padding: 15px; border-radius: 10px; margin-top: 10px; text-align: center;">
+                                        <h3 style="color: #00ff66; margin:0;">🎉 Payment Approved Successfully!</h3>
+                                        <p style="color: #ffffff; font-size: 14px; margin: 5px 0;">Assigned Key for <b>{p[1]}</b>:</p>
+                                        <div style="background: #080c14; color: #f3ba2f; padding: 10px; font-family: monospace; font-size: 18px; font-weight: bold; border-radius: 6px;">
+                                            {assigned_key}
+                                        </div>
+                                    </div>
+                                """, unsafe_allow_html=True)
                             else:
                                 st.error("No free keys available in database!")
                     with col_dec:
@@ -352,7 +354,6 @@ if st.session_state.page == "auth":
                     st.markdown(f"""
                         <div style="background: #1f2937; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px;">
                             👤 <b>Username:</b> {u[1]}<br>
-                            📧 <b>Email:</b> {u[2]}<br>
                             🔑 <b>Key Used:</b> <span style="color:#00ff66;">{u[0]}</span>
                         </div>
                     """, unsafe_allow_html=True)
