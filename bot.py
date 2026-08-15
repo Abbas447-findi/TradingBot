@@ -289,7 +289,7 @@ if 'page' not in st.session_state: st.session_state.page = "auth"
 if 'auth_error' not in st.session_state: st.session_state.auth_error = None
 if 'current_user' not in st.session_state: st.session_state.current_user = "Trader"
 
-# Auto-login via Query Params (native Streamlit system)
+# Native Streamlit Auto-login via Query Params
 query_params = st.query_params
 if "user" in query_params and "key" in query_params and st.session_state.page == "auth":
     saved_user = query_params["user"]
@@ -347,7 +347,7 @@ if st.session_state.page == "auth":
                                     cursor.execute("UPDATE licenses SET username = ? WHERE key = ?", (clean_user, clean_key))
                                     conn.commit()
                                 
-                                # Native Streamlit URL Query Param Save
+                                # Save URL Query Param for Auto Login
                                 if remember_me:
                                     st.query_params["user"] = clean_user
                                     st.query_params["key"] = clean_key
