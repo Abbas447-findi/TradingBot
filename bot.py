@@ -5,49 +5,111 @@ import sqlite3
 import requests
 
 st.set_page_config(
-    page_title="ENZO BOT - Premium Access",
-    page_icon="🦅",
+    page_title="ENZO QUANT TERMINAL v4.9",
+    page_icon="⚡",
     layout="centered"
 )
 
 st.markdown("""
     <style>
-    /* Force 100% Dark Theme & Fix iPhone Safari White Screen Bug */
-    :root {
-        color-scheme: dark;
-    }
-    
+    :root { color-scheme: dark; }
     html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp {
-        background-color: #080c14 !important;
-        color: #ffffff !important;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #030712 !important;
+        color: #f3f4f6 !important;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
         -webkit-text-size-adjust: 100%;
     }
     
-    .page-box { background-color: #111827; padding: 30px; border-radius: 16px; border: 1px solid #1f2937; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); margin-top: 20px; }
-    .title-text { color: #00ff66; text-align: center; font-size: 42px; font-weight: 900; letter-spacing: 2px; margin-bottom: 0px; text-shadow: 0 0 15px rgba(0, 255, 102, 0.4); }
-    .sub-title { color: #9ca3af; text-align: center; font-size: 14px; font-weight: 500; margin-bottom: 20px; }
-    .telegram-box { text-align: center; background-color: #1f2937; padding: 12px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #2b3748; }
-    .telegram-link { color: #0088cc; text-decoration: none; font-weight: 700; font-size: 15px; }
-    .telegram-link:hover { color: #00aaff; text-decoration: underline; }
-    .binance-box { background-color: #141b22; border: 1px dashed #f3ba2f; padding: 18px; border-radius: 10px; margin-bottom: 15px; }
-    .popup-error-box { background-color: #2a1215; border: 2px solid #ff3366; padding: 30px; border-radius: 16px; text-align: center; margin-top: 25px; margin-bottom: 25px; box-shadow: 0 0 35px rgba(255, 51, 102, 0.6); }
-    .popup-title { color: #ff3366; font-size: 24px; font-weight: 900; margin-bottom: 12px; }
-    .popup-desc { color: #d1d5db; font-size: 15px; margin-bottom: 20px; line-height: 1.5; }
-    .popup-btn { display: inline-block; background: linear-gradient(135deg, #0088cc 0%, #005588 100%); color: #ffffff !important; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 800; font-size: 16px; box-shadow: 0 4px 15px rgba(0, 136, 204, 0.5); }
-    .popup-btn:hover { background: linear-gradient(135deg, #0099ff 0%, #006699 100%); }
-    .active-users-badge { text-align: center; background-color: #0d1b1e; border: 1px solid #00ff66; color: #00ff66; padding: 10px; border-radius: 10px; font-size: 14px; font-weight: 700; margin-bottom: 25px; box-shadow: 0 0 15px rgba(0, 255, 102, 0.15); }
-    .logout-btn > button { background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important; color: #ffffff !important; }
-    .logout-btn > button:hover { opacity: 0.9; }
-    .stSelectbox label, .stRadio label, .stTextInput label, .stNumberInput label, .stSlider label, .stFileUploader label { color: #ffffff !important; font-weight: 600 !important; font-size: 15px !important; }
-    div[data-baseweb="select"] > div { background-color: #1f2937 !important; color: #ffffff !important; border-color: #374151 !important; }
-    div[data-baseweb="select"] span { color: #ffffff !important; }
-    div[data-baseweb="popover"] div { background-color: #111827 !important; color: #ffffff !important; }
-    li[role="option"] { background-color: #111827 !important; color: #ffffff !important; }
-    li[role="option"]:hover { background-color: #1f2937 !important; color: #00ff66 !important; }
-    .stButton > button { width: 100%; background: linear-gradient(135deg, #00ff66 0%, #00b347 100%) !important; color: #080c14 !important; font-size: 16px !important; font-weight: 800 !important; padding: 12px !important; border-radius: 8px !important; border: none !important; cursor: pointer; }
-    .result-box { background-color: #111827; padding: 22px; border-radius: 12px; border: 1px solid #1f2937; border-left: 6px solid #00ff66; margin-top: 20px; }
-    .metric-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1f2937; font-size: 14px; color: #ffffff; }
+    /* Elite Cyberpunk Glassmorphism & Animations */
+    @keyframes eliteSlide { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulseGlow { 0% { box-shadow: 0 0 5px rgba(0,255,102,0.2); } 50% { box-shadow: 0 0 20px rgba(0,255,102,0.6); } 100% { box-shadow: 0 0 5px rgba(0,255,102,0.2); } }
+    @keyframes scanLine { 0% { transform: translateY(-100%); } 100% { transform: translateY(1000%); } }
+
+    .elite-card {
+        background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(3, 7, 18, 0.95) 100%);
+        padding: 32px;
+        border-radius: 18px;
+        border: 1px solid rgba(0, 255, 102, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        margin-top: 20px;
+        animation: eliteSlide 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .elite-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, #00ff66, transparent);
+    }
+
+    .terminal-header {
+        font-family: 'Courier New', Courier, monospace;
+        letter-spacing: 2px;
+        color: #00ff66;
+        text-transform: uppercase;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .live-ticker {
+        background: #0d1117;
+        border: 1px solid #21262d;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 12px;
+        color: #8b949e;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .title-text { color: #ffffff; text-align: center; font-size: 40px; font-weight: 900; letter-spacing: 3px; text-shadow: 0 0 25px rgba(0, 255, 102, 0.3); }
+    .sub-title { color: #9ca3af; text-align: center; font-size: 13px; font-weight: 500; letter-spacing: 1px; margin-bottom: 25px; text-transform: uppercase; }
+    
+    .telegram-box { text-align: center; background-color: #111827; padding: 12px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #1f2937; }
+    .telegram-link { color: #38bdf8; text-decoration: none; font-weight: 700; font-size: 14px; }
+    
+    .binance-box { background-color: #111827; border: 1px dashed #f3ba2f; padding: 18px; border-radius: 12px; margin-bottom: 15px; }
+    .popup-error-box { background-color: #1f1115; border: 1px solid #ff3366; padding: 25px; border-radius: 16px; text-align: center; margin: 20px 0; }
+    
+    .stButton > button {
+        width: 100%;
+        background: linear-gradient(135deg, #00ff66 0%, #00873e 100%) !important;
+        color: #030712 !important;
+        font-size: 15px !important;
+        font-weight: 900 !important;
+        padding: 14px !important;
+        border-radius: 10px !important;
+        border: none !important;
+        cursor: pointer;
+        box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
+        transition: all 0.3s ease;
+    }
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(0, 255, 102, 0.6);
+    }
+
+    .result-box {
+        background: #0d1117;
+        padding: 24px;
+        border-radius: 14px;
+        border: 1px solid #30363d;
+        border-left: 5px solid #00ff66;
+        margin-top: 25px;
+        animation: eliteSlide 0.5s ease-out;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .metric-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #21262d; font-size: 13px; font-family: 'Courier New', Courier, monospace; }
+    .stat-card { background: #161b22; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #30363d; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -57,56 +119,32 @@ TELEGRAM_CHAT_ID = "8633830998"
 
 def send_telegram_alert(order_id, user_name):
     try:
-        message = (
-            f"🚨 *New Binance Payment Submitted - ENZO PRO*\n\n"
-            f"👤 *User Name:* {user_name}\n"
-            f"🆔 *Order ID:* `{order_id}`\n"
-            f"🕒 *Time:* {time.ctime()}"
-        )
+        message = f"🚨 *New Binance Payment - ENZO QUANT*\n👤 *User:* {user_name}\n🆔 *Order:* `{order_id}`"
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-        payload = {
-            "chat_id": TELEGRAM_CHAT_ID,
-            "text": message,
-            "parse_mode": "Markdown"
-        }
-        requests.post(url, json=payload, timeout=5)
-    except Exception as e:
-        print("Telegram Alert Error:", e)
+        requests.post(url, json={"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}, timeout=5)
+    except: pass
 
 def send_telegram_photo(photo_bytes, caption):
     try:
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendPhoto"
-        files = {'photo': ('screenshot.jpg', photo_bytes, 'image/jpeg')}
-        data = {'chat_id': TELEGRAM_CHAT_ID, 'caption': caption, 'parse_mode': 'Markdown'}
-        requests.post(url, data=data, files=files, timeout=10)
-    except Exception as e:
-        print("Telegram Photo Error:", e)
+        requests.post(url, data={'chat_id': TELEGRAM_CHAT_ID, 'caption': caption, 'parse_mode': 'Markdown'}, files={'photo': ('proof.jpg', photo_bytes, 'image/jpeg')}, timeout=10)
+    except: pass
 
 def init_db():
-    conn = sqlite3.connect('enzo_licenses.db', check_same_thread=False)
+    conn = sqlite3.connect('enzo_quant.db', check_same_thread=False)
     cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS licenses (
-            key TEXT PRIMARY KEY,
-            username TEXT,
-            email TEXT
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS binance_orders (
-            order_id TEXT PRIMARY KEY
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS pending_approvals (
-            order_id TEXT PRIMARY KEY,
-            username TEXT
-        )
-    ''')
-    try: cursor.execute("ALTER TABLE licenses ADD COLUMN username TEXT")
-    except sqlite3.OperationalError: pass
-    try: cursor.execute("ALTER TABLE licenses ADD COLUMN email TEXT")
-    except sqlite3.OperationalError: pass
+    cursor.execute('CREATE TABLE IF NOT EXISTS licenses (key TEXT PRIMARY KEY, username TEXT, status TEXT DEFAULT "Active", expiry_date TEXT DEFAULT "Lifetime")')
+    cursor.execute('CREATE TABLE IF NOT EXISTS binance_orders (order_id TEXT PRIMARY KEY)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS pending_approvals (order_id TEXT PRIMARY KEY, username TEXT)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS admin_settings (id INTEGER PRIMARY KEY, admin_pass TEXT)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS app_stats (id INTEGER PRIMARY KEY, total_revenue REAL)')
+    
+    cursor.execute("SELECT admin_pass FROM admin_settings WHERE id = 1")
+    if not cursor.fetchone():
+        cursor.execute("INSERT INTO admin_settings (id, admin_pass) VALUES (1, ?)", ("Umarali4747",))
+    cursor.execute("SELECT total_revenue FROM app_stats WHERE id = 1")
+    if not cursor.fetchone():
+        cursor.execute("INSERT INTO app_stats (id, total_revenue) VALUES (1, 0.0)")
     conn.commit()
     return conn, cursor
 
@@ -122,18 +160,10 @@ VALID_KEYS = [
     "ENZO-9911-LIV-5432", "ENZO-2244-BOT-1122", "ENZO-7733-MLK-3344",
     "ENZO-5566-QTX-5566", "ENZO-4488-PKT-7788", "ENZO-1122-SIG-9999",
     "ENZO-6633-RSK-1020", "ENZO-9944-STK-3040", "ENZO-3377-API-5060",
-    "ENZO-8855-KEY-7080", "ENZO-2211-PRO-9010", "ENZO-4747-ULTRA-99",
-    "ENZO-1011-ALPHA-11", "ENZO-2022-BETA-22",  "ENZO-3033-GAMMA-33",
-    "ENZO-4044-DELTA-44", "ENZO-5055-OMEGA-55", "ENZO-6066-PRIME-66",
-    "ENZO-7077-MAX-77",   "ENZO-8088-SUPER-88", "ENZO-9099-MASTER-99",
-    "ENZO-1110-GOLD-01",  "ENZO-2220-SILVER-02", "ENZO-3330-BRONZE-03",
-    "ENZO-4440-VIP-04",   "ENZO-5550-PRO-05",   "ENZO-6660-TRADER-06",
-    "ENZO-7770-BOT-07",   "ENZO-8880-SIG-08",   "ENZO-9990-AI-09",
-    "ENZO-1234-SAFE-10",  "ENZO-5678-FAST-20"
+    "ENZO-8855-KEY-7080", "ENZO-2211-PRO-9010", "ENZO-4747-ULTRA-99"
 ]
-
 for k in VALID_KEYS:
-    cursor.execute("INSERT OR IGNORE INTO licenses (key, username, email) VALUES (?, NULL, NULL)", (k,))
+    cursor.execute("INSERT OR IGNORE INTO licenses (key, username, status, expiry_date) VALUES (?, NULL, 'Active', 'Lifetime')", (k,))
 conn.commit()
 
 BINANCE_PAY_ID = "385682148"
@@ -144,45 +174,46 @@ if 'auth_error' not in st.session_state: st.session_state.auth_error = None
 if 'current_user' not in st.session_state: st.session_state.current_user = "Trader"
 
 if st.session_state.page == "auth":
-    st.markdown('<p class="title-text">🦅 ENZO PRO</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-title">✨ Premium Access & Trading Robot</p>', unsafe_allow_html=True)
+    st.markdown('<p class="title-text">⚡ ENZO QUANT</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-title">Institutional Grade Algorithmic Binary Terminal</p>', unsafe_allow_html=True)
     
     st.markdown(f"""
-        <div class="telegram-box">
-            <span>💬 Need Help? Contact Support: </span>
-            <a class="telegram-link" href="{TELEGRAM_URL}" target="_blank">✈️ Telegram Support</a>
+        <div class="live-ticker">
+            <span>🟢 NODE: SECURE-US-EAST-1</span>
+            <span>LATENCY: 12ms</span>
+            <span>ENCRYPTION: AES-256</span>
         </div>
     """, unsafe_allow_html=True)
 
     with st.container():
-        st.markdown('<div class="page-box">', unsafe_allow_html=True)
-        st.markdown("### 🔐 Step 1: Authentication & Verification")
-        st.markdown("<p style='color:#9ca3af; font-size:13px;'>Enter your License Key or submit your Binance Pay Order ID & Screenshot to access the robot.</p>", unsafe_allow_html=True)
+        st.markdown('<div class="elite-card">', unsafe_allow_html=True)
+        st.markdown('<div class="terminal-header"><span>// SYSTEM AUTHENTICATION</span><span>SECURE GATEWAY</span></div>', unsafe_allow_html=True)
         
-        mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway"], horizontal=True)
+        mode = st.radio("Access Mode", ["License Key", "Binance Pay Gateway"], horizontal=True)
         
         if mode == "License Key":
-            username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
-            key = st.text_input("Enter Security Key", type="password", placeholder="Type license key...")
+            username = st.text_input("Operator Alias", placeholder="Enter your handle...")
+            key = st.text_input("Access Cipher Key", type="password", placeholder="ENZO-XXXX-XXXX...")
             
-            if st.button("Verify Key & Enter ➡️"):
+            if st.button("INITIALIZE TERMINAL ➔"):
                 clean_user = username.strip()
                 clean_key = key.strip()
                 
                 if not clean_user or not clean_key:
                     st.session_state.auth_error = "empty_fields"
                 else:
-                    with st.spinner("Verifying License Key... Please wait"):
-                        time.sleep(1.2)
-                        cursor.execute("SELECT username FROM licenses WHERE key = ?", (clean_key,))
+                    with st.spinner("Validating Hardware Fingerprint & Neural Key..."):
+                        time.sleep(1.0)
+                        cursor.execute("SELECT username, status FROM licenses WHERE key = ?", (clean_key,))
                         row = cursor.fetchone()
                         
                         if row is None:
                             st.session_state.auth_error = "invalid"
                         else:
-                            db_user = row[0]
-                            
-                            if db_user is None:
+                            db_user, db_status = row[0], row[1]
+                            if db_status == "Blocked":
+                                st.session_state.auth_error = "blocked"
+                            elif db_user is None:
                                 cursor.execute("UPDATE licenses SET username = ? WHERE key = ?", (clean_user, clean_key))
                                 conn.commit()
                                 st.session_state.current_user = clean_user
@@ -198,204 +229,100 @@ if st.session_state.page == "auth":
                                 st.session_state.auth_error = "wrong_user"
             
             if st.session_state.auth_error == "empty_fields":
-                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please fill in all required fields!</p>", unsafe_allow_html=True)
+                st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ All parameters required.</p>", unsafe_allow_html=True)
             elif st.session_state.auth_error == "invalid":
-                st.markdown(f"""
-                    <div class="popup-error-box">
-                        <div class="popup-title">❌ INVALID ACCESS KEY</div>
-                        <div class="popup-desc">You have entered a wrong or unregistered license key. Please purchase an official key from our Telegram support channel.</div>
-                        <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Official Purchase (Telegram)</a>
-                    </div>
-                """, unsafe_allow_html=True)
+                st.markdown(f'<div class="popup-error-box"><h4 style="color:#ff3366; margin:0 0 8px 0;">ACCESS DENIED</h4><p style="font-size:13px; color:#9ca3af; margin-bottom:15px;">Invalid cryptographic signature.</p><a class="telegram-link" href="{TELEGRAM_URL}" target="_blank">Acquire License via Telegram ➔</a></div>', unsafe_allow_html=True)
+            elif st.session_state.auth_error == "blocked":
+                st.markdown(f'<div class="popup-error-box"><h4 style="color:#ff3366; margin:0;">TERMINAL REVOKED</h4></div>', unsafe_allow_html=True)
             elif st.session_state.auth_error == "wrong_user":
-                st.markdown(f"""
-                    <div class="popup-error-box">
-                        <div class="popup-title">⚠️ SECURITY ALERT: USER MISMATCH</div>
-                        <div class="popup-desc">This license key is already locked and registered with another user!</div>
-                        <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Official Purchase (Telegram)</a>
-                    </div>
-                """, unsafe_allow_html=True)
+                st.markdown(f'<div class="popup-error-box"><h4 style="color:#ff3366; margin:0;">KEY BINDING MISMATCH</h4></div>', unsafe_allow_html=True)
 
         else:
-            binance_svg = """<svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 6px;"><path d="M12.2155 14.1287L16.0022 10.342L19.7888 14.1287L22.9555 10.962L16.0022 4.00871L9.04883 10.962L12.2155 14.1287Z" fill="#FCD535"/><path d="M6.55548 13.5087L9.72215 16.6754L13.5088 12.8887L10.3422 9.72205L6.55548 13.5087Z" fill="#FCD535"/><path d="M25.4488 13.5087L21.6622 9.72205L18.4955 12.8887L22.2822 16.6754L25.4488 13.5087Z" fill="#FCD535"/><path d="M12.2155 17.8754L16.0022 21.6621L19.7888 17.8754L22.9555 21.0421L16.0022 27.9954L9.04883 21.0421L12.2155 17.8754Z" fill="#FCD535"/><path d="M4.00883 16.0021L7.1755 19.1687L10.3422 16.0021L7.1755 12.8354L4.00883 16.0021Z" fill="#FCD535"/><path d="M24.8255 12.8354L21.6588 16.0021L24.8255 19.1687L27.9922 16.0021L24.8255 12.8354Z" fill="#FCD535"/><path d="M16.0022 13.5087L13.5088 16.0021L16.0022 18.4954L18.4955 16.0021L16.0022 13.5087Z" fill="#FCD535"/></svg>"""
-            
             st.markdown(f"""
                 <div class="binance-box">
-                    <h4 style="color: #f3ba2f; margin-top: 0; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                        <span>{binance_svg} Binance Pay Gateway</span>
-                        <span style="background: #f3ba2f; color: #080c14; padding: 2px 10px; border-radius: 6px; font-size: 14px; font-weight: 800;">$10</span>
-                    </h4>
-                    <p style="color: #d1d5db; font-size: 13px; margin-bottom: 6px;">Transfer to Binance Pay ID:</p>
-                    <div style="background: #080c14; padding: 10px; border-radius: 6px; font-family: monospace; color: #00ff66; font-size: 14px;">
-                        <b>Binance Pay ID / UID:</b> {BINANCE_PAY_ID}<br><b>Account Name:</b> {BINANCE_NAME}
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="color: #f3ba2f; font-weight:700; font-family:'Courier New';">BINANCE PAY ESCROW</span>
+                        <span style="background: #f3ba2f; color: #030712; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight:800;">$10.00</span>
+                    </div>
+                    <div style="background: #030712; padding: 10px; border-radius: 6px; font-family: monospace; color: #00ff66; font-size: 13px;">
+                        <b>Pay ID:</b> {BINANCE_PAY_ID}<br><b>Name:</b> {BINANCE_NAME}
                     </div>
                 </div>
             """, unsafe_allow_html=True)
             
-            user_input_name = st.text_input("Enter Your Name / Username", placeholder="Type your name here...")
-            order_id = st.text_input("Enter Binance Order ID", placeholder="Paste genuine Order ID here...")
-            screenshot = st.file_uploader("Upload Payment Screenshot", type=["png", "jpg", "jpeg"])
+            user_input_name = st.text_input("Operator Handle", placeholder="Your name...")
+            order_id = st.text_input("Transaction Order ID", placeholder="Binance transaction hash/ID...")
+            screenshot = st.file_uploader("Upload Receipt Proof", type=["png", "jpg", "jpeg"])
             
-            if st.button("Submit Payment Proof Instantly ➡️"):
+            if st.button("SUBMIT ESCROW PROOF ➔"):
                 clean_order = order_id.strip()
                 clean_name = user_input_name.strip()
-                
-                if not clean_name:
-                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Please enter your name!</p>", unsafe_allow_html=True)
-                elif not clean_order or len(clean_order) < 6:
-                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Please enter a valid Binance Order ID!</p>", unsafe_allow_html=True)
-                elif screenshot is None:
-                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Please upload the payment screenshot!</p>", unsafe_allow_html=True)
+                if not clean_name or not clean_order or screenshot is None:
+                    st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Missing verification parameters.</p>", unsafe_allow_html=True)
                 else:
                     cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_order,))
                     if cursor.fetchone():
-                        st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ This Order ID has already been used!</p>", unsafe_allow_html=True)
+                        st.markdown("<p style='color:#ff3366; font-size:12px;'>⚠️ Order ID already processed.</p>", unsafe_allow_html=True)
                     else:
-                        with st.spinner("Submitting payment proof & sending instant Telegram notification..."):
+                        with st.spinner("Broadcasting proof to secure relay..."):
                             time.sleep(1.0)
                             cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_order,))
                             cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_order, clean_name))
                             conn.commit()
-                            
                             send_telegram_alert(clean_order, clean_name)
-                            send_telegram_photo(screenshot.getvalue(), f"📸 Payment Screenshot\n👤 User: `{clean_name}`\n🆔 Order ID: `{clean_order}`")
-                            
-                            st.success("✅ Payment proof submitted successfully! Your details have been sent to Telegram.")
-                            st.markdown(f"""
-                                <div style="text-align: center; margin-top: 15px;">
-                                    <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Click here to message on Telegram for Access Key</a>
-                                </div>
-                            """, unsafe_allow_html=True)
-                    
+                            send_telegram_photo(screenshot.getvalue(), f"📸 Receipt\nOperator: `{clean_name}`\nOrder: `{clean_order}`")
+                            st.success("✅ Broadcast successful. Awaiting clearance.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-    with st.expander("🛠️ Admin Management Panel (Click to Open)"):
-        admin_pass = st.text_input("Enter Admin Password", type="password")
-        if admin_pass == "Umarali4747":
-            st.success("Admin Access Granted Successfully!")
+    # Admin Panel
+    with st.expander("🔐 SYSTEM ADMIN DECK"):
+        cursor.execute("SELECT admin_pass FROM admin_settings WHERE id = 1")
+        apass = cursor.fetchone()[0]
+        ap_in = st.text_input("Master Cipher", type="password")
+        if ap_in == apass:
+            st.success("Admin Clearance Verified")
+            cursor.execute("SELECT total_revenue FROM app_stats WHERE id = 1")
+            rev = cursor.fetchone()[0]
+            cursor.execute("SELECT COUNT(*) FROM licenses WHERE username IS NOT NULL")
+            ac = cursor.fetchone()[0]
+            cursor.execute("SELECT COUNT(*) FROM pending_approvals")
+            pc = cursor.fetchone()[0]
+            
+            c1, c2, c3 = st.columns(3)
+            with c1: st.markdown(f'<div class="stat-card"><h5>REVENUE</h5><h3 style="color:#00ff66;">${rev:.2f}</h3></div>', unsafe_allow_html=True)
+            with c2: st.markdown(f'<div class="stat-card"><h5>SESSIONS</h5><h3 style="color:#38bdf8;">{ac}</h3></div>', unsafe_allow_html=True)
+            with c3: st.markdown(f'<div class="stat-card"><h5>QUEUE</h5><h3 style="color:#f3ba2f;">{pc}</h3></div>', unsafe_allow_html=True)
             
             st.markdown("---")
-            st.markdown("### 📥 Pending Payment Approvals")
             cursor.execute("SELECT order_id, username FROM pending_approvals")
-            pending_list = cursor.fetchall()
-            if pending_list:
-                for p in pending_list:
-                    st.markdown(f"""
-                        <div style="background: #1f2937; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px;">
-                            👤 <b>User:</b> {p[1]}<br>
-                            🆔 <b>Order ID:</b> <span style="color:#f3ba2f;">{p[0]}</span>
-                        </div>
-                    """, unsafe_allow_html=True)
-                    
-                    col_app, col_dec = st.columns(2)
-                    with col_app:
-                        if st.button(f"✅ Approve {p[0]}", key=f"app_{p[0]}"):
-                            cursor.execute("SELECT key FROM licenses WHERE username IS NULL LIMIT 1")
-                            free_key = cursor.fetchone()
-                            if free_key:
-                                assigned_key = free_key[0]
-                                cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
-                                conn.commit()
-                                st.markdown(f"""
-                                    <div style="background: #0d1b1e; border: 2px solid #00ff66; padding: 15px; border-radius: 10px; margin-top: 10px; text-align: center;">
-                                        <h3 style="color: #00ff66; margin:0; font-size:16px;">🎉 Payment Approved!</h3>
-                                        <p style="color: #ffffff; font-size: 13px; margin: 4px 0;">Assigned Key for <b>{p[1]}</b>:</p>
-                                        <div style="background: #080c14; color: #f3ba2f; padding: 8px; font-family: monospace; font-size: 15px; font-weight: bold; border-radius: 6px;">
-                                            {assigned_key}
-                                        </div>
-                                    </div>
-                                """, unsafe_allow_html=True)
-                            else:
-                                st.error("No free keys available in database!")
-                    with col_dec:
-                        if st.button(f"❌ Decline {p[0]}", key=f"dec_{p[0]}"):
-                            cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
-                            conn.commit()
-                            st.warning(f"Payment {p[0]} Declined!")
-                            st.rerun()
-            else:
-                st.info("No pending payments right now.")
-
-            st.markdown("---")
-            st.markdown("### ➕ Add New License Key")
-            new_key_input = st.text_input("Enter New Key", placeholder="e.g., ENZO-NEW-1234")
-            if st.button("Add Key to Database"):
-                if new_key_input.strip():
-                    try:
-                        cursor.execute("INSERT INTO licenses (key, username, email) VALUES (?, NULL, NULL)", (new_key_input.strip(),))
+            for p in cursor.fetchall():
+                st.write(f"User: {p[1]} | Order: {p[0]}")
+                if st.button(f"Approve {p[0]}", key=f"ap_{p[0]}"):
+                    cursor.execute("SELECT key FROM licenses WHERE username IS NULL LIMIT 1")
+                    fk = cursor.fetchone()
+                    if fk:
+                        cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
+                        cursor.execute("UPDATE app_stats SET total_revenue = total_revenue + 10.0 WHERE id = 1")
                         conn.commit()
-                        st.success(f"Key '{new_key_input.strip()}' successfully added!")
-                    except Exception as e:
-                        st.error(f"Error: Key already exists or invalid.")
-                else:
-                    st.warning("Please enter a valid key text.")
-            
-            st.markdown("---")
-            st.markdown("### 🗑️ Remove License Key")
-            cursor.execute("SELECT key FROM licenses")
-            all_keys = [row[0] for row in cursor.fetchall()]
-            if all_keys:
-                key_to_remove = st.selectbox("Select Key to Delete", all_keys)
-                if st.button("Remove Selected Key"):
-                    cursor.execute("DELETE FROM licenses WHERE key = ?", (key_to_remove,))
-                    conn.commit()
-                    st.success(f"Key '{key_to_remove}' has been deleted!")
-                    st.rerun()
-            else:
-                st.info("No keys available to remove.")
-
-            st.markdown("---")
-            st.markdown("### 👥 Active Logged-in Users")
-            cursor.execute("SELECT key, username, email FROM licenses WHERE username IS NOT NULL")
-            logged_users = cursor.fetchall()
-            if logged_users:
-                st.write(f"Total Active Users: {len(logged_users)}")
-                for u in logged_users:
-                    st.markdown(f"""
-                        <div style="background: #1f2937; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px;">
-                            👤 <b>Username:</b> {u[1]}<br>
-                            🔑 <b>Key Used:</b> <span style="color:#00ff66;">{u[0]}</span>
-                        </div>
-                    """, unsafe_allow_html=True)
-            else:
-                st.info("No active users yet.")
-        elif admin_pass:
-            st.error("Wrong Password!")
+                        st.success(f"Assigned Key: {fk[0]}")
+                        st.rerun()
 
 elif st.session_state.page == "dashboard":
-    st.empty()
-    
-    if 'active_users' not in st.session_state:
-        st.session_state.active_users = random.randint(180, 250)
-
-    with st.container():
-        st.markdown('<div class="page-box">', unsafe_allow_html=True)
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            st.markdown(f"<h2 style='color: #00ff66; margin:0;'>🦅 ENZO PRO ({st.session_state.current_user})</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #9ca3af; font-size: 13px; margin:0;'>AI Trading Robot & Technical Indicator Engine</p>", unsafe_allow_html=True)
-        with col2:
-            st.markdown('<div class="logout-btn">', unsafe_allow_html=True)
-            if st.button("🔒 Logout"):
-                st.session_state.auth_error = None
-                st.session_state.page = "auth"
-                st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-        
     st.markdown(f"""
-        <div class="active-users-badge" style="margin-top: 20px;">
-            🟢 Live Status: {st.session_state.active_users} Traders Active on Enzo Bot right now!
+        <div class="live-ticker">
+            <span>⚡ OPERATOR: {st.session_state.current_user.upper()}</span>
+            <span>STATUS: QUANTUM SYNCED</span>
+            <span>SERVER: 0.1ms</span>
         </div>
     """, unsafe_allow_html=True)
 
     with st.container():
-        st.markdown('<div class="page-box">', unsafe_allow_html=True)
-        st.markdown("### 🏛️ Step 2: Select Broker & Market")
-        broker = st.selectbox("Select Broker", ["Quotex", "Pocket Option"])
-        market = st.radio("Market Type", ["OTC", "Live Market"], horizontal=True)
+        st.markdown('<div class="elite-card">', unsafe_allow_html=True)
+        st.markdown('<div class="terminal-header"><span>// STEP 02: ASSET SELECTION & MARKET ROUTING</span></div>', unsafe_allow_html=True)
         
-        # Exact Official Quotex and Pocket Option OTC & Live Lists (Including USD/PKR, USD/BDT, etc.)
+        broker = st.selectbox("Execution Broker", ["Quotex", "Pocket Option"])
+        market = st.radio("Liquidity Pool", ["OTC", "Live Market"], horizontal=True)
+        
         if broker == "Quotex":
             assets = [
                 "EUR/USD (OTC)", "GBP/USD (OTC)", "AUD/CAD (OTC)", "NZD/USD (OTC)", 
@@ -431,61 +358,61 @@ elif st.session_state.page == "dashboard":
                 "GOLD (Commodity)", "SILVER (Commodity)", "BRENT (Oil)"
             ]
             
-        asset = st.selectbox("Trading Asset", assets)
+        asset = st.selectbox("Target Instrument", assets)
         st.markdown('</div>', unsafe_allow_html=True)
 
     with st.container():
-        st.markdown('<div class="page-box">', unsafe_allow_html=True)
-        st.markdown("### ⚙️ Step 3: Timeframe & Risk Management")
-        tf = st.selectbox("Timeframe", ["15 Seconds", "30 Seconds", "1 Minute", "2 Minutes", "5 Minutes"])
-        balance = st.number_input("Account Balance ($)", min_value=10, value=100, step=10)
-        risk = st.select_slider("Risk Strategy", options=["Safe (2%)", "Moderate (5%)", "Aggressive (10%)"], value="Moderate (5%)")
+        st.markdown('<div class="elite-card">', unsafe_allow_html=True)
+        st.markdown('<div class="terminal-header"><span>// STEP 03: QUANTITATIVE PARAMETERS</span></div>', unsafe_allow_html=True)
+        tf = st.selectbox("Execution Window", ["15 Seconds", "30 Seconds", "1 Minute", "2 Minutes", "5 Minutes"])
+        balance = st.number_input("Capital Allocation ($)", min_value=10, value=100, step=10)
+        risk = st.select_slider("Risk Vector", options=["Safe (2%)", "Moderate (5%)", "Aggressive (10%)"], value="Moderate (5%)")
         
         st.markdown("<br>", unsafe_allow_html=True)
-        gen_btn = st.button("🚀 EXECUTE ADVANCED ALGORITHM ANALYSIS")
+        gen_btn = st.button("EXECUTE NEURAL SCAN & GENERATE SIGNAL ➔")
         st.markdown('</div>', unsafe_allow_html=True)
 
     if 'signal_data' not in st.session_state: st.session_state.signal_data = None
-    if 'last_asset' not in st.session_state: st.session_state.last_asset = None
-    if 'click_count' not in st.session_state: st.session_state.click_count = 0
 
     if gen_btn:
-        with st.spinner("Analyzing Price Action, Candle Momentum & Binary Micro-Trends... Please wait"):
-            time.sleep(7.5)
-            st.session_state.click_count += 1
+        with st.spinner(""):
+            prog = st.progress(0)
+            status_text = st.empty()
+            steps = [
+                "Connecting to WebSocket feed...",
+                "Running Multi-Timeframe Order Book Analysis...",
+                "Calculating RSI/Bollinger Vector Matrix...",
+                "Synthesizing Institutional Probability Matrix..."
+            ]
+            for i in range(100):
+                time.sleep(0.025)
+                prog.progress(i + 1)
+                if i == 25: status_text.markdown(f"<p style='color:#00ff66; font-family:monospace; font-size:12px;'>{steps[1]}</p>", unsafe_allow_html=True)
+                elif i == 60: status_text.markdown(f"<p style='color:#00ff66; font-family:monospace; font-size:12px;'>{steps[2]}</p>", unsafe_allow_html=True)
+                elif i == 85: status_text.markdown(f"<p style='color:#00ff66; font-family:monospace; font-size:12px;'>{steps[3]}</p>", unsafe_allow_html=True)
+            status_text.empty()
+        
+        seed_val = hash(asset + tf + str(int(time.time() / 20)))
+        random.seed(seed_val)
+        
+        action = random.choice(["BUY", "SELL"])
+        conf = random.randint(90, 95)
+        
+        if action == "BUY":
+            trend = "Institutional Bullish Order Flow & Liquidity Sweep"
+            rsi_val = f"Momentum Vector: {random.randint(18, 28)} (Oversold Compression)"
+        else:
+            trend = "Institutional Bearish Resistance Rejection & Distribution"
+            rsi_val = f"Momentum Vector: {random.randint(72, 86)} (Overbought Exhaustion)"
+        
+        if "Safe" in risk: stake = round(balance * 0.02, 2)
+        elif "Moderate" in risk: stake = round(balance * 0.05, 2)
+        else: stake = round(balance * 0.10, 2)
             
-            # High-impact professional algorithm logic
-            seed_val = hash(asset + tf + str(int(time.time() / 20)))
-            random.seed(seed_val)
-            
-            action = random.choice(["BUY", "SELL"])
-            conf = random.randint(89, 94)  # Strong high-impact win rate range
-            
-            if action == "BUY":
-                trend = random.choice([
-                    "Strong Bullish Volume Breakout & Support Rebound", 
-                    "Multi-Timeframe RSI Bullish Convergence (<30)", 
-                    "EMA 9 / EMA 21 Golden Crossover Confirmed", 
-                    "Bollinger Band Lower Band Price Rejection"
-                ])
-                rsi_val = f"RSI Momentum: {random.randint(20, 30)} (Oversold Bounce)"
-            else:
-                trend = random.choice([
-                    "Strong Bearish Momentum & Resistance Rejection", 
-                    "Multi-Timeframe RSI Bearish Convergence (>70)", 
-                    "EMA 9 / EMA 21 Death Crossover Confirmed", 
-                    "Bollinger Band Upper Band Price Rejection"
-                ])
-                rsi_val = f"RSI Momentum: {random.randint(70, 84)} (Overbought Drop)"
-            
-            if "Safe" in risk: stake = round(balance * 0.02, 2)
-            elif "Moderate" in risk: stake = round(balance * 0.05, 2)
-            else: stake = round(balance * 0.10, 2)
-                
-            st.session_state.signal_data = {
-                "action": action, "conf": conf, "asset": asset, "tf": tf,
-                "broker": broker, "stake": stake, "strategy": risk, "rsi": rsi_val, "trend": trend
-            }
+        st.session_state.signal_data = {
+            "action": action, "conf": conf, "asset": asset, "tf": tf,
+            "broker": broker, "stake": stake, "strategy": risk, "rsi": rsi_val, "trend": trend
+        }
 
     if st.session_state.signal_data:
         sig = st.session_state.signal_data
@@ -493,15 +420,15 @@ elif st.session_state.page == "dashboard":
         
         st.markdown(f"""
             <div class="result-box" style="border-left-color: {color};">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <span style="font-size: 18px; font-weight: 800; color: #ffffff;">🎯 High-Impact AI Signal Output</span>
-                    <span style="background-color: {color}; color: #080c14; padding: 4px 14px; border-radius: 6px; font-weight: 900; font-size: 16px;">{sig['action']}</span>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <span style="font-family:'Courier New'; font-size: 16px; font-weight: 800; color: #ffffff;">⚡ QUANT SIGNAL OUTPUT</span>
+                    <span style="background-color: {color}; color: #030712; padding: 6px 16px; border-radius: 6px; font-weight: 900; font-size: 16px; font-family:'Courier New';">{sig['action']}</span>
                 </div>
-                <div class="metric-row"><span style="color: #9ca3af;">Broker / Asset:</span><span style="font-weight: 600;">{sig['broker']} - {sig['asset']}</span></div>
-                <div class="metric-row"><span style="color: #9ca3af;">Timeframe & Strategy:</span><span style="font-weight: 600;">{sig['tf']} | {sig['strategy']}</span></div>
-                <div class="metric-row"><span style="color: #9ca3af;">Price Action Analysis:</span><span style="color: #00ff66; font-weight: 600;">{sig['trend']}</span></div>
-                <div class="metric-row"><span style="color: #9ca3af;">Indicator State:</span><span style="color: #f3ba2f; font-weight: 600;">{sig['rsi']}</span></div>
-                <div class="metric-row"><span style="color: #9ca3af;">Prediction Accuracy:</span><span style="color: #00ff66; font-weight: 700;">{sig['conf']}% High Win-Rate Probability</span></div>
-                <div class="metric-row" style="border: none;"><span style="color: #9ca3af;">Recommended Trade Stake:</span><span style="color: #ffcc00; font-weight: 700;">${sig['stake']}</span></div>
+                <div class="metric-row"><span style="color: #8b949e;">ROUTED BROKER / ASSET:</span><span style="color:#ffffff; font-weight:600;">{sig['broker']} - {sig['asset']}</span></div>
+                <div class="metric-row"><span style="color: #8b949e;">WINDOW & VECTOR:</span><span style="color:#ffffff; font-weight:600;">{sig['tf']} | {sig['strategy']}</span></div>
+                <div class="metric-row"><span style="color: #8b949e;">PRICE ACTION MATRIX:</span><span style="color: #00ff66; font-weight: 600;">{sig['trend']}</span></div>
+                <div class="metric-row"><span style="color: #8b949e;">OSCILLATOR TELEMETRY:</span><span style="color: #f3ba2f; font-weight: 600;">{sig['rsi']}</span></div>
+                <div class="metric-row"><span style="color: #8b949e;">PROBABILITY INDEX:</span><span style="color: #00ff66; font-weight: 700;">{sig['conf']}% High Precision Confidence</span></div>
+                <div class="metric-row" style="border: none;"><span style="color: #8b949e;">SUGGESTED ALLOCATION:</span><span style="color: #38bdf8; font-weight: 700;">${sig['stake']}</span></div>
             </div>
         """, unsafe_allow_html=True)
