@@ -4,20 +4,12 @@ import time
 import sqlite3
 import requests
 import hashlib
-import extra_streamlit_components as stx
 
 st.set_page_config(
     page_title="ENZO PRO - Elite Terminal",
     page_icon="⚡",
     layout="centered"
 )
-
-# Initialize Cookie Manager for Mobile Auto-Save
-@st.cache_resource
-def get_cookie_manager():
-    return stx.CookieManager()
-
-cookie_manager = get_cookie_manager()
 
 st.markdown("""
     <style>
@@ -293,16 +285,15 @@ conn.commit()
 BINANCE_PAY_ID = "385682148"
 BINANCE_NAME = "X FENDI"
 
-# Check Saved Cookie Data for Auto-Login on Mobile
-saved_user = cookie_manager.get('enzo_saved_user')
-saved_key = cookie_manager.get('enzo_saved_key')
-
 if 'page' not in st.session_state: st.session_state.page = "auth"
 if 'auth_error' not in st.session_state: st.session_state.auth_error = None
 if 'current_user' not in st.session_state: st.session_state.current_user = "Trader"
 
-# Auto-Login Verification Logic
-if saved_user and saved_key and st.session_state.page == "auth":
+# Auto-login via Query Params (native Streamlit system)
+query_params = st.query_params
+if "user" in query_params and "key" in query_params and st.session_state.page == "auth":
+    saved_user = query_params["user"]
+    saved_key = query_params["key"]
     cursor.execute("SELECT username, status FROM licenses WHERE key = ?", (saved_key,))
     row = cursor.fetchone()
     if row and row[1] == 'Active' and (row[0] is None or row[0] == saved_user):
@@ -330,7 +321,7 @@ if st.session_state.page == "auth":
         if mode == "License Key":
             username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
             key = st.text_input("Enter Security Key", type="password", placeholder="Type license key...")
-            remember_me = st.checkbox("📱 Save Key on this Mobile / Browser (Auto Login)", value=True)
+            remember_me = st.checkbox("📱 Save Access on this Device (Auto Login)", value=True)
             
             if st.button("Verify Key & Enter ➡️"):
                 clean_user = username.strip()
@@ -356,10 +347,10 @@ if st.session_state.page == "auth":
                                     cursor.execute("UPDATE licenses SET username = ? WHERE key = ?", (clean_user, clean_key))
                                     conn.commit()
                                 
-                                # Save Key to Cookie / Mobile Storage (30 Days)
+                                # Native Streamlit URL Query Param Save
                                 if remember_me:
-                                    cookie_manager.set('enzo_saved_user', clean_user, max_age=30*24*3600)
-                                    cookie_manager.set('enzo_saved_key', clean_key, max_age=30*24*3600)
+                                    st.query_params["user"] = clean_user
+                                    st.query_params["key"] = clean_key
                                 
                                 st.session_state.current_user = clean_user
                                 st.session_state.auth_error = None
@@ -602,9 +593,7 @@ elif st.session_state.page == "dashboard":
         with col2:
             st.markdown('<div class="logout-btn">', unsafe_allow_html=True)
             if st.button("🔒 Logout"):
-                # Clear Cookies on Logout
-                cookie_manager.delete('enzo_saved_user')
-                cookie_manager.delete('enzo_saved_key')
+                st.query_params.clear()
                 st.session_state.auth_error = None
                 st.session_state.page = "auth"
                 st.rerun()
@@ -678,7 +667,6 @@ elif st.session_state.page == "dashboard":
     if gen_btn:
         st.session_state.click_count += 1
         
-        # Cyber-Scan Progress Loader Animation
         scan_placeholder = st.empty()
         progress_bar = st.progress(0)
         
@@ -734,7 +722,6 @@ elif st.session_state.page == "dashboard":
         sig = st.session_state.signal_data
         color = "#00ff66" if "BUY" in sig["action"] else "#ff3366"
         
-        # Front Pop-Up Signal Result Card with Slide Animation
         st.markdown(f"""
             <div class="result-box-animated" style="border-left-color: {color};">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
