@@ -31,17 +31,36 @@ st.markdown("""
     }
 
     @keyframes popUpSlide {
-        from { opacity: 0; transform: translateY(30px) scale(0.95); }
+        from { opacity: 0; transform: translateY(-20px) scale(0.96); }
         to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .page-box { 
         background: linear-gradient(135deg, #0d1117 0%, #05080f 100%); 
-        padding: 35px; 
+        padding: 30px; 
         border-radius: 20px; 
         border: 1px solid rgba(0, 255, 102, 0.3); 
         box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9); 
-        margin-top: 25px; 
+        margin-top: 20px; 
+    }
+    
+    .welcome-banner {
+        background: linear-gradient(135deg, #022c22 0%, #0d1117 100%);
+        border: 1px solid #00ff66;
+        padding: 20px;
+        border-radius: 16px;
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: 0 0 25px rgba(0, 255, 102, 0.25);
+    }
+
+    .welcome-title {
+        color: #00ff66;
+        font-size: 26px;
+        font-weight: 900;
+        letter-spacing: 2px;
+        margin: 0;
+        text-shadow: 0 0 15px rgba(0, 255, 102, 0.5);
     }
     
     .title-text { 
@@ -119,7 +138,7 @@ st.markdown("""
         border-radius: 12px; 
         font-size: 15px; 
         font-weight: 700; 
-        margin-bottom: 25px; 
+        margin-bottom: 20px; 
         box-shadow: 0 0 20px rgba(0, 255, 102, 0.2); 
     }
     
@@ -148,15 +167,14 @@ st.markdown("""
         animation: neonPulse 3s infinite;
     }
     
-    .result-box-animated { 
-        background-color: #0d1117; 
+    .front-popup-card { 
+        background: linear-gradient(135deg, #0d1117 0%, #080c14 100%); 
         padding: 25px; 
-        border-radius: 16px; 
-        border: 1px solid #1e293b; 
-        border-left: 6px solid #00ff66; 
-        margin-top: 25px; 
-        box-shadow: 0 10px 35px rgba(0,0,0,0.9);
-        animation: popUpSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        border-radius: 18px; 
+        border: 2px solid #00ff66; 
+        margin-bottom: 25px; 
+        box-shadow: 0 0 35px rgba(0, 255, 102, 0.35);
+        animation: popUpSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
     
     .metric-row { 
@@ -289,7 +307,6 @@ if 'page' not in st.session_state: st.session_state.page = "auth"
 if 'auth_error' not in st.session_state: st.session_state.auth_error = None
 if 'current_user' not in st.session_state: st.session_state.current_user = "Trader"
 
-# Native Streamlit Auto-login via Query Params
 query_params = st.query_params
 if "user" in query_params and "key" in query_params and st.session_state.page == "auth":
     saved_user = query_params["user"]
@@ -347,7 +364,6 @@ if st.session_state.page == "auth":
                                     cursor.execute("UPDATE licenses SET username = ? WHERE key = ?", (clean_user, clean_key))
                                     conn.commit()
                                 
-                                # Save URL Query Param for Auto Login
                                 if remember_me:
                                     st.query_params["user"] = clean_user
                                     st.query_params["key"] = clean_key
@@ -584,12 +600,22 @@ elif st.session_state.page == "dashboard":
     if 'active_users' not in st.session_state:
         st.session_state.active_users = random.randint(180, 250)
 
+    # 1. TOP DYNAMIC WELCOME BANNER FOR LOGGED-IN USER
+    user_display_name = st.session_state.current_user.upper()
+    st.markdown(f"""
+        <div class="welcome-banner">
+            <h1 class="welcome-title">⚡ WELCOME TO ENZO PRO BOARD, {user_display_name}! ⚡</h1>
+            <p style="color: #cbd5e1; font-size: 14px; margin: 6px 0 0 0;">Your High-Precision AI Binary Trading System is Ready.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Header Controls (Title & Logout)
     with st.container():
         st.markdown('<div class="page-box">', unsafe_allow_html=True)
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.markdown(f"<h2 style='color: #00ff66; margin:0; font-size:28px;'>🦅 ENZO PRO ({st.session_state.current_user})</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #94a3b8; font-size: 14px; margin:0;'>AI Trading Robot & Technical Indicator Engine</p>", unsafe_allow_html=True)
+            st.markdown(f"<h2 style='color: #00ff66; margin:0; font-size:26px;'>🦅 ENZO TERMINAL</h2>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #94a3b8; font-size: 13px; margin:0;'>AI Indicator Engine & Trade Direction Generator</p>", unsafe_allow_html=True)
         with col2:
             st.markdown('<div class="logout-btn">', unsafe_allow_html=True)
             if st.button("🔒 Logout"):
@@ -601,11 +627,38 @@ elif st.session_state.page == "dashboard":
         st.markdown('</div>', unsafe_allow_html=True)
         
     st.markdown(f"""
-        <div class="active-users-badge" style="margin-top: 20px;">
+        <div class="active-users-badge" style="margin-top: 15px;">
             🟢 Live Status: {st.session_state.active_users} Traders Active on Enzo Bot right now!
         </div>
     """, unsafe_allow_html=True)
 
+    # 2. FRONT / TOP SIGNAL POP-UP DISPLAY (NO SCROLLING NEEDED)
+    signal_top_container = st.container()
+
+    if 'signal_data' in st.session_state and st.session_state.signal_data:
+        sig = st.session_state.signal_data
+        color = "#00ff66" if "BUY" in sig["action"] else "#ff3366"
+        
+        with signal_top_container:
+            st.markdown(f"""
+                <div class="front-popup-card" style="border-color: {color};">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <span style="font-size: 22px; font-weight: 900; color: #ffffff;">🚨 FRONT TRADE ALERT</span>
+                        <span style="background-color: {color}; color: #030508; padding: 6px 20px; border-radius: 8px; font-weight: 900; font-size: 20px;">{sig['action']}</span>
+                    </div>
+                    <div style="background-color: rgba(0, 255, 102, 0.08); padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; border: 1px dashed {color};">
+                        <span style="color: #ffffff; font-size: 16px; font-weight: 800;">👉 PLACE {sig['action']} TRADE IMMEDIATELY ON YOUR BROKER!</span>
+                    </div>
+                    <div class="metric-row"><span style="color: #94a3b8;">Broker / Asset:</span><span style="font-weight: 700; color: #fff;">{sig['broker']} - {sig['asset']}</span></div>
+                    <div class="metric-row"><span style="color: #94a3b8;">Timeframe & Strategy:</span><span style="font-weight: 700; color: #fff;">{sig['tf']} | {sig['strategy']}</span></div>
+                    <div class="metric-row"><span style="color: #94a3b8;">Price Action Analysis:</span><span style="color: #00ff66; font-weight: 700;">{sig['trend']}</span></div>
+                    <div class="metric-row"><span style="color: #94a3b8;">Indicator State:</span><span style="color: #f3ba2f; font-weight: 700;">{sig['rsi']}</span></div>
+                    <div class="metric-row"><span style="color: #94a3b8;">Prediction Accuracy:</span><span style="color: #00ff66; font-weight: 800;">{sig['conf']}% High Win-Rate Probability</span></div>
+                    <div class="metric-row" style="border: none;"><span style="color: #94a3b8;">Recommended Trade Stake:</span><span style="color: #ffcc00; font-weight: 800;">${sig['stake']}</span></div>
+                </div>
+            """, unsafe_allow_html=True)
+
+    # STEP 2 & STEP 3 INPUT FORMS
     with st.container():
         st.markdown('<div class="page-box">', unsafe_allow_html=True)
         st.markdown("### 🏛️ Step 2: Select Broker & Market")
@@ -661,12 +714,7 @@ elif st.session_state.page == "dashboard":
         gen_btn = st.button("🚀 EXECUTE ADVANCED ALGORITHM ANALYSIS")
         st.markdown('</div>', unsafe_allow_html=True)
 
-    if 'signal_data' not in st.session_state: st.session_state.signal_data = None
-    if 'click_count' not in st.session_state: st.session_state.click_count = 0
-
     if gen_btn:
-        st.session_state.click_count += 1
-        
         scan_placeholder = st.empty()
         progress_bar = st.progress(0)
         
@@ -678,7 +726,7 @@ elif st.session_state.page == "dashboard":
         ]
         
         for stage_idx, stage_text in enumerate(scan_stages):
-            scan_placeholder.markdown(f"<p style='color:#00ff66; font-family:monospace; font-weight:bold;'>⚡ [SCANNER ACTIVE] {stage_text}</p>", unsafe_allow_html=True)
+            scan_placeholder.markdown(f"<p style='color:#00ff66; font-family:monospace; font-weight:bold; font-size:16px;'>⚡ [SCANNER ACTIVE] {stage_text}</p>", unsafe_allow_html=True)
             for p in range(stage_idx * 25, (stage_idx + 1) * 25):
                 time.sleep(0.04)
                 progress_bar.progress(p + 1)
@@ -717,22 +765,4 @@ elif st.session_state.page == "dashboard":
             "action": action, "conf": conf, "asset": asset, "tf": tf,
             "broker": broker, "stake": stake, "strategy": risk, "rsi": rsi_val, "trend": trend
         }
-
-    if st.session_state.signal_data:
-        sig = st.session_state.signal_data
-        color = "#00ff66" if "BUY" in sig["action"] else "#ff3366"
-        
-        st.markdown(f"""
-            <div class="result-box-animated" style="border-left-color: {color};">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <span style="font-size: 20px; font-weight: 900; color: #ffffff;">🎯 High-Impact AI Signal Output</span>
-                    <span style="background-color: {color}; color: #030508; padding: 6px 18px; border-radius: 8px; font-weight: 900; font-size: 18px;">{sig['action']}</span>
-                </div>
-                <div class="metric-row"><span style="color: #94a3b8;">Broker / Asset:</span><span style="font-weight: 600; color: #fff;">{sig['broker']} - {sig['asset']}</span></div>
-                <div class="metric-row"><span style="color: #94a3b8;">Timeframe & Strategy:</span><span style="font-weight: 600; color: #fff;">{sig['tf']} | {sig['strategy']}</span></div>
-                <div class="metric-row"><span style="color: #94a3b8;">Price Action Analysis:</span><span style="color: #00ff66; font-weight: 600;">{sig['trend']}</span></div>
-                <div class="metric-row"><span style="color: #94a3b8;">Indicator State:</span><span style="color: #f3ba2f; font-weight: 600;">{sig['rsi']}</span></div>
-                <div class="metric-row"><span style="color: #94a3b8;">Prediction Accuracy:</span><span style="color: #00ff66; font-weight: 700;">{sig['conf']}% High Win-Rate Probability</span></div>
-                <div class="metric-row" style="border: none;"><span style="color: #94a3b8;">Recommended Trade Stake:</span><span style="color: #ffcc00; font-weight: 700;">${sig['stake']}</span></div>
-            </div>
-        """, unsafe_allow_html=True)
+        st.rerun()
