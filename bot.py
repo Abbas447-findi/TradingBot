@@ -18,7 +18,7 @@ st.markdown("""
     }
     
     html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp {
-        background: linear-gradient(135deg, rgba(3, 5, 8, 0.92) 0%, rgba(5, 8, 15, 0.95) 100%), 
+        background: linear-gradient(135deg, rgba(3, 5, 8, 0.90) 0%, rgba(5, 8, 15, 0.93) 100%), 
                     url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop') !important;
         background-size: cover !important;
         background-position: center center !important;
@@ -42,18 +42,18 @@ st.markdown("""
     }
 
     .page-box { 
-        background: rgba(13, 17, 23, 0.88); 
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(13, 17, 23, 0.90); 
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
         padding: 28px; 
         border-radius: 20px; 
-        border: 1px solid rgba(0, 255, 102, 0.3); 
+        border: 1px solid rgba(0, 255, 102, 0.35); 
         box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85); 
         margin-bottom: 20px; 
     }
     
     .welcome-banner {
-        background: linear-gradient(135deg, rgba(2, 44, 34, 0.9) 0%, rgba(13, 17, 23, 0.9) 100%);
+        background: linear-gradient(135deg, rgba(2, 44, 34, 0.92) 0%, rgba(13, 17, 23, 0.92) 100%);
         backdrop-filter: blur(10px);
         border: 1px solid #00ff66;
         padding: 22px;
@@ -94,7 +94,7 @@ st.markdown("""
     
     .telegram-box { 
         text-align: center; 
-        background: rgba(13, 17, 23, 0.85); 
+        background: rgba(13, 17, 23, 0.88); 
         backdrop-filter: blur(10px);
         padding: 14px; 
         border-radius: 12px; 
@@ -106,7 +106,7 @@ st.markdown("""
     .telegram-link:hover { color: #00aaff; text-decoration: underline; }
     
     .binance-box { 
-        background: rgba(13, 17, 23, 0.88); 
+        background: rgba(13, 17, 23, 0.90); 
         border: 1px dashed #f3ba2f; 
         padding: 20px; 
         border-radius: 12px; 
@@ -114,7 +114,7 @@ st.markdown("""
     }
 
     .referral-box { 
-        background: rgba(13, 17, 23, 0.88); 
+        background: rgba(13, 17, 23, 0.90); 
         border: 1px dashed #38bdf8; 
         padding: 20px; 
         border-radius: 12px; 
@@ -122,7 +122,7 @@ st.markdown("""
     }
     
     .popup-error-box { 
-        background: rgba(26, 8, 12, 0.92); 
+        background: rgba(26, 8, 12, 0.94); 
         border: 2px solid #ff3366; 
         padding: 30px; 
         border-radius: 16px; 
@@ -149,7 +149,7 @@ st.markdown("""
     
     .active-users-badge { 
         text-align: center; 
-        background: rgba(3, 32, 19, 0.9); 
+        background: rgba(3, 32, 19, 0.92); 
         backdrop-filter: blur(10px);
         border: 1px solid #00ff66; 
         color: #00ff66; 
@@ -187,8 +187,8 @@ st.markdown("""
     }
     
     .center-popup-card-animated { 
-        background: rgba(13, 17, 23, 0.95); 
-        backdrop-filter: blur(12px);
+        background: rgba(13, 17, 23, 0.96); 
+        backdrop-filter: blur(14px);
         padding: 24px; 
         border-radius: 16px; 
         border: 2px solid #00ff66; 
@@ -208,7 +208,7 @@ st.markdown("""
     }
     
     .stat-card { 
-        background: rgba(13, 17, 23, 0.9); 
+        background: rgba(13, 17, 23, 0.92); 
         padding: 16px; 
         border-radius: 12px; 
         text-align: center; 
