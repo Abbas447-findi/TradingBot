@@ -30,7 +30,6 @@ st.markdown("""
         100% { box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); }
     }
 
-    /* Center Pop-Up Entrance Animation */
     @keyframes centerPopUpAnimation {
         0% { opacity: 0; transform: scale(0.85) translateY(20px); }
         50% { transform: scale(1.02) translateY(-5px); }
@@ -104,6 +103,14 @@ st.markdown("""
         border-radius: 12px; 
         margin-bottom: 20px; 
     }
+
+    .referral-box { 
+        background-color: #0d1117; 
+        border: 1px dashed #38bdf8; 
+        padding: 20px; 
+        border-radius: 12px; 
+        margin-bottom: 20px; 
+    }
     
     .popup-error-box { 
         background-color: #1a080c; 
@@ -169,7 +176,6 @@ st.markdown("""
         animation: neonPulse 3s infinite;
     }
     
-    /* Center Signal Pop-Up Container */
     .center-popup-card-animated { 
         background: linear-gradient(135deg, #0d1117 0%, #080c14 100%); 
         padding: 25px; 
@@ -204,13 +210,14 @@ st.markdown("""
 TELEGRAM_URL = "https://t.me/Enzosupport47" 
 TELEGRAM_BOT_TOKEN = "8962828738:AAH787ztmRyKM6bRIGHdfVbiI6eeX7U0oFs"
 TELEGRAM_CHAT_ID = "8633830998"
+BROKER_REF_LINK = "https://broker-qx.pro/?lid=2146490"
 
 def send_telegram_alert(order_id, user_name):
     try:
         message = (
-            f"🚨 *New Binance Payment Submitted - ENZO PRO*\n\n"
+            f"🚨 *New Payment / Referral Submission - ENZO PRO*\n\n"
             f"👤 *User Name:* {user_name}\n"
-            f"🆔 *Order ID:* `{order_id}`\n"
+            f"🆔 *Reference / ID:* `{order_id}`\n"
             f"🕒 *Time:* {time.ctime()}"
         )
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -335,9 +342,9 @@ if st.session_state.page == "auth":
     with st.container():
         st.markdown('<div class="page-box">', unsafe_allow_html=True)
         st.markdown("### 🔐 Step 1: Authentication & Verification")
-        st.markdown("<p style='color:#94a3b8; font-size:14px;'>Enter your License Key or submit your Binance Pay Order ID & Screenshot to access the robot.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#94a3b8; font-size:14px;'>Enter your License Key, use Binance Pay, or Register via Broker Referral & Deposit to access the robot.</p>", unsafe_allow_html=True)
         
-        mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway"], horizontal=True)
+        mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway", "Broker Referral & Deposit"], horizontal=True)
         
         if mode == "License Key":
             username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
@@ -406,7 +413,7 @@ if st.session_state.page == "auth":
                     </div>
                 """, unsafe_allow_html=True)
 
-        else:
+        elif mode == "Binance Pay Gateway":
             binance_svg = """<svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 6px;"><path d="M12.2155 14.1287L16.0022 10.342L19.7888 14.1287L22.9555 10.962L16.0022 4.00871L9.04883 10.962L12.2155 14.1287Z" fill="#FCD535"/><path d="M6.55548 13.5087L9.72215 16.6754L13.5088 12.8887L10.3422 9.72205L6.55548 13.5087Z" fill="#FCD535"/><path d="M25.4488 13.5087L21.6622 9.72205L18.4955 12.8887L22.2822 16.6754L25.4488 13.5087Z" fill="#FCD535"/><path d="M12.2155 17.8754L16.0022 21.6621L19.7888 17.8754L22.9555 21.0421L16.0022 27.9954L9.04883 21.0421L12.2155 17.8754Z" fill="#FCD535"/><path d="M4.00883 16.0021L7.1755 19.1687L10.3422 16.0021L7.1755 12.8354L4.00883 16.0021Z" fill="#FCD535"/><path d="M24.8255 12.8354L21.6588 16.0021L24.8255 19.1687L27.9922 16.0021L24.8255 12.8354Z" fill="#FCD535"/><path d="M16.0022 13.5087L13.5088 16.0021L16.0022 18.4954L18.4955 16.0021L16.0022 13.5087Z" fill="#FCD535"/></svg>"""
             
             st.markdown(f"""
@@ -448,12 +455,56 @@ if st.session_state.page == "auth":
                             conn.commit()
                             
                             send_telegram_alert(clean_order, clean_name)
-                            send_telegram_photo(screenshot.getvalue(), f"📸 Payment Screenshot\n👤 User: `{clean_name}`\n🆔 Order ID: `{clean_order}`")
+                            send_telegram_photo(screenshot.getvalue(), f"📸 Binance Payment Proof\n👤 User: `{clean_name}`\n🆔 Order ID: `{clean_order}`")
                             
                             st.success("✅ Payment proof submitted successfully! Your details have been sent to Telegram.")
                             st.markdown(f"""
                                 <div style="text-align: center; margin-top: 15px;">
                                     <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Click here to message on Telegram for Access Key</a>
+                                </div>
+                            """, unsafe_allow_html=True)
+
+        else:
+            st.markdown(f"""
+                <div class="referral-box">
+                    <h4 style="color: #38bdf8; margin-top: 0; margin-bottom: 8px;">🔗 Step 1: Register via Broker Referral</h4>
+                    <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px;">Create your trading account using our official referral link and make a deposit:</p>
+                    <a class="popup-btn" href="{BROKER_REF_LINK}" target="_blank" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">👉 Click Here to Register & Deposit</a>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            ref_name = st.text_input("Your Name / Username", placeholder="Type your trading name...")
+            broker_uid = st.text_input("Your Broker Account ID / UID", placeholder="Enter your Broker UID...")
+            dep_screenshot = st.file_uploader("Upload Deposit Proof Screenshot", type=["png", "jpg", "jpeg"])
+            
+            if st.button("Submit Referral & Deposit Proof ➡️"):
+                clean_ref_name = ref_name.strip()
+                clean_uid = broker_uid.strip()
+                
+                if not clean_ref_name:
+                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter your name!</p>", unsafe_allow_html=True)
+                elif not clean_uid or len(clean_uid) < 4:
+                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Broker Account ID / UID!</p>", unsafe_allow_html=True)
+                elif dep_screenshot is None:
+                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please upload your deposit proof screenshot!</p>", unsafe_allow_html=True)
+                else:
+                    cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_uid,))
+                    if cursor.fetchone():
+                        st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Account ID has already been submitted!</p>", unsafe_allow_html=True)
+                    else:
+                        with st.spinner("Submitting referral & deposit details to Admin..."):
+                            time.sleep(1.0)
+                            cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_uid,))
+                            cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_uid, f"REF: {clean_ref_name}"))
+                            conn.commit()
+                            
+                            send_telegram_alert(clean_uid, f"{clean_ref_name} (Broker Referral Deposit)")
+                            send_telegram_photo(dep_screenshot.getvalue(), f"📸 Broker Referral Deposit Proof\n👤 User: `{clean_ref_name}`\n🆔 Broker UID: `{clean_uid}`")
+                            
+                            st.success("✅ Deposit proof submitted! Admin will verify your deposit through referral and assign your access key.")
+                            st.markdown(f"""
+                                <div style="text-align: center; margin-top: 15px;">
+                                    <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Message on Telegram for Fast Approval</a>
                                 </div>
                             """, unsafe_allow_html=True)
                     
@@ -485,14 +536,14 @@ if st.session_state.page == "auth":
                 st.markdown(f'<div class="stat-card"><h5>📥 Pending Orders</h5><h3 style="color:#f3ba2f;">{pending_count}</h3></div>', unsafe_allow_html=True)
 
             st.markdown("---")
-            st.markdown("### 📥 Pending Payment Approvals & Telegram Chat")
+            st.markdown("### 📥 Pending Payment / Deposit Approvals")
             cursor.execute("SELECT order_id, username FROM pending_approvals")
             pending_list = cursor.fetchall()
             if pending_list:
                 for p in pending_list:
                     st.markdown(f"""
                         <div style="background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b;">
-                            <div>👤 <b>User:</b> {p[1]}<br>🆔 <b>Order ID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
+                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>Ref/UID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
                             <a href="{TELEGRAM_URL}" target="_blank" style="background:#0088cc; color:white; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px;">💬 Chat on Telegram</a>
                         </div>
                     """, unsafe_allow_html=True)
@@ -509,7 +560,7 @@ if st.session_state.page == "auth":
                                 conn.commit()
                                 st.markdown(f"""
                                     <div style="background: #032013; border: 2px solid #00ff66; padding: 18px; border-radius: 12px; margin-top: 12px; text-align: center;">
-                                        <h3 style="color: #00ff66; margin:0; font-size:18px;">🎉 Payment Approved! Revenue Updated ($10)</h3>
+                                        <h3 style="color: #00ff66; margin:0; font-size:18px;">🎉 Approved Successfully!</h3>
                                         <p style="color: #ffffff; font-size: 14px; margin: 6px 0;">Assigned Key for <b>{p[1]}</b>:</p>
                                         <div style="background: #030508; color: #f3ba2f; padding: 10px; font-family: monospace; font-size: 16px; font-weight: bold; border-radius: 8px;">
                                             {assigned_key}
@@ -519,13 +570,13 @@ if st.session_state.page == "auth":
                             else:
                                 st.error("No free keys available in database!")
                     with col_dec:
-                        if st.button(f"❌ Decline Order", key=f"dec_{p[0]}"):
+                        if st.button(f"❌ Decline", key=f"dec_{p[0]}"):
                             cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
                             conn.commit()
-                            st.warning(f"Payment {p[0]} Declined!")
+                            st.warning(f"Request {p[0]} Declined!")
                             st.rerun()
             else:
-                st.info("No pending payments right now.")
+                st.info("No pending requests right now.")
 
             st.markdown("---")
             st.markdown("### ➕ One-Click Key Generator & Adder")
@@ -633,7 +684,6 @@ elif st.session_state.page == "dashboard":
         </div>
     """, unsafe_allow_html=True)
 
-    # STEP 2: BROKER & MARKET SELECTION
     with st.container():
         st.markdown('<div class="page-box">', unsafe_allow_html=True)
         st.markdown("### 🏛️ Step 2: Select Broker & Market")
@@ -678,7 +728,6 @@ elif st.session_state.page == "dashboard":
         asset = st.selectbox("Trading Asset", assets)
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # STEP 3: TIMEFRAME & RISK MANAGEMENT
     with st.container():
         st.markdown('<div class="page-box">', unsafe_allow_html=True)
         st.markdown("### ⚙️ Step 3: Timeframe & Risk Management")
@@ -747,7 +796,6 @@ elif st.session_state.page == "dashboard":
         }
         st.rerun()
 
-    # CENTER SIGNAL POP-UP DISPLAY
     if 'signal_data' in st.session_state and st.session_state.signal_data:
         sig = st.session_state.signal_data
         color = "#00ff66" if "BUY" in sig["action"] else "#ff3366"
