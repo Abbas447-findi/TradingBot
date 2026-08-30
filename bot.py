@@ -174,18 +174,18 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(0, 255, 102, 0.15); 
     }
 
-    /* Highly prominent aggressive highlight for Unlock Free Lifetime Access radio option */
+    /* Ultra-highlight styling for the 3rd radio option */
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) {
-        background: linear-gradient(135deg, rgba(255, 69, 0, 0.25) 0%, rgba(13, 17, 23, 0.9) 100%) !important;
+        background: linear-gradient(135deg, rgba(255, 69, 0, 0.3) 0%, rgba(20, 10, 5, 0.95) 100%) !important;
         border: 2px solid #ff4500 !important;
         padding: 8px 14px !important;
         border-radius: 12px !important;
-        box-shadow: 0 0 15px rgba(255, 69, 0, 0.4) !important;
+        box-shadow: 0 0 18px rgba(255, 69, 0, 0.5) !important;
     }
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) p {
         color: #ff5722 !important;
         font-weight: 900 !important;
-        font-size: 16px !important;
+        font-size: 15px !important;
     }
     
     .logout-btn > button { background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important; color: #ffffff !important; }
@@ -379,7 +379,7 @@ if st.session_state.page == "auth":
     st.markdown("### 🔐 Step 1: Authentication & Verification")
     st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, use Binance Pay, or Unlock Free Lifetime Access via Broker Referral.</p>", unsafe_allow_html=True)
     
-    mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway", "🔥 Unlock Free Lifetime Access (15 Days Offer)"], horizontal=True)
+    mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway", "🔥 FREE LIFETIME ACCESS (15 Days Offer)"], horizontal=True)
     
     if mode == "License Key":
         username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
