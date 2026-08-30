@@ -332,8 +332,11 @@ if st.session_state.page == "auth":
     st.markdown('<p class="title-text">🦅 ENZO PRO ROBOT</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-title">✨ Professional Binary Trading Robot</p>', unsafe_allow_html=True)
     
+    # Futuristic AI Robot Banner Image added here
+    st.image("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop", use_container_width=True)
+
     st.markdown(f"""
-        <div class="telegram-box">
+        <div class="telegram-box" style="margin-top: 15px;">
             <span>💬 Need Help? Contact Support: </span>
             <a class="telegram-link" href="{TELEGRAM_URL}" target="_blank">✈️ Telegram Support</a>
         </div>
@@ -342,9 +345,9 @@ if st.session_state.page == "auth":
     with st.container():
         st.markdown('<div class="page-box">', unsafe_allow_html=True)
         st.markdown("### 🔐 Step 1: Authentication & Verification")
-        st.markdown("<p style='color:#94a3b8; font-size:14px;'>Enter your License Key, use Binance Pay, or Register via Broker Referral & Deposit to access the robot.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color:#94a3b8; font-size:14px;'>Enter your License Key, use Binance Pay, or Unlock Free Lifetime Access via Broker Referral.</p>", unsafe_allow_html=True)
         
-        mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway", "Broker Referral & Deposit"], horizontal=True)
+        mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway", "Unlock Free Lifetime Access"], horizontal=True)
         
         if mode == "License Key":
             username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
@@ -467,7 +470,7 @@ if st.session_state.page == "auth":
         else:
             st.markdown(f"""
                 <div class="referral-box">
-                    <h4 style="color: #38bdf8; margin-top: 0; margin-bottom: 8px;">🔗 Step 1: Register via Broker Referral</h4>
+                    <h4 style="color: #38bdf8; margin-top: 0; margin-bottom: 8px;">🔓 Unlock Free Lifetime Access</h4>
                     <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px;">Create your trading account using our official referral link and make a deposit:</p>
                     <a class="popup-btn" href="{BROKER_REF_LINK}" target="_blank" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">👉 Click Here to Register & Deposit</a>
                 </div>
@@ -477,7 +480,7 @@ if st.session_state.page == "auth":
             broker_uid = st.text_input("Your Broker Account ID / UID", placeholder="Enter your Broker UID...")
             dep_screenshot = st.file_uploader("Upload Deposit Proof Screenshot", type=["png", "jpg", "jpeg"])
             
-            if st.button("Submit Referral & Deposit Proof ➡️"):
+            if st.button("Submit Free Access Proof ➡️"):
                 clean_ref_name = ref_name.strip()
                 clean_uid = broker_uid.strip()
                 
@@ -498,8 +501,8 @@ if st.session_state.page == "auth":
                             cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_uid, f"REF: {clean_ref_name}"))
                             conn.commit()
                             
-                            send_telegram_alert(clean_uid, f"{clean_ref_name} (Broker Referral Deposit)")
-                            send_telegram_photo(dep_screenshot.getvalue(), f"📸 Broker Referral Deposit Proof\n👤 User: `{clean_ref_name}`\n🆔 Broker UID: `{clean_uid}`")
+                            send_telegram_alert(clean_uid, f"{clean_ref_name} (Free Lifetime Access Deposit)")
+                            send_telegram_photo(dep_screenshot.getvalue(), f"📸 Free Lifetime Access Proof\n👤 User: `{clean_ref_name}`\n🆔 Broker UID: `{clean_uid}`")
                             
                             st.success("✅ Deposit proof submitted! Admin will verify your deposit through referral and assign your access key.")
                             st.markdown(f"""
