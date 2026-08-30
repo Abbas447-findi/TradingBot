@@ -173,7 +173,6 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(0, 255, 102, 0.15); 
     }
 
-    /* Ultra-highlight styling for the 3rd radio option */
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) {
         background: linear-gradient(135deg, rgba(255, 69, 0, 0.3) 0%, rgba(20, 10, 5, 0.95) 100%) !important;
         border: 2px solid #ff4500 !important;
@@ -353,7 +352,6 @@ BINANCE_NAME = "X FENDI"
 if 'page' not in st.session_state: st.session_state.page = "auth"
 if 'auth_error' not in st.session_state: st.session_state.auth_error = None
 if 'current_user' not in st.session_state: st.session_state.current_user = "Trader"
-if 'admin_unlocked' not in st.session_state: st.session_state.admin_unlocked = False
 
 query_params = st.query_params
 if "user" in query_params and "key" in query_params and st.session_state.page == "auth":
@@ -455,7 +453,7 @@ if st.session_state.page == "auth":
             <div class="binance-box">
                 <h4 style="color: #f3ba2f; margin-top: 0; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
                     <span>{binance_svg} Binance Pay Gateway</span>
-                    <span style="background: #f3ba2f; color: #030508; padding: 2px 10px; border-radius: 6px; font-size: 14px; font-weight: 800;">$10</span>
+                    <span style="background: #f3ba2f; color: #030508; padding: 2px 10px; border-radius: 6px; font-size: 14px; font-weight: 800;">$15</span>
                 </h4>
                 <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 8px;">Transfer to Binance Pay ID:</p>
                 <div style="background: #030508; padding: 12px; border-radius: 8px; font-family: monospace; color: #00ff66; font-size: 15px;">
@@ -490,7 +488,7 @@ if st.session_state.page == "auth":
                         conn.commit()
                         
                         send_telegram_alert(clean_order, clean_name)
-                        send_telegram_photo(screenshot.getvalue(), f"📸 Binance Payment Proof\n👤 User: `{clean_name}`\n🆔 Order ID: `{clean_order}`")
+                        send_telegram_photo(screenshot.getvalue(), f"📸 Binance Payment Proof ($15)\n👤 User: `{clean_name}`\n🆔 Order ID: `{clean_order}`")
                         
                         st.success("✅ Payment proof submitted successfully! Your details have been sent to Telegram.")
                         st.markdown(f"""
@@ -546,16 +544,10 @@ if st.session_state.page == "auth":
                             </div>
                         """, unsafe_allow_html=True)
                 
-    # --- SECRET ADMIN PANEL TRIGGER (Click "ENZO PRO ROBOT" 5 times) ---
-    st.markdown("<br><hr style='border-color: #1e293b;'>", unsafe_allow_html=True)
-    cols_secret = st.columns([1, 2, 1])
-    with cols_secret[1]:
-        if st.button("🛠️ Admin Portal Login"):
-            st.session_state.admin_unlocked = True
-            st.rerun()
-
-    if st.session_state.admin_unlocked:
+    # --- 100% SECRET URL ADMIN TRIGGER (No button visible to anyone) ---
+    if query_params.get("admin") == "true":
         st.markdown("---")
+        st.markdown("### 🔐 Secret Admin Gateway")
         cursor.execute("SELECT admin_pass FROM admin_settings WHERE id = 1")
         current_admin_pass = cursor.fetchone()[0]
         
@@ -601,7 +593,7 @@ if st.session_state.page == "auth":
                             if free_key:
                                 assigned_key = free_key[0]
                                 cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
-                                cursor.execute("UPDATE app_stats SET total_revenue = total_revenue + 10.0 WHERE id = 1")
+                                cursor.execute("UPDATE app_stats SET total_revenue = total_revenue + 15.0 WHERE id = 1")
                                 conn.commit()
                                 st.markdown(f"""
                                     <div style="background: #032013; border: 2px solid #00ff66; padding: 18px; border-radius: 12px; margin-top: 12px; text-align: center;">
@@ -823,12 +815,7 @@ elif st.session_state.page == "dashboard":
             ])
             rsi_val = f"RSI Momentum: {random.randint(20, 30)} (Oversold Bounce)"
         else:
-            trend = random.choice([
-                "Strong Bearish Momentum & Resistance Rejection", 
-                "Multi-Timeframe RSI Bearish Convergence (>70)", 
-                "EMA 9 / EMA 21 Death Crossover Confirmed", 
-                "Bollinger Band Upper Band Price Rejection"
-            ])
+            trend = "Strong Bearish Momentum & Resistance Rejection"
             rsi_val = f"RSI Momentum: {random.randint(70, 84)} (Overbought Drop)"
         
         if "Safe" in risk: stake = round(balance * 0.02, 2)
