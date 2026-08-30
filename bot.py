@@ -18,7 +18,12 @@ st.markdown("""
     }
     
     html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp {
-        background-color: #030508 !important;
+        background: linear-gradient(135deg, rgba(3, 5, 8, 0.92) 0%, rgba(5, 8, 15, 0.95) 100%), 
+                    url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop') !important;
+        background-size: cover !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
         color: #f1f5f9 !important;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         -webkit-text-size-adjust: 100%;
@@ -37,22 +42,25 @@ st.markdown("""
     }
 
     .page-box { 
-        background: linear-gradient(135deg, #0d1117 0%, #05080f 100%); 
+        background: rgba(13, 17, 23, 0.88); 
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         padding: 28px; 
         border-radius: 20px; 
-        border: 1px solid rgba(0, 255, 102, 0.25); 
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); 
+        border: 1px solid rgba(0, 255, 102, 0.3); 
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85); 
         margin-bottom: 20px; 
     }
     
     .welcome-banner {
-        background: linear-gradient(135deg, #022c22 0%, #0d1117 100%);
+        background: linear-gradient(135deg, rgba(2, 44, 34, 0.9) 0%, rgba(13, 17, 23, 0.9) 100%);
+        backdrop-filter: blur(10px);
         border: 1px solid #00ff66;
         padding: 22px;
         border-radius: 16px;
         text-align: center;
         margin-bottom: 20px;
-        box-shadow: 0 0 25px rgba(0, 255, 102, 0.2);
+        box-shadow: 0 0 25px rgba(0, 255, 102, 0.25);
     }
 
     .welcome-title {
@@ -71,7 +79,7 @@ st.markdown("""
         font-weight: 900; 
         letter-spacing: 2px; 
         margin-bottom: 5px; 
-        text-shadow: 0 0 20px rgba(0, 255, 102, 0.5); 
+        text-shadow: 0 0 25px rgba(0, 255, 102, 0.6); 
     }
     
     .sub-title { 
@@ -86,7 +94,8 @@ st.markdown("""
     
     .telegram-box { 
         text-align: center; 
-        background-color: #0d1117; 
+        background: rgba(13, 17, 23, 0.85); 
+        backdrop-filter: blur(10px);
         padding: 14px; 
         border-radius: 12px; 
         margin-bottom: 20px; 
@@ -97,7 +106,7 @@ st.markdown("""
     .telegram-link:hover { color: #00aaff; text-decoration: underline; }
     
     .binance-box { 
-        background-color: #0d1117; 
+        background: rgba(13, 17, 23, 0.88); 
         border: 1px dashed #f3ba2f; 
         padding: 20px; 
         border-radius: 12px; 
@@ -105,7 +114,7 @@ st.markdown("""
     }
 
     .referral-box { 
-        background-color: #0d1117; 
+        background: rgba(13, 17, 23, 0.88); 
         border: 1px dashed #38bdf8; 
         padding: 20px; 
         border-radius: 12px; 
@@ -113,7 +122,7 @@ st.markdown("""
     }
     
     .popup-error-box { 
-        background-color: #1a080c; 
+        background: rgba(26, 8, 12, 0.92); 
         border: 2px solid #ff3366; 
         padding: 30px; 
         border-radius: 16px; 
@@ -140,7 +149,8 @@ st.markdown("""
     
     .active-users-badge { 
         text-align: center; 
-        background-color: #032013; 
+        background: rgba(3, 32, 19, 0.9); 
+        backdrop-filter: blur(10px);
         border: 1px solid #00ff66; 
         color: #00ff66; 
         padding: 12px; 
@@ -177,7 +187,8 @@ st.markdown("""
     }
     
     .center-popup-card-animated { 
-        background: linear-gradient(135deg, #0d1117 0%, #080c14 100%); 
+        background: rgba(13, 17, 23, 0.95); 
+        backdrop-filter: blur(12px);
         padding: 24px; 
         border-radius: 16px; 
         border: 2px solid #00ff66; 
@@ -197,7 +208,7 @@ st.markdown("""
     }
     
     .stat-card { 
-        background: #0d1117; 
+        background: rgba(13, 17, 23, 0.9); 
         padding: 16px; 
         border-radius: 12px; 
         text-align: center; 
@@ -331,11 +342,9 @@ if "user" in query_params and "key" in query_params and st.session_state.page ==
 if st.session_state.page == "auth":
     st.markdown('<p class="title-text">🦅 ENZO PRO ROBOT</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-title">✨ Professional Binary Trading Robot</p>', unsafe_allow_html=True)
-    
-    st.image("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop", use_container_width=True)
 
     st.markdown(f"""
-        <div class="telegram-box" style="margin-top: 15px;">
+        <div class="telegram-box">
             <span>💬 Need Help? Contact Support: </span>
             <a class="telegram-link" href="{TELEGRAM_URL}" target="_blank">✈️ Telegram Support</a>
         </div>
@@ -544,7 +553,7 @@ if st.session_state.page == "auth":
             if pending_list:
                 for p in pending_list:
                     st.markdown(f"""
-                        <div style="background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b;">
+                        <div style="background: rgba(13, 17, 23, 0.9); padding: 15px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b;">
                             <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>Ref/UID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
                             <a href="{TELEGRAM_URL}" target="_blank" style="background:#0088cc; color:white; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px;">💬 Chat on Telegram</a>
                         </div>
@@ -608,7 +617,7 @@ if st.session_state.page == "auth":
                 for u in logged_users:
                     status_color = "#00ff66" if u[2] == "Active" else "#ff3366"
                     st.markdown(f"""
-                        <div style="background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b;">
+                        <div style="background: rgba(13, 17, 23, 0.9); padding: 15px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b;">
                             <div>👤 <b>User:</b> {u[1]}<br>🔑 <b>Key:</b> <span style="color:#00ff66;">{u[0]}</span><br>⏳ <b>Validity:</b> {u[3]} | Status: <span style="color:{status_color}; font-weight:bold;">{u[2]}</span></div>
                         </div>
                     """, unsafe_allow_html=True)
