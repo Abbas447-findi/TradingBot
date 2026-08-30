@@ -30,6 +30,12 @@ st.markdown("""
         100% { box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); }
     }
 
+    @keyframes yellowGlow {
+        0% { box-shadow: 0 0 15px rgba(243, 186, 47, 0.3); }
+        50% { box-shadow: 0 0 35px rgba(243, 186, 47, 0.7); }
+        100% { box-shadow: 0 0 15px rgba(243, 186, 47, 0.3); }
+    }
+
     @keyframes centerPopUpAnimation {
         0% { opacity: 0; transform: scale(0.85) translateY(20px); }
         50% { transform: scale(1.02) translateY(-5px); }
@@ -104,11 +110,12 @@ st.markdown("""
     }
 
     .referral-box { 
-        background-color: #0d1117; 
-        border: 1px dashed #38bdf8; 
-        padding: 20px; 
-        border-radius: 12px; 
+        background: linear-gradient(135deg, rgba(35, 28, 5, 0.95) 0%, rgba(13, 17, 23, 0.95) 100%);
+        border: 2px solid #f3ba2f; 
+        padding: 24px; 
+        border-radius: 16px; 
         margin-bottom: 20px; 
+        animation: yellowGlow 3s infinite;
     }
     
     .popup-error-box { 
@@ -135,6 +142,23 @@ st.markdown("""
         font-weight: 800; 
         font-size: 15px; 
         box-shadow: 0 4px 12px rgba(0, 136, 204, 0.4); 
+    }
+
+    .offer-btn { 
+        display: block;
+        text-align: center;
+        background: linear-gradient(135deg, #f3ba2f 0%, #d49f15 100%); 
+        color: #030508 !important; 
+        padding: 14px 24px; 
+        border-radius: 12px; 
+        text-decoration: none; 
+        font-weight: 900; 
+        font-size: 16px; 
+        box-shadow: 0 4px 20px rgba(243, 186, 47, 0.5); 
+        margin-top: 15px;
+    }
+    .offer-btn:hover {
+        opacity: 0.95;
     }
     
     .active-users-badge { 
@@ -464,14 +488,17 @@ if st.session_state.page == "auth":
     else:
         st.markdown(f"""
             <div class="referral-box">
-                <h4 style="color: #38bdf8; margin-top: 0; margin-bottom: 8px;">🔓 Unlock Free Lifetime Access</h4>
-                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px;">Create your trading account using our official referral link and make a deposit:</p>
-                <a class="popup-btn" href="{BROKER_REF_LINK}" target="_blank" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">👉 Click Here to Register & Deposit</a>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="color: #f3ba2f; margin: 0; font-size: 20px; font-weight: 900;">🔥 SPECIAL VIP OFFER: FREE LIFETIME ACCESS!</h3>
+                    <span style="background: #f3ba2f; color: #030508; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; text-transform: uppercase;">100% Free</span>
+                </div>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">Want Enzo Pro Bot for absolute lifetime free? Register your trading account using our exclusive referral link and make a deposit to claim your free key instantly!</p>
+                <a class="offer-btn" href="{BROKER_REF_LINK}" target="_blank">🚀 CLAIM FREE LIFETIME ACCESS (REGISTER NOW)</a>
             </div>
         """, unsafe_allow_html=True)
         
         ref_name = st.text_input("Your Name / Username", placeholder="Type your trading name...")
-        broker_uid = st.text_input("Your Broker Account ID / UID", placeholder="Enter your Broker UID...")
+        broker_uid = st.text_input("Your Trader ID", placeholder="Enter your Trader ID...")
         dep_screenshot = st.file_uploader("Upload Deposit Proof Screenshot", type=["png", "jpg", "jpeg"])
         
         if st.button("Submit Free Access Proof ➡️"):
@@ -481,13 +508,13 @@ if st.session_state.page == "auth":
             if not clean_ref_name:
                 st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter your name!</p>", unsafe_allow_html=True)
             elif not clean_uid or len(clean_uid) < 4:
-                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Broker Account ID / UID!</p>", unsafe_allow_html=True)
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Trader ID!</p>", unsafe_allow_html=True)
             elif dep_screenshot is None:
                 st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please upload your deposit proof screenshot!</p>", unsafe_allow_html=True)
             else:
                 cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_uid,))
                 if cursor.fetchone():
-                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Account ID has already been submitted!</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Trader ID has already been submitted!</p>", unsafe_allow_html=True)
                 else:
                     with st.spinner("Submitting referral & deposit details to Admin..."):
                         time.sleep(1.0)
@@ -496,7 +523,7 @@ if st.session_state.page == "auth":
                         conn.commit()
                         
                         send_telegram_alert(clean_uid, f"{clean_ref_name} (Free Lifetime Access Deposit)")
-                        send_telegram_photo(dep_screenshot.getvalue(), f"📸 Free Lifetime Access Proof\n👤 User: `{clean_ref_name}`\n🆔 Broker UID: `{clean_uid}`")
+                        send_telegram_photo(dep_screenshot.getvalue(), f"📸 Free Lifetime Access Proof\n👤 User: `{clean_ref_name}`\n🆔 Trader ID: `{clean_uid}`")
                         
                         st.success("✅ Deposit proof submitted! Admin will verify your deposit through referral and assign your access key.")
                         st.markdown(f"""
@@ -538,7 +565,7 @@ if st.session_state.page == "auth":
                 for p in pending_list:
                     st.markdown(f"""
                         <div style="background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b;">
-                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>Ref/UID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
+                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>Ref/Trader ID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
                             <a href="{TELEGRAM_URL}" target="_blank" style="background:#0088cc; color:white; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px;">💬 Chat on Telegram</a>
                         </div>
                     """, unsafe_allow_html=True)
