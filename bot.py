@@ -30,10 +30,10 @@ st.markdown("""
         100% { box-shadow: 0 0 10px rgba(0, 255, 102, 0.2); }
     }
 
-    @keyframes yellowGlow {
-        0% { box-shadow: 0 0 15px rgba(243, 186, 47, 0.3); }
-        50% { box-shadow: 0 0 35px rgba(243, 186, 47, 0.7); }
-        100% { box-shadow: 0 0 15px rgba(243, 186, 47, 0.3); }
+    @keyframes aggressiveGlow {
+        0% { box-shadow: 0 0 15px rgba(255, 69, 0, 0.4); }
+        50% { box-shadow: 0 0 35px rgba(255, 69, 0, 0.8); }
+        100% { box-shadow: 0 0 15px rgba(255, 69, 0, 0.4); }
     }
 
     @keyframes centerPopUpAnimation {
@@ -110,12 +110,12 @@ st.markdown("""
     }
 
     .referral-box { 
-        background: linear-gradient(135deg, rgba(35, 28, 5, 0.95) 0%, rgba(13, 17, 23, 0.95) 100%);
-        border: 2px solid #f3ba2f; 
+        background: linear-gradient(135deg, rgba(40, 10, 5, 0.95) 0%, rgba(13, 17, 23, 0.95) 100%);
+        border: 2px solid #ff4500; 
         padding: 24px; 
         border-radius: 16px; 
         margin-bottom: 20px; 
-        animation: yellowGlow 3s infinite;
+        animation: aggressiveGlow 3s infinite;
     }
     
     .popup-error-box { 
@@ -147,14 +147,14 @@ st.markdown("""
     .offer-btn { 
         display: block;
         text-align: center;
-        background: linear-gradient(135deg, #f3ba2f 0%, #d49f15 100%); 
-        color: #030508 !important; 
+        background: linear-gradient(135deg, #ff4500 0%, #cc3700 100%); 
+        color: #ffffff !important; 
         padding: 14px 24px; 
         border-radius: 12px; 
         text-decoration: none; 
         font-weight: 900; 
         font-size: 16px; 
-        box-shadow: 0 4px 20px rgba(243, 186, 47, 0.5); 
+        box-shadow: 0 4px 20px rgba(255, 69, 0, 0.6); 
         margin-top: 15px;
     }
     .offer-btn:hover {
@@ -176,14 +176,14 @@ st.markdown("""
 
     /* Custom highlight for Unlock Free Lifetime Access radio option */
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) {
-        background: linear-gradient(135deg, rgba(243, 186, 47, 0.15) 0%, rgba(13, 17, 23, 0.8) 100%) !important;
-        border: 1.5px solid #f3ba2f !important;
+        background: linear-gradient(135deg, rgba(255, 69, 0, 0.15) 0%, rgba(13, 17, 23, 0.8) 100%) !important;
+        border: 1.5px solid #ff4500 !important;
         padding: 6px 12px !important;
         border-radius: 10px !important;
-        box-shadow: 0 0 12px rgba(243, 186, 47, 0.25) !important;
+        box-shadow: 0 0 12px rgba(255, 69, 0, 0.3) !important;
     }
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) p {
-        color: #f3ba2f !important;
+        color: #ff5722 !important;
         font-weight: 900 !important;
     }
     
@@ -378,7 +378,7 @@ if st.session_state.page == "auth":
     st.markdown("### 🔐 Step 1: Authentication & Verification")
     st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, use Binance Pay, or Unlock Free Lifetime Access via Broker Referral.</p>", unsafe_allow_html=True)
     
-    mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway", "🔥 Unlock Free Lifetime Access (Special Offer)"], horizontal=True)
+    mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway", "🔥 Unlock Free Lifetime Access (15 Days Offer)"], horizontal=True)
     
     if mode == "License Key":
         username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
@@ -502,10 +502,10 @@ if st.session_state.page == "auth":
         st.markdown(f"""
             <div class="referral-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h3 style="color: #f3ba2f; margin: 0; font-size: 20px; font-weight: 900;">🔥 SPECIAL VIP OFFER: FREE LIFETIME ACCESS!</h3>
-                    <span style="background: #f3ba2f; color: #030508; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; text-transform: uppercase;">100% Free</span>
+                    <h3 style="color: #ff4500; margin: 0; font-size: 20px; font-weight: 900;">🔥 SPECIAL VIP OFFER: FREE LIFETIME ACCESS!</h3>
+                    <span style="background: #ff4500; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; text-transform: uppercase;">⏳ Valid for 15 Days</span>
                 </div>
-                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">Want Enzo Pro Bot for absolute lifetime free? Register your trading account using our exclusive referral link and make a deposit to claim your free key instantly!</p>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">Want Enzo Pro Bot for absolute lifetime free? Register your trading account using our exclusive referral link and make a deposit within 15 days to claim your free key instantly!</p>
                 <a class="offer-btn" href="{BROKER_REF_LINK}" target="_blank">🚀 CLAIM FREE LIFETIME ACCESS (REGISTER NOW)</a>
             </div>
         """, unsafe_allow_html=True)
