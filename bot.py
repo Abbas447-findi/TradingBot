@@ -38,62 +38,62 @@ st.markdown("""
 
     .page-box { 
         background: linear-gradient(135deg, #0d1117 0%, #05080f 100%); 
-        padding: 30px; 
+        padding: 28px; 
         border-radius: 20px; 
-        border: 1px solid rgba(0, 255, 102, 0.3); 
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9); 
-        margin-top: 20px; 
+        border: 1px solid rgba(0, 255, 102, 0.25); 
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); 
+        margin-bottom: 20px; 
     }
     
     .welcome-banner {
         background: linear-gradient(135deg, #022c22 0%, #0d1117 100%);
         border: 1px solid #00ff66;
-        padding: 20px;
+        padding: 22px;
         border-radius: 16px;
         text-align: center;
         margin-bottom: 20px;
-        box-shadow: 0 0 25px rgba(0, 255, 102, 0.25);
+        box-shadow: 0 0 25px rgba(0, 255, 102, 0.2);
     }
 
     .welcome-title {
         color: #00ff66;
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 900;
-        letter-spacing: 2px;
+        letter-spacing: 1.5px;
         margin: 0;
-        text-shadow: 0 0 15px rgba(0, 255, 102, 0.5);
+        text-shadow: 0 0 12px rgba(0, 255, 102, 0.4);
     }
     
     .title-text { 
         color: #00ff66; 
         text-align: center; 
-        font-size: 46px; 
+        font-size: 42px; 
         font-weight: 900; 
-        letter-spacing: 3px; 
-        margin-bottom: 0px; 
-        text-shadow: 0 0 25px rgba(0, 255, 102, 0.6); 
+        letter-spacing: 2px; 
+        margin-bottom: 5px; 
+        text-shadow: 0 0 20px rgba(0, 255, 102, 0.5); 
     }
     
     .sub-title { 
         color: #94a3b8; 
         text-align: center; 
-        font-size: 15px; 
+        font-size: 14px; 
         font-weight: 600; 
-        letter-spacing: 2px;
-        margin-bottom: 25px; 
+        letter-spacing: 1.5px;
+        margin-bottom: 20px; 
         text-transform: uppercase;
     }
     
     .telegram-box { 
         text-align: center; 
         background-color: #0d1117; 
-        padding: 15px; 
+        padding: 14px; 
         border-radius: 12px; 
-        margin-bottom: 25px; 
+        margin-bottom: 20px; 
         border: 1px solid #1e293b; 
     }
     
-    .telegram-link { color: #38bdf8; text-decoration: none; font-weight: 700; font-size: 16px; }
+    .telegram-link { color: #38bdf8; text-decoration: none; font-weight: 700; font-size: 15px; }
     .telegram-link:hover { color: #00aaff; text-decoration: underline; }
     
     .binance-box { 
@@ -115,27 +115,27 @@ st.markdown("""
     .popup-error-box { 
         background-color: #1a080c; 
         border: 2px solid #ff3366; 
-        padding: 35px; 
-        border-radius: 18px; 
+        padding: 30px; 
+        border-radius: 16px; 
         text-align: center; 
-        margin-top: 25px; 
-        margin-bottom: 25px; 
-        box-shadow: 0 0 40px rgba(255, 51, 102, 0.5); 
+        margin-top: 20px; 
+        margin-bottom: 20px; 
+        box-shadow: 0 0 35px rgba(255, 51, 102, 0.4); 
     }
     
-    .popup-title { color: #ff3366; font-size: 26px; font-weight: 900; margin-bottom: 12px; }
-    .popup-desc { color: #cbd5e1; font-size: 16px; margin-bottom: 20px; line-height: 1.6; }
+    .popup-title { color: #ff3366; font-size: 24px; font-weight: 900; margin-bottom: 10px; }
+    .popup-desc { color: #cbd5e1; font-size: 15px; margin-bottom: 18px; line-height: 1.5; }
     
     .popup-btn { 
         display: inline-block; 
         background: linear-gradient(135deg, #0088cc 0%, #005588 100%); 
         color: #ffffff !important; 
-        padding: 14px 28px; 
+        padding: 12px 24px; 
         border-radius: 10px; 
         text-decoration: none; 
         font-weight: 800; 
-        font-size: 16px; 
-        box-shadow: 0 4px 15px rgba(0, 136, 204, 0.5); 
+        font-size: 15px; 
+        box-shadow: 0 4px 12px rgba(0, 136, 204, 0.4); 
     }
     
     .active-users-badge { 
@@ -145,10 +145,10 @@ st.markdown("""
         color: #00ff66; 
         padding: 12px; 
         border-radius: 12px; 
-        font-size: 15px; 
+        font-size: 14px; 
         font-weight: 700; 
         margin-bottom: 20px; 
-        box-shadow: 0 0 20px rgba(0, 255, 102, 0.2); 
+        box-shadow: 0 0 15px rgba(0, 255, 102, 0.15); 
     }
     
     .logout-btn > button { background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important; color: #ffffff !important; }
@@ -156,7 +156,7 @@ st.markdown("""
     .stSelectbox label, .stRadio label, .stTextInput label, .stNumberInput label, .stSlider label, .stFileUploader label, .stCheckbox label { 
         color: #f1f5f9 !important; 
         font-weight: 700 !important; 
-        font-size: 16px !important; 
+        font-size: 15px !important; 
     }
     
     div[data-baseweb="select"] > div { background-color: #0d1117 !important; color: #ffffff !important; border-color: #334155 !important; }
@@ -167,9 +167,9 @@ st.markdown("""
         width: 100%; 
         background: linear-gradient(135deg, #00ff66 0%, #00b347 100%) !important; 
         color: #030508 !important; 
-        font-size: 18px !important; 
+        font-size: 17px !important; 
         font-weight: 900 !important; 
-        padding: 14px !important; 
+        padding: 12px !important; 
         border-radius: 10px !important; 
         border: none !important; 
         cursor: pointer; 
@@ -178,31 +178,31 @@ st.markdown("""
     
     .center-popup-card-animated { 
         background: linear-gradient(135deg, #0d1117 0%, #080c14 100%); 
-        padding: 25px; 
-        border-radius: 18px; 
+        padding: 24px; 
+        border-radius: 16px; 
         border: 2px solid #00ff66; 
-        margin-top: 25px; 
-        margin-bottom: 25px; 
-        box-shadow: 0 0 40px rgba(0, 255, 102, 0.4);
+        margin-top: 20px; 
+        margin-bottom: 20px; 
+        box-shadow: 0 0 35px rgba(0, 255, 102, 0.35);
         animation: centerPopUpAnimation 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     
     .metric-row { 
         display: flex; 
         justify-content: space-between; 
-        padding: 10px 0; 
+        padding: 9px 0; 
         border-bottom: 1px solid #1e293b; 
-        font-size: 15px; 
+        font-size: 14px; 
         color: #f1f5f9; 
     }
     
     .stat-card { 
         background: #0d1117; 
-        padding: 18px; 
+        padding: 16px; 
         border-radius: 12px; 
         text-align: center; 
         border: 1px solid #1e293b; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -332,7 +332,6 @@ if st.session_state.page == "auth":
     st.markdown('<p class="title-text">🦅 ENZO PRO ROBOT</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-title">✨ Professional Binary Trading Robot</p>', unsafe_allow_html=True)
     
-    # Futuristic AI Robot Banner Image added here
     st.image("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop", use_container_width=True)
 
     st.markdown(f"""
@@ -390,7 +389,7 @@ if st.session_state.page == "auth":
                                 st.session_state.auth_error = "wrong_user"
             
             if st.session_state.auth_error == "empty_fields":
-                st.markdown("<p style='color:#ff3366; font-size:14px;'>⚠️ Please fill in all required fields!</p>", unsafe_allow_html=True)
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please fill in all required fields!</p>", unsafe_allow_html=True)
             elif st.session_state.auth_error == "invalid":
                 st.markdown(f"""
                     <div class="popup-error-box">
@@ -669,7 +668,7 @@ elif st.session_state.page == "dashboard":
         st.markdown('<div class="page-box">', unsafe_allow_html=True)
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.markdown(f"<h2 style='color: #00ff66; margin:0; font-size:26px;'>🦅 ENZO PRO ROBOT</h2>", unsafe_allow_html=True)
+            st.markdown(f"<h2 style='color: #00ff66; margin:0; font-size:24px;'>🦅 ENZO PRO ROBOT</h2>", unsafe_allow_html=True)
             st.markdown("<p style='color: #94a3b8; font-size: 13px; margin:0;'>AI Indicator Engine & Trade Direction Generator</p>", unsafe_allow_html=True)
         with col2:
             st.markdown('<div class="logout-btn">', unsafe_allow_html=True)
@@ -755,7 +754,7 @@ elif st.session_state.page == "dashboard":
         
         current_progress = 0
         for stage_text, stage_time in scan_stages:
-            scan_placeholder.markdown(f"<p style='color:#00ff66; font-family:monospace; font-weight:bold; font-size:16px;'>⚡ [SCANNER ACTIVE] {stage_text}</p>", unsafe_allow_html=True)
+            scan_placeholder.markdown(f"<p style='color:#00ff66; font-family:monospace; font-weight:bold; font-size:15px;'>⚡ [SCANNER ACTIVE] {stage_text}</p>", unsafe_allow_html=True)
             step_increment = 25 / 10
             time_per_step = stage_time / 10
             for _ in range(10):
@@ -806,11 +805,11 @@ elif st.session_state.page == "dashboard":
         st.markdown(f"""
             <div class="center-popup-card-animated" style="border-color: {color};">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <span style="font-size: 22px; font-weight: 900; color: #ffffff;">✨ AI ANIMATED SIGNAL POP-UP</span>
-                    <span style="background-color: {color}; color: #030508; padding: 6px 20px; border-radius: 8px; font-weight: 900; font-size: 20px;">{sig['action']}</span>
+                    <span style="font-size: 20px; font-weight: 900; color: #ffffff;">✨ AI ANIMATED SIGNAL POP-UP</span>
+                    <span style="background-color: {color}; color: #030508; padding: 6px 18px; border-radius: 8px; font-weight: 900; font-size: 18px;">{sig['action']}</span>
                 </div>
                 <div style="background-color: rgba(0, 255, 102, 0.08); padding: 12px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px dashed {color};">
-                    <span style="color: #ffffff; font-size: 16px; font-weight: 800;">👉 PLACE {sig['action']} TRADE IMMEDIATELY ON YOUR BROKER!</span>
+                    <span style="color: #ffffff; font-size: 15px; font-weight: 800;">👉 PLACE {sig['action']} TRADE IMMEDIATELY ON YOUR BROKER!</span>
                 </div>
                 <div class="metric-row"><span style="color: #94a3b8;">Broker / Asset:</span><span style="font-weight: 700; color: #fff;">{sig['broker']} - {sig['asset']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">Timeframe & Strategy:</span><span style="font-weight: 700; color: #fff;">{sig['tf']} | {sig['strategy']}</span></div>
