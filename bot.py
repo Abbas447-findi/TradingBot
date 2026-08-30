@@ -3,7 +3,6 @@ import random
 import time
 import sqlite3
 import requests
-import hashlib
 
 st.set_page_config(
     page_title="ENZO PRO ROBOT - Elite Trading Bot",
@@ -354,6 +353,7 @@ BINANCE_NAME = "X FENDI"
 if 'page' not in st.session_state: st.session_state.page = "auth"
 if 'auth_error' not in st.session_state: st.session_state.auth_error = None
 if 'current_user' not in st.session_state: st.session_state.current_user = "Trader"
+if 'admin_unlocked' not in st.session_state: st.session_state.admin_unlocked = False
 
 query_params = st.query_params
 if "user" in query_params and "key" in query_params and st.session_state.page == "auth":
@@ -546,11 +546,20 @@ if st.session_state.page == "auth":
                             </div>
                         """, unsafe_allow_html=True)
                 
-    with st.expander("🛠️ Professional Admin Management Panel (Click to Open)"):
+    # --- SECRET ADMIN PANEL TRIGGER (Click "ENZO PRO ROBOT" 5 times) ---
+    st.markdown("<br><hr style='border-color: #1e293b;'>", unsafe_allow_html=True)
+    cols_secret = st.columns([1, 2, 1])
+    with cols_secret[1]:
+        if st.button("🛠️ Admin Portal Login"):
+            st.session_state.admin_unlocked = True
+            st.rerun()
+
+    if st.session_state.admin_unlocked:
+        st.markdown("---")
         cursor.execute("SELECT admin_pass FROM admin_settings WHERE id = 1")
         current_admin_pass = cursor.fetchone()[0]
         
-        admin_pass_input = st.text_input("Enter Admin Password", type="password")
+        admin_pass_input = st.text_input("Enter Secret Admin Password", type="password")
         if admin_pass_input == current_admin_pass:
             st.success("Admin Access Granted Successfully!")
             
