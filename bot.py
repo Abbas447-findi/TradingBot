@@ -174,17 +174,18 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(0, 255, 102, 0.15); 
     }
 
-    /* Custom highlight for Unlock Free Lifetime Access radio option */
+    /* Highly prominent aggressive highlight for Unlock Free Lifetime Access radio option */
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) {
-        background: linear-gradient(135deg, rgba(255, 69, 0, 0.15) 0%, rgba(13, 17, 23, 0.8) 100%) !important;
-        border: 1.5px solid #ff4500 !important;
-        padding: 6px 12px !important;
-        border-radius: 10px !important;
-        box-shadow: 0 0 12px rgba(255, 69, 0, 0.3) !important;
+        background: linear-gradient(135deg, rgba(255, 69, 0, 0.25) 0%, rgba(13, 17, 23, 0.9) 100%) !important;
+        border: 2px solid #ff4500 !important;
+        padding: 8px 14px !important;
+        border-radius: 12px !important;
+        box-shadow: 0 0 15px rgba(255, 69, 0, 0.4) !important;
     }
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) p {
         color: #ff5722 !important;
         font-weight: 900 !important;
+        font-size: 16px !important;
     }
     
     .logout-btn > button { background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important; color: #ffffff !important; }
