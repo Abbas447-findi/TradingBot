@@ -544,7 +544,7 @@ if st.session_state.page == "auth":
                             </div>
                         """, unsafe_allow_html=True)
                 
-    # --- 100% SECRET URL ADMIN TRIGGER (No button visible to anyone) ---
+    # --- 100% HIDDEN URL ADMIN PORTAL (No button on screen) ---
     if query_params.get("admin") == "true":
         st.markdown("---")
         st.markdown("### 🔐 Secret Admin Gateway")
