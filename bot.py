@@ -87,11 +87,9 @@ st.markdown("""
     
     .telegram-box { 
         text-align: center; 
-        background-color: #0d1117; 
-        padding: 14px; 
-        border-radius: 12px; 
-        margin-bottom: 20px; 
-        border: 1px solid #1e293b; 
+        background: transparent; 
+        padding: 10px; 
+        margin-bottom: 15px; 
     }
     
     .telegram-link { color: #38bdf8; text-decoration: none; font-weight: 700; font-size: 15px; }
@@ -340,177 +338,173 @@ if st.session_state.page == "auth":
         </div>
     """, unsafe_allow_html=True)
 
-    with st.container():
-        st.markdown('<div class="page-box">', unsafe_allow_html=True)
-        st.markdown("### 🔐 Step 1: Authentication & Verification")
-        st.markdown("<p style='color:#94a3b8; font-size:14px;'>Enter your License Key, use Binance Pay, or Unlock Free Lifetime Access via Broker Referral.</p>", unsafe_allow_html=True)
+    st.markdown("### 🔐 Step 1: Authentication & Verification")
+    st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, use Binance Pay, or Unlock Free Lifetime Access via Broker Referral.</p>", unsafe_allow_html=True)
+    
+    mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway", "Unlock Free Lifetime Access"], horizontal=True)
+    
+    if mode == "License Key":
+        username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
+        key = st.text_input("Enter Security Key", type="password", placeholder="Type license key...")
+        remember_me = st.checkbox("📱 Save Access on this Device (Auto Login)", value=True)
         
-        mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway", "Unlock Free Lifetime Access"], horizontal=True)
-        
-        if mode == "License Key":
-            username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
-            key = st.text_input("Enter Security Key", type="password", placeholder="Type license key...")
-            remember_me = st.checkbox("📱 Save Access on this Device (Auto Login)", value=True)
+        if st.button("Verify Key & Enter ➡️"):
+            clean_user = username.strip()
+            clean_key = key.strip()
             
-            if st.button("Verify Key & Enter ➡️"):
-                clean_user = username.strip()
-                clean_key = key.strip()
-                
-                if not clean_user or not clean_key:
-                    st.session_state.auth_error = "empty_fields"
-                else:
-                    with st.spinner("Verifying License Key... Please wait"):
-                        time.sleep(1.2)
-                        cursor.execute("SELECT username, status FROM licenses WHERE key = ?", (clean_key,))
-                        row = cursor.fetchone()
-                        
-                        if row is None:
-                            st.session_state.auth_error = "invalid"
-                        else:
-                            db_user, db_status = row[0], row[1]
-                            
-                            if db_status == "Blocked":
-                                st.session_state.auth_error = "blocked"
-                            elif db_user is None or db_user == clean_user:
-                                if db_user is None:
-                                    cursor.execute("UPDATE licenses SET username = ? WHERE key = ?", (clean_user, clean_key))
-                                    conn.commit()
-                                
-                                if remember_me:
-                                    st.query_params["user"] = clean_user
-                                    st.query_params["key"] = clean_key
-                                
-                                st.session_state.current_user = clean_user
-                                st.session_state.auth_error = None
-                                st.session_state.page = "dashboard"
-                                st.rerun()
-                            else:
-                                st.session_state.auth_error = "wrong_user"
-            
-            if st.session_state.auth_error == "empty_fields":
-                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please fill in all required fields!</p>", unsafe_allow_html=True)
-            elif st.session_state.auth_error == "invalid":
-                st.markdown(f"""
-                    <div class="popup-error-box">
-                        <div class="popup-title">❌ INVALID ACCESS KEY</div>
-                        <div class="popup-desc">You have entered a wrong or unregistered license key. Please purchase an official key from our Telegram support channel.</div>
-                        <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Official Purchase (Telegram)</a>
-                    </div>
-                """, unsafe_allow_html=True)
-            elif st.session_state.auth_error == "blocked":
-                st.markdown(f"""
-                    <div class="popup-error-box">
-                        <div class="popup-title">🚫 ACCESS BLOCKED</div>
-                        <div class="popup-desc">This license key has been blocked by the Administrator. Contact support for assistance.</div>
-                        <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Contact Support</a>
-                    </div>
-                """, unsafe_allow_html=True)
-            elif st.session_state.auth_error == "wrong_user":
-                st.markdown(f"""
-                    <div class="popup-error-box">
-                        <div class="popup-title">⚠️ SECURITY ALERT: USER MISMATCH</div>
-                        <div class="popup-desc">This license key is already locked and registered with another user!</div>
-                        <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Official Purchase (Telegram)</a>
-                    </div>
-                """, unsafe_allow_html=True)
-
-        elif mode == "Binance Pay Gateway":
-            binance_svg = """<svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 6px;"><path d="M12.2155 14.1287L16.0022 10.342L19.7888 14.1287L22.9555 10.962L16.0022 4.00871L9.04883 10.962L12.2155 14.1287Z" fill="#FCD535"/><path d="M6.55548 13.5087L9.72215 16.6754L13.5088 12.8887L10.3422 9.72205L6.55548 13.5087Z" fill="#FCD535"/><path d="M25.4488 13.5087L21.6622 9.72205L18.4955 12.8887L22.2822 16.6754L25.4488 13.5087Z" fill="#FCD535"/><path d="M12.2155 17.8754L16.0022 21.6621L19.7888 17.8754L22.9555 21.0421L16.0022 27.9954L9.04883 21.0421L12.2155 17.8754Z" fill="#FCD535"/><path d="M4.00883 16.0021L7.1755 19.1687L10.3422 16.0021L7.1755 12.8354L4.00883 16.0021Z" fill="#FCD535"/><path d="M24.8255 12.8354L21.6588 16.0021L24.8255 19.1687L27.9922 16.0021L24.8255 12.8354Z" fill="#FCD535"/><path d="M16.0022 13.5087L13.5088 16.0021L16.0022 18.4954L18.4955 16.0021L16.0022 13.5087Z" fill="#FCD535"/></svg>"""
-            
-            st.markdown(f"""
-                <div class="binance-box">
-                    <h4 style="color: #f3ba2f; margin-top: 0; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                        <span>{binance_svg} Binance Pay Gateway</span>
-                        <span style="background: #f3ba2f; color: #030508; padding: 2px 10px; border-radius: 6px; font-size: 14px; font-weight: 800;">$10</span>
-                    </h4>
-                    <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 8px;">Transfer to Binance Pay ID:</p>
-                    <div style="background: #030508; padding: 12px; border-radius: 8px; font-family: monospace; color: #00ff66; font-size: 15px;">
-                        <b>Binance Pay ID / UID:</b> {BINANCE_PAY_ID}<br><b>Account Name:</b> {BINANCE_NAME}
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            user_input_name = st.text_input("Enter Your Name / Username", placeholder="Type your name here...")
-            order_id = st.text_input("Enter Binance Order ID", placeholder="Paste genuine Order ID here...")
-            screenshot = st.file_uploader("Upload Payment Screenshot", type=["png", "jpg", "jpeg"])
-            
-            if st.button("Submit Payment Proof Instantly ➡️"):
-                clean_order = order_id.strip()
-                clean_name = user_input_name.strip()
-                
-                if not clean_name:
-                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter your name!</p>", unsafe_allow_html=True)
-                elif not clean_order or len(clean_order) < 6:
-                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Binance Order ID!</p>", unsafe_allow_html=True)
-                elif screenshot is None:
-                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please upload the payment screenshot!</p>", unsafe_allow_html=True)
-                else:
-                    cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_order,))
-                    if cursor.fetchone():
-                        st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Order ID has already been used!</p>", unsafe_allow_html=True)
-                    else:
-                        with st.spinner("Submitting payment proof & sending instant Telegram notification..."):
-                            time.sleep(1.0)
-                            cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_order,))
-                            cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_order, clean_name))
-                            conn.commit()
-                            
-                            send_telegram_alert(clean_order, clean_name)
-                            send_telegram_photo(screenshot.getvalue(), f"📸 Binance Payment Proof\n👤 User: `{clean_name}`\n🆔 Order ID: `{clean_order}`")
-                            
-                            st.success("✅ Payment proof submitted successfully! Your details have been sent to Telegram.")
-                            st.markdown(f"""
-                                <div style="text-align: center; margin-top: 15px;">
-                                    <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Click here to message on Telegram for Access Key</a>
-                                </div>
-                            """, unsafe_allow_html=True)
-
-        else:
-            st.markdown(f"""
-                <div class="referral-box">
-                    <h4 style="color: #38bdf8; margin-top: 0; margin-bottom: 8px;">🔓 Unlock Free Lifetime Access</h4>
-                    <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px;">Create your trading account using our official referral link and make a deposit:</p>
-                    <a class="popup-btn" href="{BROKER_REF_LINK}" target="_blank" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">👉 Click Here to Register & Deposit</a>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            ref_name = st.text_input("Your Name / Username", placeholder="Type your trading name...")
-            broker_uid = st.text_input("Your Broker Account ID / UID", placeholder="Enter your Broker UID...")
-            dep_screenshot = st.file_uploader("Upload Deposit Proof Screenshot", type=["png", "jpg", "jpeg"])
-            
-            if st.button("Submit Free Access Proof ➡️"):
-                clean_ref_name = ref_name.strip()
-                clean_uid = broker_uid.strip()
-                
-                if not clean_ref_name:
-                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter your name!</p>", unsafe_allow_html=True)
-                elif not clean_uid or len(clean_uid) < 4:
-                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Broker Account ID / UID!</p>", unsafe_allow_html=True)
-                elif dep_screenshot is None:
-                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please upload your deposit proof screenshot!</p>", unsafe_allow_html=True)
-                else:
-                    cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_uid,))
-                    if cursor.fetchone():
-                        st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Account ID has already been submitted!</p>", unsafe_allow_html=True)
-                    else:
-                        with st.spinner("Submitting referral & deposit details to Admin..."):
-                            time.sleep(1.0)
-                            cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_uid,))
-                            cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_uid, f"REF: {clean_ref_name}"))
-                            conn.commit()
-                            
-                            send_telegram_alert(clean_uid, f"{clean_ref_name} (Free Lifetime Access Deposit)")
-                            send_telegram_photo(dep_screenshot.getvalue(), f"📸 Free Lifetime Access Proof\n👤 User: `{clean_ref_name}`\n🆔 Broker UID: `{clean_uid}`")
-                            
-                            st.success("✅ Deposit proof submitted! Admin will verify your deposit through referral and assign your access key.")
-                            st.markdown(f"""
-                                <div style="text-align: center; margin-top: 15px;">
-                                    <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Message on Telegram for Fast Approval</a>
-                                </div>
-                            """, unsafe_allow_html=True)
+            if not clean_user or not clean_key:
+                st.session_state.auth_error = "empty_fields"
+            else:
+                with st.spinner("Verifying License Key... Please wait"):
+                    time.sleep(1.2)
+                    cursor.execute("SELECT username, status FROM licenses WHERE key = ?", (clean_key,))
+                    row = cursor.fetchone()
                     
-        st.markdown('</div>', unsafe_allow_html=True)
+                    if row is None:
+                        st.session_state.auth_error = "invalid"
+                    else:
+                        db_user, db_status = row[0], row[1]
+                        
+                        if db_status == "Blocked":
+                            st.session_state.auth_error = "blocked"
+                        elif db_user is None or db_user == clean_user:
+                            if db_user is None:
+                                cursor.execute("UPDATE licenses SET username = ? WHERE key = ?", (clean_user, clean_key))
+                                conn.commit()
+                            
+                            if remember_me:
+                                st.query_params["user"] = clean_user
+                                st.query_params["key"] = clean_key
+                            
+                            st.session_state.current_user = clean_user
+                            st.session_state.auth_error = None
+                            st.session_state.page = "dashboard"
+                            st.rerun()
+                        else:
+                            st.session_state.auth_error = "wrong_user"
+        
+        if st.session_state.auth_error == "empty_fields":
+            st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please fill in all required fields!</p>", unsafe_allow_html=True)
+        elif st.session_state.auth_error == "invalid":
+            st.markdown(f"""
+                <div class="popup-error-box">
+                    <div class="popup-title">❌ INVALID ACCESS KEY</div>
+                    <div class="popup-desc">You have entered a wrong or unregistered license key. Please purchase an official key from our Telegram support channel.</div>
+                    <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Official Purchase (Telegram)</a>
+                </div>
+            """, unsafe_allow_html=True)
+        elif st.session_state.auth_error == "blocked":
+            st.markdown(f"""
+                <div class="popup-error-box">
+                    <div class="popup-title">🚫 ACCESS BLOCKED</div>
+                    <div class="popup-desc">This license key has been blocked by the Administrator. Contact support for assistance.</div>
+                    <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Contact Support</a>
+                </div>
+            """, unsafe_allow_html=True)
+        elif st.session_state.auth_error == "wrong_user":
+            st.markdown(f"""
+                <div class="popup-error-box">
+                    <div class="popup-title">⚠️ SECURITY ALERT: USER MISMATCH</div>
+                    <div class="popup-desc">This license key is already locked and registered with another user!</div>
+                    <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Official Purchase (Telegram)</a>
+                </div>
+            """, unsafe_allow_html=True)
 
+    elif mode == "Binance Pay Gateway":
+        binance_svg = """<svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 6px;"><path d="M12.2155 14.1287L16.0022 10.342L19.7888 14.1287L22.9555 10.962L16.0022 4.00871L9.04883 10.962L12.2155 14.1287Z" fill="#FCD535"/><path d="M6.55548 13.5087L9.72215 16.6754L13.5088 12.8887L10.3422 9.72205L6.55548 13.5087Z" fill="#FCD535"/><path d="M25.4488 13.5087L21.6622 9.72205L18.4955 12.8887L22.2822 16.6754L25.4488 13.5087Z" fill="#FCD535"/><path d="M12.2155 17.8754L16.0022 21.6621L19.7888 17.8754L22.9555 21.0421L16.0022 27.9954L9.04883 21.0421L12.2155 17.8754Z" fill="#FCD535"/><path d="M4.00883 16.0021L7.1755 19.1687L10.3422 16.0021L7.1755 12.8354L4.00883 16.0021Z" fill="#FCD535"/><path d="M24.8255 12.8354L21.6588 16.0021L24.8255 19.1687L27.9922 16.0021L24.8255 12.8354Z" fill="#FCD535"/><path d="M16.0022 13.5087L13.5088 16.0021L16.0022 18.4954L18.4955 16.0021L16.0022 13.5087Z" fill="#FCD535"/></svg>"""
+        
+        st.markdown(f"""
+            <div class="binance-box">
+                <h4 style="color: #f3ba2f; margin-top: 0; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                    <span>{binance_svg} Binance Pay Gateway</span>
+                    <span style="background: #f3ba2f; color: #030508; padding: 2px 10px; border-radius: 6px; font-size: 14px; font-weight: 800;">$10</span>
+                </h4>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 8px;">Transfer to Binance Pay ID:</p>
+                <div style="background: #030508; padding: 12px; border-radius: 8px; font-family: monospace; color: #00ff66; font-size: 15px;">
+                    <b>Binance Pay ID / UID:</b> {BINANCE_PAY_ID}<br><b>Account Name:</b> {BINANCE_NAME}
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        user_input_name = st.text_input("Enter Your Name / Username", placeholder="Type your name here...")
+        order_id = st.text_input("Enter Binance Order ID", placeholder="Paste genuine Order ID here...")
+        screenshot = st.file_uploader("Upload Payment Screenshot", type=["png", "jpg", "jpeg"])
+        
+        if st.button("Submit Payment Proof Instantly ➡️"):
+            clean_order = order_id.strip()
+            clean_name = user_input_name.strip()
+            
+            if not clean_name:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter your name!</p>", unsafe_allow_html=True)
+            elif not clean_order or len(clean_order) < 6:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Binance Order ID!</p>", unsafe_allow_html=True)
+            elif screenshot is None:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please upload the payment screenshot!</p>", unsafe_allow_html=True)
+            else:
+                cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_order,))
+                if cursor.fetchone():
+                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Order ID has already been used!</p>", unsafe_allow_html=True)
+                else:
+                    with st.spinner("Submitting payment proof & sending instant Telegram notification..."):
+                        time.sleep(1.0)
+                        cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_order,))
+                        cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_order, clean_name))
+                        conn.commit()
+                        
+                        send_telegram_alert(clean_order, clean_name)
+                        send_telegram_photo(screenshot.getvalue(), f"📸 Binance Payment Proof\n👤 User: `{clean_name}`\n🆔 Order ID: `{clean_order}`")
+                        
+                        st.success("✅ Payment proof submitted successfully! Your details have been sent to Telegram.")
+                        st.markdown(f"""
+                            <div style="text-align: center; margin-top: 15px;">
+                                <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Click here to message on Telegram for Access Key</a>
+                            </div>
+                        """, unsafe_allow_html=True)
+
+    else:
+        st.markdown(f"""
+            <div class="referral-box">
+                <h4 style="color: #38bdf8; margin-top: 0; margin-bottom: 8px;">🔓 Unlock Free Lifetime Access</h4>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px;">Create your trading account using our official referral link and make a deposit:</p>
+                <a class="popup-btn" href="{BROKER_REF_LINK}" target="_blank" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">👉 Click Here to Register & Deposit</a>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        ref_name = st.text_input("Your Name / Username", placeholder="Type your trading name...")
+        broker_uid = st.text_input("Your Broker Account ID / UID", placeholder="Enter your Broker UID...")
+        dep_screenshot = st.file_uploader("Upload Deposit Proof Screenshot", type=["png", "jpg", "jpeg"])
+        
+        if st.button("Submit Free Access Proof ➡️"):
+            clean_ref_name = ref_name.strip()
+            clean_uid = broker_uid.strip()
+            
+            if not clean_ref_name:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter your name!</p>", unsafe_allow_html=True)
+            elif not clean_uid or len(clean_uid) < 4:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Broker Account ID / UID!</p>", unsafe_allow_html=True)
+            elif dep_screenshot is None:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please upload your deposit proof screenshot!</p>", unsafe_allow_html=True)
+            else:
+                cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_uid,))
+                if cursor.fetchone():
+                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Account ID has already been submitted!</p>", unsafe_allow_html=True)
+                else:
+                    with st.spinner("Submitting referral & deposit details to Admin..."):
+                        time.sleep(1.0)
+                        cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_uid,))
+                        cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_uid, f"REF: {clean_ref_name}"))
+                        conn.commit()
+                        
+                        send_telegram_alert(clean_uid, f"{clean_ref_name} (Free Lifetime Access Deposit)")
+                        send_telegram_photo(dep_screenshot.getvalue(), f"📸 Free Lifetime Access Proof\n👤 User: `{clean_ref_name}`\n🆔 Broker UID: `{clean_uid}`")
+                        
+                        st.success("✅ Deposit proof submitted! Admin will verify your deposit through referral and assign your access key.")
+                        st.markdown(f"""
+                            <div style="text-align: center; margin-top: 15px;">
+                                <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Message on Telegram for Fast Approval</a>
+                            </div>
+                        """, unsafe_allow_html=True)
+                
     with st.expander("🛠️ Professional Admin Management Panel (Click to Open)"):
         cursor.execute("SELECT admin_pass FROM admin_settings WHERE id = 1")
         current_admin_pass = cursor.fetchone()[0]
