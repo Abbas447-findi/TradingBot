@@ -16,7 +16,13 @@ st.markdown("""
         color-scheme: dark;
     }
     
-    html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], .stApp {
+    /* 100% Hide Streamlit Header & Three Dots Menu */
+    #MainMenu {visibility: hidden !important;}
+    header {visibility: hidden !important;}
+    footer {visibility: hidden !important;}
+    [data-testid="stHeader"] {display: none !important;}
+    
+    html, body, [data-testid="stAppViewContainer"], .stApp {
         background: radial-gradient(circle at 50% 20%, #0d231a 0%, #030508 70%), #030508 !important;
         color: #f1f5f9 !important;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -544,7 +550,7 @@ if st.session_state.page == "auth":
                             </div>
                         """, unsafe_allow_html=True)
                 
-    # --- 100% HIDDEN URL ADMIN PORTAL (No button on screen) ---
+    # --- 100% HIDDEN URL ADMIN PORTAL ---
     if query_params.get("admin") == "true":
         st.markdown("---")
         st.markdown("### 🔐 Secret Admin Gateway")
