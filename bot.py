@@ -92,7 +92,7 @@ st.markdown("""
         font-size: 14px; 
         font-weight: 600; 
         letter-spacing: 1.5px;
-        margin-bottom: 20px; 
+        margin-bottom: 25px; /* Thoda gap barha diya hai taake alignment fit aaye */
         text-transform: uppercase;
     }
     
@@ -100,7 +100,7 @@ st.markdown("""
         text-align: center; 
         background: transparent; 
         padding: 10px; 
-        margin-bottom: 15px; 
+        margin-bottom: 20px; 
     }
     
     .telegram-link { color: #38bdf8; text-decoration: none; font-weight: 700; font-size: 15px; }
