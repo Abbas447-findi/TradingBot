@@ -82,7 +82,7 @@ st.markdown("""
         font-size: 42px; 
         font-weight: 900; 
         letter-spacing: 2px; 
-        margin-bottom: 5px; 
+        margin-bottom: 2px; 
         text-shadow: 0 0 25px rgba(0, 255, 102, 0.6); 
     }
     
@@ -92,15 +92,15 @@ st.markdown("""
         font-size: 14px; 
         font-weight: 600; 
         letter-spacing: 1.5px;
-        margin-bottom: 25px; /* Thoda gap barha diya hai taake alignment fit aaye */
+        margin-bottom: 8px; /* Extra space bilkul khatam kar di hai */
         text-transform: uppercase;
     }
     
     .telegram-box { 
         text-align: center; 
         background: transparent; 
-        padding: 10px; 
-        margin-bottom: 20px; 
+        padding: 2px; 
+        margin-bottom: 12px; /* Isay bhi upar shift kar diya hai */
     }
     
     .telegram-link { color: #38bdf8; text-decoration: none; font-weight: 700; font-size: 15px; }
