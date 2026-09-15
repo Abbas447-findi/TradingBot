@@ -120,15 +120,12 @@ st.markdown("""
         animation: aggressiveGlow 3s infinite;
     }
     
-    .maintenance-alert-tab {
-        background: linear-gradient(135deg, #3d0c0c 0%, #1a080c 100%);
-        border: 2px solid #ff3333;
-        padding: 22px;
-        border-radius: 14px;
-        text-align: center;
-        margin-top: 15px;
-        margin-bottom: 15px;
-        box-shadow: 0 0 25px rgba(255, 51, 51, 0.5);
+    .binance-box { 
+        background: linear-gradient(135deg, rgba(40, 30, 5, 0.95) 0%, rgba(13, 17, 23, 0.95) 100%);
+        border: 2px solid #f3ba2f; 
+        padding: 24px; 
+        border-radius: 16px; 
+        margin-bottom: 20px; 
     }
     
     .popup-title { color: #ff3366; font-size: 24px; font-weight: 900; margin-bottom: 10px; }
@@ -181,7 +178,6 @@ st.markdown("""
         border: 2px solid #ff4500 !important;
         padding: 8px 14px !important;
         border-radius: 12px !important;
-        box-shadow: 0 0 18px rgba(255, 69, 0, 0.5) !important;
     }
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(2) p {
         color: #ff5722 !important;
@@ -190,15 +186,15 @@ st.markdown("""
     }
 
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) {
-        background: linear-gradient(135deg, rgba(255, 51, 51, 0.25) 0%, rgba(20, 5, 5, 0.95) 100%) !important;
-        border: 2px solid #ff3333 !important;
+        background: linear-gradient(135deg, rgba(243, 186, 47, 0.25) 0%, rgba(20, 15, 5, 0.95) 100%) !important;
+        border: 2px solid #f3ba2f !important;
         padding: 8px 14px !important;
         border-radius: 12px !important;
     }
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) p {
-        color: #ff4d4d !important;
-        font-weight: 800 !important;
-        font-size: 14px !important;
+        color: #f3ba2f !important;
+        font-weight: 900 !important;
+        font-size: 15px !important;
     }
     
     .logout-btn > button { background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important; color: #ffffff !important; }
@@ -265,9 +261,9 @@ BROKER_REF_LINK = "https://broker-qx.pro/?lid=2146490"
 def send_telegram_alert(order_id, user_name):
     try:
         message = (
-            f"🚨 *New Referral Submission - ENZO PRO*\n\n"
+            f"🚨 *New Payment Submission - ENZO PRO*\n\n"
             f"👤 *User Name:* {user_name}\n"
-            f"🆔 *Reference / ID:* `{order_id}`\n"
+            f"🆔 *Order / TXID:* `{order_id}`\n"
             f"🕒 *Time:* {time.ctime()}"
         )
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -304,7 +300,6 @@ def fetch_real_market_data(asset_name, timeframe):
     clean_asset = asset_name.replace(" (OTC)", "").replace(" [OTC]", "").replace(" (Commodity)", "").replace(" (Oil)", "").strip()
     symbol = ticker_map.get(clean_asset, "EURUSD=X")
     
-    # Map timeframe to yfinance intervals
     interval_map = {
         "15 Seconds": "1m", "30 Seconds": "1m", 
         "1 Minute": "1m", "2 Minutes": "2m", "5 Minutes": "5m"
@@ -333,7 +328,6 @@ def calculate_real_deal_indicators(asset_name, timeframe):
     prices = fetch_real_market_data(asset_name, timeframe)
     df = pd.Series(prices)
     
-    # 1. RSI (14) Calculation
     delta = df.diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
@@ -342,7 +336,6 @@ def calculate_real_deal_indicators(asset_name, timeframe):
     current_rsi = round(float(rsi_series.iloc[-1]), 2)
     if math.isnan(current_rsi): current_rsi = 50.0
     
-    # 2. Bollinger Bands (20, 2)
     sma = df.rolling(window=20).mean()
     std = df.rolling(window=20).std()
     upper = sma + (2 * std)
@@ -352,7 +345,6 @@ def calculate_real_deal_indicators(asset_name, timeframe):
     cur_upper = round(float(upper.iloc[-1]), 4) if not math.isnan(upper.iloc[-1]) else cur_price * 1.002
     cur_lower = round(float(lower.iloc[-1]), 4) if not math.isnan(lower.iloc[-1]) else cur_price * 0.998
     
-    # 3. MACD (12, 26, 9)
     exp12 = df.ewm(span=12, adjust=False).mean()
     exp26 = df.ewm(span=26, adjust=False).mean()
     macd = exp12 - exp26
@@ -360,17 +352,14 @@ def calculate_real_deal_indicators(asset_name, timeframe):
     cur_macd = round(float(macd.iloc[-1]), 5)
     cur_signal = round(float(signal.iloc[-1]), 5)
     
-    # --- RIGOROUS 3-LAYER SCORING SYSTEM FOR ACCURATE BUY / SELL ---
     bullish_score = 0
     bearish_score = 0
     
-    # RSI Evaluation
     if current_rsi < 48:
         bullish_score += 1
     elif current_rsi > 52:
         bearish_score += 1
         
-    # Bollinger Band Position Evaluation
     band_range = cur_upper - cur_lower if cur_upper != cur_lower else 0.0001
     price_position = (cur_price - cur_lower) / band_range
     if price_position <= 0.35:
@@ -378,13 +367,11 @@ def calculate_real_deal_indicators(asset_name, timeframe):
     elif price_position >= 0.65:
         bearish_score += 1
         
-    # MACD Momentum Evaluation
     if cur_macd > cur_signal:
         bullish_score += 1
     else:
         bearish_score += 1
         
-    # Final Decision based on strict scoring
     if bullish_score > bearish_score:
         action = "BUY (CALL 🟢)"
         trend = f"Live Market Support Rebound ({timeframe} Momentum Bullish)"
@@ -392,7 +379,6 @@ def calculate_real_deal_indicators(asset_name, timeframe):
         action = "SELL (PUT 🔴)"
         trend = f"Live Market Resistance Rejection ({timeframe} Momentum Bearish)"
     else:
-        # Tie-breaker via MACD
         if cur_macd > cur_signal:
             action = "BUY (CALL 🟢)"
             trend = f"MACD Bullish Continuation ({timeframe})"
@@ -501,9 +487,9 @@ if st.session_state.page == "auth":
     """, unsafe_allow_html=True)
 
     st.markdown("### 🔐 Step 1: Authentication & Verification")
-    st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key or Unlock Free Access via Broker Referral.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, unlock via Free Access, or use Binance Pay.</p>", unsafe_allow_html=True)
     
-    mode = st.radio("Authentication Mode", ["License Key", "🔥 FREE ACCESS", "⚠️ Binance Pay (Under Maintenance)"], horizontal=True)
+    mode = st.radio("Authentication Mode", ["License Key", "🔥 FREE ACCESS", "💛 Binance Pay"], horizontal=True)
     
     if mode == "License Key":
         username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
@@ -572,14 +558,54 @@ if st.session_state.page == "auth":
                 </div>
             """, unsafe_allow_html=True)
 
-    elif mode == "⚠️ Binance Pay (Under Maintenance)":
+    elif mode == "💛 Binance Pay":
         st.markdown(f"""
-            <div class="maintenance-alert-tab">
-                <div style="color: #ff4d4d; font-size: 22px; font-weight: 900; margin-bottom: 8px;">🚨 TEMPORARY SYSTEM MAINTENANCE</div>
-                <div style="color: #cbd5e1; font-size: 15px; margin-bottom: 16px; line-height: 1.6;">Binance Pay Gateway is currently closed and under strict technical maintenance due to network upgrades. Please use our <b>🔥 FREE ACCESS</b> option via Broker Referral to get instant access right away!</div>
-                <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Contact Support on Telegram</a>
+            <div class="binance-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="color: #f3ba2f; margin: 0; font-size: 20px; font-weight: 900;">💛 BINANCE PAY GATEWAY</h3>
+                    <span style="background: #f3ba2f; color: #000000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; text-transform: uppercase;">INSTANT DEPOSIT</span>
+                </div>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">Send payment via Binance Pay, enter your Binance Pay ID / Order ID, and upload your payment receipt screenshot below to get your key instantly!</p>
+                <div style="background: #030508; color: #f3ba2f; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 14px; font-weight: bold; margin-bottom: 15px; text-align: center;">
+                    Binance Pay ID / Email / UID: Ask Support on Telegram
+                </div>
             </div>
         """, unsafe_allow_html=True)
+        
+        bp_name = st.text_input("Your Name / Username", placeholder="Type your trading name...", key="bp_name")
+        bp_order = st.text_input("Binance Order ID / Transaction ID", placeholder="Enter Transaction ID or Pay ID...", key="bp_order")
+        bp_screenshot = st.file_uploader("Upload Payment Receipt Screenshot", type=["png", "jpg", "jpeg"], key="bp_file")
+        
+        if st.button("Submit Binance Payment Proof ➡️"):
+            clean_bp_name = bp_name.strip()
+            clean_bp_order = bp_order.strip()
+            
+            if not clean_bp_name:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter your name!</p>", unsafe_allow_html=True)
+            elif not clean_bp_order or len(clean_bp_order) < 4:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Transaction ID!</p>", unsafe_allow_html=True)
+            elif bp_screenshot is None:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please upload your payment receipt screenshot!</p>", unsafe_allow_html=True)
+            else:
+                cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_bp_order,))
+                if cursor.fetchone():
+                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Transaction ID has already been submitted!</p>", unsafe_allow_html=True)
+                else:
+                    with st.spinner("Submitting payment proof to Admin..."):
+                        time.sleep(1.0)
+                        cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_bp_order,))
+                        cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_bp_order, f"BINANCE: {clean_bp_name}"))
+                        conn.commit()
+                        
+                        send_telegram_alert(clean_bp_order, f"{clean_bp_name} (Binance Pay)")
+                        send_telegram_photo(bp_screenshot.getvalue(), f"📸 Binance Pay Proof\n👤 User: `{clean_bp_name}`\n🆔 Order ID: `{clean_bp_order}`")
+                        
+                        st.success("✅ Payment proof submitted successfully! Admin will verify and assign your access key.")
+                        st.markdown(f"""
+                            <div style="text-align: center; margin-top: 15px;">
+                                <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Message on Telegram for Fast Approval</a>
+                            </div>
+                        """, unsafe_allow_html=True)
 
     else:
         st.markdown(f"""
@@ -593,9 +619,9 @@ if st.session_state.page == "auth":
             </div>
         """, unsafe_allow_html=True)
         
-        ref_name = st.text_input("Your Name / Username", placeholder="Type your trading name...")
-        broker_uid = st.text_input("Your Trader ID", placeholder="Enter your Trader ID...")
-        dep_screenshot = st.file_uploader("Upload Deposit Proof Screenshot", type=["png", "jpg", "jpeg"])
+        ref_name = st.text_input("Your Name / Username", placeholder="Type your trading name...", key="ref_name")
+        broker_uid = st.text_input("Your Trader ID", placeholder="Enter your Trader ID...", key="broker_uid")
+        dep_screenshot = st.file_uploader("Upload Deposit Proof Screenshot", type=["png", "jpg", "jpeg"], key="ref_file")
         
         if st.button("Submit Free Access Proof ➡️"):
             clean_ref_name = ref_name.strip()
@@ -657,14 +683,14 @@ if st.session_state.page == "auth":
                 st.markdown(f'<div class="stat-card"><h5>📥 Pending Orders</h5><h3 style="color:#f3ba2f;">{pending_count}</h3></div>', unsafe_allow_html=True)
 
             st.markdown("---")
-            st.markdown("### 📥 Pending Referral Approvals")
+            st.markdown("### 📥 Pending Payment & Referral Approvals")
             cursor.execute("SELECT order_id, username FROM pending_approvals")
             pending_list = cursor.fetchall()
             if pending_list:
                 for p in pending_list:
                     st.markdown(f"""
                         <div style="background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b;">
-                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>Ref/Trader ID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
+                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>Ref/Order ID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
                             <a href="{TELEGRAM_URL}" target="_blank" style="background:#0088cc; color:white; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px;">💬 Chat on Telegram</a>
                         </div>
                     """, unsafe_allow_html=True)
