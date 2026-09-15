@@ -20,7 +20,6 @@ st.markdown("""
         color-scheme: dark;
     }
     
-    /* 100% Hide Streamlit Header & Three Dots Menu */
     #MainMenu {visibility: hidden !important;}
     header {visibility: hidden !important;}
     footer {visibility: hidden !important;}
@@ -121,12 +120,24 @@ st.markdown("""
     }
     
     .binance-official-box { 
-        background: linear-gradient(135deg, rgba(30, 24, 5, 0.95) 0%, rgba(13, 17, 23, 0.95) 100%);
+        background: linear-gradient(135deg, rgba(35, 28, 5, 0.98) 0%, rgba(13, 17, 23, 0.95) 100%);
         border: 2px solid #f3ba2f; 
         padding: 24px; 
         border-radius: 16px; 
         margin-bottom: 20px; 
-        box-shadow: 0 0 25px rgba(243, 186, 47, 0.2);
+        box-shadow: 0 0 30px rgba(243, 186, 47, 0.25);
+    }
+    
+    .binance-badge-official {
+        display: inline-flex;
+        align-items: center;
+        background-color: #f3ba2f;
+        color: #0b0e11;
+        font-weight: 900;
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        letter-spacing: 0.5px;
     }
     
     .popup-title { color: #ff3366; font-size: 24px; font-weight: 900; margin-bottom: 10px; }
@@ -157,9 +168,7 @@ st.markdown("""
         box-shadow: 0 4px 20px rgba(255, 69, 0, 0.6); 
         margin-top: 15px;
     }
-    .offer-btn:hover {
-        opacity: 0.95;
-    }
+    .offer-btn:hover { opacity: 0.95; }
     
     .active-users-badge { 
         text-align: center; 
@@ -264,7 +273,7 @@ def send_telegram_alert(order_id, user_name):
         message = (
             f"🚨 *New Binance Pay Submission - ENZO PRO*\n\n"
             f"👤 *User Name:* {user_name}\n"
-            f"🆔 *Order / TXID:* `{order_id}`\n"
+            f"🆔 *Binance UID:* `{order_id}`\n"
             f"🕒 *Time:* {time.ctime()}"
         )
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -464,7 +473,7 @@ conn.commit()
 
 if 'page' not in st.session_state: st.session_state.page = "auth"
 if 'auth_error' not in st.session_state: st.session_state.auth_error = None
-if 'current_user' not in st.session_state: st.session_state.current_user = "Trader"
+if 'current_user' not in st.session_state: st.session_state.current_user = "X FENDI"
 
 query_params = st.query_params
 if "user" in query_params and "key" in query_params and st.session_state.page == "auth":
@@ -488,12 +497,12 @@ if st.session_state.page == "auth":
     """, unsafe_allow_html=True)
 
     st.markdown("### 🔐 Step 1: Authentication & Verification")
-    st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, unlock via Free Access, or use Binance Pay.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, unlock via Free Access, or use official Binance Pay.</p>", unsafe_allow_html=True)
     
     mode = st.radio("Authentication Mode", ["License Key", "🔥 FREE ACCESS", "🟡 Binance Pay"], horizontal=True)
     
     if mode == "License Key":
-        username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
+        username = st.text_input("Enter Your Username", value="X FENDI", placeholder="Type your trading name...")
         key = st.text_input("Enter Security Key", type="password", placeholder="Type license key...")
         remember_me = st.checkbox("📱 Save Access on this Device (Auto Login)", value=True)
         
@@ -563,15 +572,18 @@ if st.session_state.page == "auth":
         st.markdown(f"""
             <div class="binance-official-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h3 style="color: #f3ba2f; margin: 0; font-size: 20px; font-weight: 900;">🟡 BINANCE PAY • OFFICIAL GATEWAY</h3>
-                    <span style="background: #f3ba2f; color: #000000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; text-transform: uppercase;">SECURE PAY</span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 22px;">🟡</span>
+                        <h3 style="color: #f3ba2f; margin: 0; font-size: 20px; font-weight: 900;">BINANCE PAY • OFFICIAL GATEWAY</h3>
+                    </div>
+                    <span class="binance-badge-official">VERIFIED API</span>
                 </div>
-                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px; line-height: 1.5;">Send exact payment via Binance Pay, enter your name and Binance Pay Order ID / Transaction ID, and upload your payment receipt screenshot below for instant verification.</p>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px; line-height: 1.5;">Send exact payment via Binance Pay, verify your details below, and upload your payment receipt screenshot for instant key issuance.</p>
             </div>
         """, unsafe_allow_html=True)
         
-        bp_name = st.text_input("Your Name / Username", placeholder="Type your trading name...", key="bp_name")
-        bp_order = st.text_input("Binance Order ID / Transaction ID", placeholder="Enter Transaction ID or Pay ID...", key="bp_order")
+        bp_name = st.text_input("Your Name / Username", value="X FENDI", placeholder="Type your trading name...", key="bp_name")
+        bp_order = st.text_input("Binance UID / Order ID", value="385682148", placeholder="Enter your Binance UID...", key="bp_order")
         bp_screenshot = st.file_uploader("Upload Payment Receipt Screenshot", type=["png", "jpg", "jpeg"], key="bp_file")
         
         if st.button("Submit Binance Payment Proof ➡️"):
@@ -581,22 +593,22 @@ if st.session_state.page == "auth":
             if not clean_bp_name:
                 st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter your name!</p>", unsafe_allow_html=True)
             elif not clean_bp_order or len(clean_bp_order) < 4:
-                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Transaction ID!</p>", unsafe_allow_html=True)
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Binance UID!</p>", unsafe_allow_html=True)
             elif bp_screenshot is None:
                 st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please upload your payment receipt screenshot!</p>", unsafe_allow_html=True)
             else:
                 cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_bp_order,))
                 if cursor.fetchone():
-                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Transaction ID has already been submitted!</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Binance UID / Order ID has already been submitted!</p>", unsafe_allow_html=True)
                 else:
                     with st.spinner("Submitting payment proof to Admin..."):
                         time.sleep(1.0)
                         cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_bp_order,))
-                        cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_bp_order, f"BINANCE: {clean_bp_name}"))
+                        cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_bp_order, f"BINANCE: {clean_bp_name} (UID: {clean_bp_order})"))
                         conn.commit()
                         
-                        send_telegram_alert(clean_bp_order, f"{clean_bp_name} (Binance Pay)")
-                        send_telegram_photo(bp_screenshot.getvalue(), f"📸 Binance Pay Proof\n👤 User: `{clean_bp_name}`\n🆔 Order ID: `{clean_bp_order}`")
+                        send_telegram_alert(clean_bp_order, f"{clean_bp_name} (Binance UID: {clean_bp_order})")
+                        send_telegram_photo(bp_screenshot.getvalue(), f"📸 Binance Pay Proof\n👤 User: `{clean_bp_name}`\n🆔 Binance UID: `{clean_bp_order}`")
                         
                         st.success("✅ Payment proof submitted successfully! Admin will verify and assign your access key.")
                         st.markdown(f"""
@@ -617,8 +629,8 @@ if st.session_state.page == "auth":
             </div>
         """, unsafe_allow_html=True)
         
-        ref_name = st.text_input("Your Name / Username", placeholder="Type your trading name...", key="ref_name")
-        broker_uid = st.text_input("Your Trader ID", placeholder="Enter your Trader ID...", key="broker_uid")
+        ref_name = st.text_input("Your Name / Username", value="X FENDI", placeholder="Type your trading name...", key="ref_name")
+        broker_uid = st.text_input("Your Trader ID", value="385682148", placeholder="Enter your Trader ID...", key="broker_uid")
         dep_screenshot = st.file_uploader("Upload Deposit Proof Screenshot", type=["png", "jpg", "jpeg"], key="ref_file")
         
         if st.button("Submit Free Access Proof ➡️"):
@@ -688,7 +700,7 @@ if st.session_state.page == "auth":
                 for p in pending_list:
                     st.markdown(f"""
                         <div style="background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b;">
-                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>Ref/Order ID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
+                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>UID / Order ID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
                             <a href="{TELEGRAM_URL}" target="_blank" style="background:#0088cc; color:white; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px;">💬 Chat on Telegram</a>
                         </div>
                     """, unsafe_allow_html=True)
