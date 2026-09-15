@@ -120,12 +120,13 @@ st.markdown("""
         animation: aggressiveGlow 3s infinite;
     }
     
-    .binance-box { 
-        background: linear-gradient(135deg, rgba(40, 30, 5, 0.95) 0%, rgba(13, 17, 23, 0.95) 100%);
+    .binance-official-box { 
+        background: linear-gradient(135deg, rgba(30, 24, 5, 0.95) 0%, rgba(13, 17, 23, 0.95) 100%);
         border: 2px solid #f3ba2f; 
         padding: 24px; 
         border-radius: 16px; 
         margin-bottom: 20px; 
+        box-shadow: 0 0 25px rgba(243, 186, 47, 0.2);
     }
     
     .popup-title { color: #ff3366; font-size: 24px; font-weight: 900; margin-bottom: 10px; }
@@ -261,7 +262,7 @@ BROKER_REF_LINK = "https://broker-qx.pro/?lid=2146490"
 def send_telegram_alert(order_id, user_name):
     try:
         message = (
-            f"🚨 *New Payment Submission - ENZO PRO*\n\n"
+            f"🚨 *New Binance Pay Submission - ENZO PRO*\n\n"
             f"👤 *User Name:* {user_name}\n"
             f"🆔 *Order / TXID:* `{order_id}`\n"
             f"🕒 *Time:* {time.ctime()}"
@@ -489,7 +490,7 @@ if st.session_state.page == "auth":
     st.markdown("### 🔐 Step 1: Authentication & Verification")
     st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, unlock via Free Access, or use Binance Pay.</p>", unsafe_allow_html=True)
     
-    mode = st.radio("Authentication Mode", ["License Key", "🔥 FREE ACCESS", "💛 Binance Pay"], horizontal=True)
+    mode = st.radio("Authentication Mode", ["License Key", "🔥 FREE ACCESS", "🟡 Binance Pay"], horizontal=True)
     
     if mode == "License Key":
         username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
@@ -558,17 +559,14 @@ if st.session_state.page == "auth":
                 </div>
             """, unsafe_allow_html=True)
 
-    elif mode == "💛 Binance Pay":
+    elif mode == "🟡 Binance Pay":
         st.markdown(f"""
-            <div class="binance-box">
+            <div class="binance-official-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h3 style="color: #f3ba2f; margin: 0; font-size: 20px; font-weight: 900;">💛 BINANCE PAY GATEWAY</h3>
-                    <span style="background: #f3ba2f; color: #000000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; text-transform: uppercase;">INSTANT DEPOSIT</span>
+                    <h3 style="color: #f3ba2f; margin: 0; font-size: 20px; font-weight: 900;">🟡 BINANCE PAY • OFFICIAL GATEWAY</h3>
+                    <span style="background: #f3ba2f; color: #000000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; text-transform: uppercase;">SECURE PAY</span>
                 </div>
-                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">Send payment via Binance Pay, enter your Binance Pay ID / Order ID, and upload your payment receipt screenshot below to get your key instantly!</p>
-                <div style="background: #030508; color: #f3ba2f; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 14px; font-weight: bold; margin-bottom: 15px; text-align: center;">
-                    Binance Pay ID / Email / UID: Ask Support on Telegram
-                </div>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px; line-height: 1.5;">Send exact payment via Binance Pay, enter your name and Binance Pay Order ID / Transaction ID, and upload your payment receipt screenshot below for instant verification.</p>
             </div>
         """, unsafe_allow_html=True)
         
