@@ -871,7 +871,7 @@ elif st.session_state.page == "dashboard":
                 <div class="metric-row"><span style="color: #94a3b8;">Timeframe & Strategy:</span><span style="font-weight: 700; color: #fff;">{sig['tf']} | {sig['strategy']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">Live Price Action:</span><span style="color: #0088ff; font-weight: 700;">{sig['trend']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">Real RSI Indicator:</span><span style="color: #f3ba2f; font-weight: 700;">{sig['rsi']}</span></div>
-                <div class="metric-row"><span style="color: #94a3b8;">Bollinger Bands:</span><span style="color: #38bdf8; font-weight: 700;">{sig['bands']}</span></div>
+                <div class="metric-row"><span style="color: #94a3b8;">Manager / Bollinger Bands:</span><span style="color: #38bdf8; font-weight: 700;">{sig['bands']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">MACD Momentum:</span><span style="color: #c084fc; font-weight: 700;">{sig['macd']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">Prediction Accuracy:</span><span style="color: #0088ff; font-weight: 800;">{sig['conf']}% High Win-Rate Probability</span></div>
                 <div class="metric-row" style="border: none;"><span style="color: #94a3b8;">Recommended Trade Stake:</span><span style="color: #ffcc00; font-weight: 800;">${sig['stake']}</span></div>
