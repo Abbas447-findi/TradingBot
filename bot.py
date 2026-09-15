@@ -285,7 +285,7 @@ BROKER_REF_LINK = "https://broker-qx.pro/?lid=2146490"
 def send_telegram_alert(order_id, user_name):
     try:
         message = (
-            f"🟡 *New Binance Pay Submission - ENZO PRO*\n\n"
+            f"🔔 *New Binance Pay Submission - ENZO PRO*\n\n"
             f"👤 *User Name:* {user_name}\n"
             f"🆔 *Order ID / UID:* `{order_id}`\n"
             f"🕒 *Time:* {time.ctime()}"
@@ -461,26 +461,29 @@ def init_db():
 
 conn, cursor = init_db()
 
+# Brand New 50 Keys (Old keys replaced entirely)
 VALID_KEYS = [
-    "ENZO-9842-XF89-76QW", "ENZO-4747-PRO-8891", "ENZO-5521-TRD-3342",
-    "ENZO-8893-SEC-1102", "ENZO-6614-VIP-9983", "ENZO-3350-AI88-4412",
-    "ENZO-7729-SYS-5567", "ENZO-1145-NET-2234", "ENZO-9988-LOG-6671",
-    "ENZO-2233-ACC-7789", "ENZO-4411-DEV-9900", "ENZO-6655-MTR-1234",
-    "ENZO-7788-BTC-5678", "ENZO-3322-ETH-4321", "ENZO-1199-USD-8765",
-    "ENZO-8822-EUR-2468", "ENZO-5544-GBP-1357", "ENZO-6677-OTC-9876",
-    "ENZO-9911-LIV-5432", "ENZO-2244-BOT-1122", "ENZO-7733-MLK-3344",
-    "ENZO-5566-QTX-5566", "ENZO-4488-PKT-7788", "ENZO-1122-SIG-9999",
-    "ENZO-6633-RSK-1020", "ENZO-9944-STK-3040", "ENZO-3377-API-5060",
-    "ENZO-8855-KEY-7080", "ENZO-2211-PRO-9010", "ENZO-4747-ULTRA-99",
-    "ENZO-1011-ALPHA-11", "ENZO-2022-BETA-22",  "ENZO-3033-GAMMA-33",
-    "ENZO-4044-DELTA-44", "ENZO-5055-OMEGA-55", "ENZO-6066-PRIME-66",
-    "ENZO-7077-MAX-77",   "ENZO-8088-SUPER-88", "ENZO-9099-MASTER-99",
-    "ENZO-1110-GOLD-01",  "ENZO-2220-SILVER-02", "ENZO-3330-BRONZE-03",
-    "ENZO-4440-VIP-04",   "ENZO-5550-PRO-05",   "ENZO-6660-TRADER-06",
-    "ENZO-7770-BOT-07",   "ENZO-8880-SIG-08",   "ENZO-9990-AI-09",
-    "ENZO-1234-SAFE-10",  "ENZO-5678-FAST-20"
+    "ENZO-3192-NX99-4410", "ENZO-7421-PRX-1123", "ENZO-9934-TRV-5568",
+    "ENZO-1284-SEC-8890", "ENZO-6543-VIP-2219", "ENZO-4912-AI99-3341",
+    "ENZO-8821-SYS-7745", "ENZO-5563-NET-9912", "ENZO-2049-LOG-1188",
+    "ENZO-9123-ACC-4455", "ENZO-3349-DEV-6678", "ENZO-7812-MTR-3390",
+    "ENZO-1102-BTC-9988", "ENZO-6691-ETH-2233", "ENZO-4421-USD-5566",
+    "ENZO-8934-EUR-1144", "ENZO-2213-GBP-7788", "ENZO-5561-OTC-9900",
+    "ENZO-9012-LIV-3322", "ENZO-4433-BOT-8811", "ENZO-7789-MLK-1239",
+    "ENZO-3321-QTX-6654", "ENZO-9981-PKT-4432", "ENZO-1143-SIG-8877",
+    "ENZO-6651-RSK-9921", "ENZO-2294-STK-3310", "ENZO-8812-API-5540",
+    "ENZO-5523-KEY-7760", "ENZO-1211-PRO-9930", "ENZO-7474-ULTRA-11",
+    "ENZO-1099-ALPHA-22", "ENZO-2099-BETA-33",  "ENZO-3099-GAMMA-44",
+    "ENZO-4099-DELTA-55", "ENZO-5099-OMEGA-66", "ENZO-6099-PRIME-77",
+    "ENZO-7099-MAX-88",   "ENZO-8099-SUPER-99", "ENZO-9098-MASTER-01",
+    "ENZO-1190-GOLD-02",  "ENZO-2290-SILVER-03", "ENZO-3390-BRONZE-04",
+    "ENZO-4490-VIP-05",   "ENZO-5590-PRO-06",   "ENZO-6690-TRADER-07",
+    "ENZO-7790-BOT-08",   "ENZO-8890-SIG-09",   "ENZO-9998-AI-10",
+    "ENZO-1245-SAFE-21",  "ENZO-5689-FAST-31"
 ]
 
+# Clear old unused keys and insert the new 50 keys
+cursor.execute("DELETE FROM licenses WHERE username IS NULL")
 for k in VALID_KEYS:
     cursor.execute("INSERT OR IGNORE INTO licenses (key, username, status, expiry_date) VALUES (?, NULL, 'Active', 'Lifetime')", (k,))
 conn.commit()
@@ -513,7 +516,7 @@ if st.session_state.page == "auth":
     st.markdown("### 🔐 Step 1: Authentication & Verification")
     st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, unlock via Free Access, or use Binance Pay Gateway.</p>", unsafe_allow_html=True)
     
-    mode = st.radio("Authentication Mode", ["License Key", "🟡 Binance Pay Gateway", "🔥 FREE ACCESS"], horizontal=True)
+    mode = st.radio("Authentication Mode", ["License Key", "Binance Pay Gateway", "🔥 FREE ACCESS"], horizontal=True)
     
     if mode == "License Key":
         username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
@@ -582,15 +585,10 @@ if st.session_state.page == "auth":
                 </div>
             """, unsafe_allow_html=True)
 
-    elif mode == "🟡 Binance Pay Gateway":
+    elif mode == "Binance Pay Gateway":
         st.markdown("""
             <div class="binance-pay-box">
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                    <div style="width: 38px; height: 38px; background: #181a20; border: 2px solid #f3ba2f; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(243, 186, 47, 0.4);">
-                        <svg viewBox="0 0 24 24" width="22" height="22" stroke="none" fill="#f3ba2f"><path d="M12 1L3 6v12l9 5 9-6V6l-9-5zm0 2.23l6.5 3.61v8.32L12 19.38l-6.5-3.61V5.84L12 3.23zm0 3.39L7.42 9.17 12 11.74l4.58-2.57L12 6.62zm-5.74 3.9l4.74 2.66v5.26l-4.74-2.62V10.52zm11.48 0v5.28l-4.74 2.62v-5.26l4.74-2.64z"/></svg>
-                    </div>
-                    <h3 style="color: #f3ba2f; margin: 0; font-size: 20px; font-weight: 900;">Binance Pay Gateway</h3>
-                </div>
+                <h3 style="color: #f3ba2f; margin-top: 0; font-size: 20px; font-weight: 900;">Binance Pay Gateway</h3>
                 <div class="price-badge">
                     💎 Activation Fee: <span style="text-decoration: line-through; color: #ff4d4d; margin-right: 6px;">$15</span> <span style="color: #00ffcc; font-size: 18px;">$12 Only</span>
                 </div>
