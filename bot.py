@@ -285,7 +285,7 @@ BROKER_REF_LINK = "https://broker-qx.pro/?lid=2146490"
 def send_telegram_alert(order_id, user_name):
     try:
         message = (
-            f"🪙 *New Binance Pay Submission - ENZO PRO*\n\n"
+            f"🟡 *New Binance Pay Submission - ENZO PRO*\n\n"
             f"👤 *User Name:* {user_name}\n"
             f"🆔 *Order ID / UID:* `{order_id}`\n"
             f"🕒 *Time:* {time.ctime()}"
@@ -513,7 +513,7 @@ if st.session_state.page == "auth":
     st.markdown("### 🔐 Step 1: Authentication & Verification")
     st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, unlock via Free Access, or use Binance Pay Gateway.</p>", unsafe_allow_html=True)
     
-    mode = st.radio("Authentication Mode", ["License Key", "🪙 Binance Pay Gateway", "🔥 FREE ACCESS"], horizontal=True)
+    mode = st.radio("Authentication Mode", ["License Key", "🟡 Binance Pay Gateway", "🔥 FREE ACCESS"], horizontal=True)
     
     if mode == "License Key":
         username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
@@ -582,10 +582,15 @@ if st.session_state.page == "auth":
                 </div>
             """, unsafe_allow_html=True)
 
-    elif mode == "🪙 Binance Pay Gateway":
+    elif mode == "🟡 Binance Pay Gateway":
         st.markdown("""
             <div class="binance-pay-box">
-                <h3 style="color: #f3ba2f; margin-top: 0; font-size: 20px; font-weight: 900;">🪙 Binance Pay Gateway</h3>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <div style="width: 38px; height: 38px; background: #181a20; border: 2px solid #f3ba2f; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(243, 186, 47, 0.4);">
+                        <svg viewBox="0 0 24 24" width="22" height="22" stroke="none" fill="#f3ba2f"><path d="M12 1L3 6v12l9 5 9-6V6l-9-5zm0 2.23l6.5 3.61v8.32L12 19.38l-6.5-3.61V5.84L12 3.23zm0 3.39L7.42 9.17 12 11.74l4.58-2.57L12 6.62zm-5.74 3.9l4.74 2.66v5.26l-4.74-2.62V10.52zm11.48 0v5.28l-4.74 2.62v-5.26l4.74-2.64z"/></svg>
+                    </div>
+                    <h3 style="color: #f3ba2f; margin: 0; font-size: 20px; font-weight: 900;">Binance Pay Gateway</h3>
+                </div>
                 <div class="price-badge">
                     💎 Activation Fee: <span style="text-decoration: line-through; color: #ff4d4d; margin-right: 6px;">$15</span> <span style="color: #00ffcc; font-size: 18px;">$12 Only</span>
                 </div>
