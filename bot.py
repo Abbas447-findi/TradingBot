@@ -111,6 +111,27 @@ st.markdown("""
     .telegram-link { color: #38bdf8; text-decoration: none; font-weight: 700; font-size: 15px; }
     .telegram-link:hover { color: #00aaff; text-decoration: underline; }
 
+    .binance-pay-box {
+        background: linear-gradient(135deg, rgba(30, 25, 5, 0.95) 0%, rgba(13, 17, 23, 0.95) 100%);
+        border: 2px dashed #f3ba2f;
+        padding: 20px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+        box-shadow: 0 0 20px rgba(243, 186, 47, 0.15);
+    }
+
+    .binance-info-card {
+        background: #030508;
+        border: 1px solid #332b0a;
+        padding: 14px;
+        border-radius: 10px;
+        font-family: monospace;
+        color: #f3ba2f;
+        font-size: 14px;
+        margin-bottom: 15px;
+        line-height: 1.6;
+    }
+
     .referral-box { 
         background: linear-gradient(135deg, rgba(40, 10, 5, 0.95) 0%, rgba(13, 17, 23, 0.95) 100%);
         border: 2px solid #ff4500; 
@@ -118,17 +139,6 @@ st.markdown("""
         border-radius: 16px; 
         margin-bottom: 20px; 
         animation: aggressiveGlow 3s infinite;
-    }
-    
-    .maintenance-alert-tab {
-        background: linear-gradient(135deg, #3d0c0c 0%, #1a080c 100%);
-        border: 2px solid #ff3333;
-        padding: 22px;
-        border-radius: 14px;
-        text-align: center;
-        margin-top: 15px;
-        margin-bottom: 15px;
-        box-shadow: 0 0 25px rgba(255, 51, 51, 0.5);
     }
     
     .popup-title { color: #ff3366; font-size: 24px; font-weight: 900; margin-bottom: 10px; }
@@ -177,28 +187,28 @@ st.markdown("""
     }
 
     div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(2) {
+        background: linear-gradient(135deg, rgba(243, 186, 47, 0.25) 0%, rgba(20, 15, 5, 0.95) 100%) !important;
+        border: 2px solid #f3ba2f !important;
+        padding: 8px 14px !important;
+        border-radius: 12px !important;
+    }
+    div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(2) p {
+        color: #f3ba2f !important;
+        font-weight: 900 !important;
+        font-size: 15px !important;
+    }
+
+    div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) {
         background: linear-gradient(135deg, rgba(255, 69, 0, 0.3) 0%, rgba(20, 10, 5, 0.95) 100%) !important;
         border: 2px solid #ff4500 !important;
         padding: 8px 14px !important;
         border-radius: 12px !important;
         box-shadow: 0 0 18px rgba(255, 69, 0, 0.5) !important;
     }
-    div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(2) p {
+    div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) p {
         color: #ff5722 !important;
         font-weight: 900 !important;
         font-size: 15px !important;
-    }
-
-    div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) {
-        background: linear-gradient(135deg, rgba(255, 51, 51, 0.25) 0%, rgba(20, 5, 5, 0.95) 100%) !important;
-        border: 2px solid #ff3333 !important;
-        padding: 8px 14px !important;
-        border-radius: 12px !important;
-    }
-    div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) p {
-        color: #ff4d4d !important;
-        font-weight: 800 !important;
-        font-size: 14px !important;
     }
     
     .logout-btn > button { background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important; color: #ffffff !important; }
@@ -262,12 +272,12 @@ TELEGRAM_BOT_TOKEN = "8962828738:AAH787ztmRyKM6bRIGHdfVbiI6eeX7U0oFs"
 TELEGRAM_CHAT_ID = "8633830998"
 BROKER_REF_LINK = "https://broker-qx.pro/?lid=2146490"
 
-def send_telegram_alert(order_id, user_name):
+def send_telegram_alert(txid, user_name):
     try:
         message = (
-            f"🚨 *New Referral Submission - ENZO PRO*\n\n"
+            f"🚨 *New Binance Pay Submission - ENZO PRO*\n\n"
             f"👤 *User Name:* {user_name}\n"
-            f"🆔 *Reference / ID:* `{order_id}`\n"
+            f"🆔 *Transaction ID / UID:* `{txid}`\n"
             f"🕒 *Time:* {time.ctime()}"
         )
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -491,9 +501,9 @@ if st.session_state.page == "auth":
     """, unsafe_allow_html=True)
 
     st.markdown("### 🔐 Step 1: Authentication & Verification")
-    st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key or Unlock Free Access via Broker Referral.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, unlock via Free Access, or use Binance Pay Gateway.</p>", unsafe_allow_html=True)
     
-    mode = st.radio("Authentication Mode", ["License Key", "🔥 FREE ACCESS", "⚠️ Binance Pay (Under Maintenance)"], horizontal=True)
+    mode = st.radio("Authentication Mode", ["License Key", "💛 Binance Pay Gateway", "🔥 FREE ACCESS"], horizontal=True)
     
     if mode == "License Key":
         username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
@@ -562,14 +572,48 @@ if st.session_state.page == "auth":
                 </div>
             """, unsafe_allow_html=True)
 
-    elif mode == "⚠️ Binance Pay (Under Maintenance)":
-        st.markdown(f"""
-            <div class="maintenance-alert-tab">
-                <div style="color: #ff4d4d; font-size: 22px; font-weight: 900; margin-bottom: 8px;">🚨 TEMPORARY SYSTEM MAINTENANCE</div>
-                <div style="color: #cbd5e1; font-size: 15px; margin-bottom: 16px; line-height: 1.6;">Binance Pay Gateway is currently closed and under strict technical maintenance due to network upgrades. Please use our <b>🔥 FREE ACCESS</b> option via Broker Referral to get instant access right away!</div>
-                <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Contact Support on Telegram</a>
+    elif mode == "💛 Binance Pay Gateway":
+        st.markdown("""
+            <div class="binance-pay-box">
+                <h3 style="color: #f3ba2f; margin-top: 0; font-size: 20px; font-weight: 900;">💛 Binance Pay Gateway</h3>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 10px;">Transfer to Binance Pay ID:</p>
+                <div class="binance-info-card">
+                    Binance Pay ID / UID: 385682148<br>
+                    Account Name: X FENDI
+                </div>
             </div>
         """, unsafe_allow_html=True)
+        
+        bp_name = st.text_input("Enter Your Username", placeholder="Type your trading name...", key="bp_name")
+        txid = st.text_input("Enter Binance Pay UID / Transaction ID (TxID)", placeholder="Paste UID or TxID here...", key="bp_txid")
+        
+        if st.button("Submit Binance Payment Proof ➡️"):
+            clean_bp_name = bp_name.strip()
+            clean_txid = txid.strip()
+            
+            if not clean_bp_name:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter your username!</p>", unsafe_allow_html=True)
+            elif not clean_txid or len(clean_txid) < 4:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Binance Pay UID or TxID!</p>", unsafe_allow_html=True)
+            else:
+                cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_txid,))
+                if cursor.fetchone():
+                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Transaction ID / UID has already been submitted!</p>", unsafe_allow_html=True)
+                else:
+                    with st.spinner("Submitting payment proof to Admin..."):
+                        time.sleep(1.0)
+                        cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_txid,))
+                        cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_txid, f"BINANCE: {clean_bp_name} (UID/TxID: {clean_txid})"))
+                        conn.commit()
+                        
+                        send_telegram_alert(clean_txid, f"{clean_bp_name} (Binance UID/TxID: {clean_txid})")
+                        
+                        st.success("✅ Payment proof submitted successfully! Admin will verify your UID/TxID and assign your access key.")
+                        st.markdown(f"""
+                            <div style="text-align: center; margin-top: 15px;">
+                                <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Message on Telegram for Fast Approval</a>
+                            </div>
+                        """, unsafe_allow_html=True)
 
     else:
         st.markdown(f"""
@@ -583,9 +627,9 @@ if st.session_state.page == "auth":
             </div>
         """, unsafe_allow_html=True)
         
-        ref_name = st.text_input("Your Name / Username", placeholder="Type your trading name...")
-        broker_uid = st.text_input("Your Trader ID", placeholder="Enter your Trader ID...")
-        dep_screenshot = st.file_uploader("Upload Deposit Proof Screenshot", type=["png", "jpg", "jpeg"])
+        ref_name = st.text_input("Your Name / Username", placeholder="Type your trading name...", key="ref_name")
+        broker_uid = st.text_input("Your Trader ID", placeholder="Enter your Trader ID...", key="broker_uid")
+        dep_screenshot = st.file_uploader("Upload Deposit Proof Screenshot", type=["png", "jpg", "jpeg"], key="ref_file")
         
         if st.button("Submit Free Access Proof ➡️"):
             clean_ref_name = ref_name.strip()
@@ -647,14 +691,14 @@ if st.session_state.page == "auth":
                 st.markdown(f'<div class="stat-card"><h5>📥 Pending Orders</h5><h3 style="color:#f3ba2f;">{pending_count}</h3></div>', unsafe_allow_html=True)
 
             st.markdown("---")
-            st.markdown("### 📥 Pending Referral Approvals")
+            st.markdown("### 📥 Pending Payment & Referral Approvals")
             cursor.execute("SELECT order_id, username FROM pending_approvals")
             pending_list = cursor.fetchall()
             if pending_list:
                 for p in pending_list:
                     st.markdown(f"""
                         <div style="background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b;">
-                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>Ref/Trader ID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
+                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>UID / TxID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
                             <a href="{TELEGRAM_URL}" target="_blank" style="background:#0088cc; color:white; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px;">💬 Chat on Telegram</a>
                         </div>
                     """, unsafe_allow_html=True)
