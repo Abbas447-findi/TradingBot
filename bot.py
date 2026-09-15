@@ -575,7 +575,7 @@ if st.session_state.page == "auth":
                     </div>
                     <span class="binance-badge-official">VERIFIED API</span>
                 </div>
-                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px; line-height: 1.5;">Send exact payment via Binance Pay, verify your active session details below, and upload your payment receipt screenshot for instant key issuance.</p>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px; line-height: 1.5;">Send exact payment via Binance Pay, verify your details below, and upload your payment receipt screenshot for instant key issuance.</p>
             </div>
         """, unsafe_allow_html=True)
         
