@@ -131,6 +131,17 @@ st.markdown("""
         line-height: 1.6;
     }
 
+    .price-badge {
+        display: inline-block;
+        background: rgba(243, 186, 47, 0.1);
+        border: 1px solid #f3ba2f;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 800;
+        margin-bottom: 15px;
+    }
+
     .referral-box { 
         background: linear-gradient(135deg, rgba(40, 10, 5, 0.95) 0%, rgba(13, 17, 23, 0.95) 100%);
         border: 2px solid #ff4500; 
@@ -274,7 +285,7 @@ BROKER_REF_LINK = "https://broker-qx.pro/?lid=2146490"
 def send_telegram_alert(order_id, user_name):
     try:
         message = (
-            f"🚨 *New Binance Pay Submission - ENZO PRO*\n\n"
+            f"🪙 *New Binance Pay Submission - ENZO PRO*\n\n"
             f"👤 *User Name:* {user_name}\n"
             f"🆔 *Order ID / UID:* `{order_id}`\n"
             f"🕒 *Time:* {time.ctime()}"
@@ -502,7 +513,7 @@ if st.session_state.page == "auth":
     st.markdown("### 🔐 Step 1: Authentication & Verification")
     st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key, unlock via Free Access, or use Binance Pay Gateway.</p>", unsafe_allow_html=True)
     
-    mode = st.radio("Authentication Mode", ["License Key", "💛 Binance Pay Gateway", "🔥 FREE ACCESS"], horizontal=True)
+    mode = st.radio("Authentication Mode", ["License Key", "🪙 Binance Pay Gateway", "🔥 FREE ACCESS"], horizontal=True)
     
     if mode == "License Key":
         username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
@@ -571,10 +582,13 @@ if st.session_state.page == "auth":
                 </div>
             """, unsafe_allow_html=True)
 
-    elif mode == "💛 Binance Pay Gateway":
+    elif mode == "🪙 Binance Pay Gateway":
         st.markdown("""
             <div class="binance-pay-box">
-                <h3 style="color: #f3ba2f; margin-top: 0; font-size: 20px; font-weight: 900;">💛 Binance Pay Gateway</h3>
+                <h3 style="color: #f3ba2f; margin-top: 0; font-size: 20px; font-weight: 900;">🪙 Binance Pay Gateway</h3>
+                <div class="price-badge">
+                    💎 Activation Fee: <span style="text-decoration: line-through; color: #ff4d4d; margin-right: 6px;">$15</span> <span style="color: #00ffcc; font-size: 18px;">$12 Only</span>
+                </div>
                 <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 10px;">Transfer to Binance Pay ID:</p>
                 <div class="binance-info-card">
                     Binance Pay ID / UID: 385682148<br>
@@ -714,7 +728,7 @@ if st.session_state.page == "auth":
                             if free_key:
                                 assigned_key = free_key[0]
                                 cursor.execute("DELETE FROM pending_approvals WHERE order_id = ?", (p[0],))
-                                cursor.execute("UPDATE app_stats SET total_revenue = total_revenue + 15.0 WHERE id = 1")
+                                cursor.execute("UPDATE app_stats SET total_revenue = total_revenue + 12.0 WHERE id = 1")
                                 conn.commit()
                                 st.markdown(f"""
                                     <div style="background: #04182f; border: 2px solid #0088ff; padding: 18px; border-radius: 12px; margin-top: 12px; text-align: center;">
