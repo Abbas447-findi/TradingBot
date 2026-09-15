@@ -304,7 +304,6 @@ def fetch_real_market_data(asset_name, timeframe):
     clean_asset = asset_name.replace(" (OTC)", "").replace(" [OTC]", "").replace(" (Commodity)", "").replace(" (Oil)", "").strip()
     symbol = ticker_map.get(clean_asset, "EURUSD=X")
     
-    # Map timeframe to yfinance intervals
     interval_map = {
         "15 Seconds": "1m", "30 Seconds": "1m", 
         "1 Minute": "1m", "2 Minutes": "2m", "5 Minutes": "5m"
@@ -333,7 +332,6 @@ def calculate_real_deal_indicators(asset_name, timeframe):
     prices = fetch_real_market_data(asset_name, timeframe)
     df = pd.Series(prices)
     
-    # 1. RSI (14) Calculation
     delta = df.diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
@@ -342,7 +340,6 @@ def calculate_real_deal_indicators(asset_name, timeframe):
     current_rsi = round(float(rsi_series.iloc[-1]), 2)
     if math.isnan(current_rsi): current_rsi = 50.0
     
-    # 2. Bollinger Bands (20, 2)
     sma = df.rolling(window=20).mean()
     std = df.rolling(window=20).std()
     upper = sma + (2 * std)
@@ -352,7 +349,6 @@ def calculate_real_deal_indicators(asset_name, timeframe):
     cur_upper = round(float(upper.iloc[-1]), 4) if not math.isnan(upper.iloc[-1]) else cur_price * 1.002
     cur_lower = round(float(lower.iloc[-1]), 4) if not math.isnan(lower.iloc[-1]) else cur_price * 0.998
     
-    # 3. MACD (12, 26, 9)
     exp12 = df.ewm(span=12, adjust=False).mean()
     exp26 = df.ewm(span=26, adjust=False).mean()
     macd = exp12 - exp26
@@ -360,17 +356,14 @@ def calculate_real_deal_indicators(asset_name, timeframe):
     cur_macd = round(float(macd.iloc[-1]), 5)
     cur_signal = round(float(signal.iloc[-1]), 5)
     
-    # --- RIGOROUS 3-LAYER SCORING SYSTEM FOR ACCURATE BUY / SELL ---
     bullish_score = 0
     bearish_score = 0
     
-    # RSI Evaluation
     if current_rsi < 48:
         bullish_score += 1
     elif current_rsi > 52:
         bearish_score += 1
         
-    # Bollinger Band Position Evaluation
     band_range = cur_upper - cur_lower if cur_upper != cur_lower else 0.0001
     price_position = (cur_price - cur_lower) / band_range
     if price_position <= 0.35:
@@ -378,13 +371,11 @@ def calculate_real_deal_indicators(asset_name, timeframe):
     elif price_position >= 0.65:
         bearish_score += 1
         
-    # MACD Momentum Evaluation
     if cur_macd > cur_signal:
         bullish_score += 1
     else:
         bearish_score += 1
         
-    # Final Decision based on strict scoring
     if bullish_score > bearish_score:
         action = "BUY (CALL 🟢)"
         trend = f"Live Market Support Rebound ({timeframe} Momentum Bullish)"
@@ -392,7 +383,6 @@ def calculate_real_deal_indicators(asset_name, timeframe):
         action = "SELL (PUT 🔴)"
         trend = f"Live Market Resistance Rejection ({timeframe} Momentum Bearish)"
     else:
-        # Tie-breaker via MACD
         if cur_macd > cur_signal:
             action = "BUY (CALL 🟢)"
             trend = f"MACD Bullish Continuation ({timeframe})"
@@ -915,7 +905,7 @@ elif st.session_state.page == "dashboard":
                 <div class="metric-row"><span style="color: #94a3b8;">Timeframe & Strategy:</span><span style="font-weight: 700; color: #fff;">{sig['tf']} | {sig['strategy']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">Live Price Action:</span><span style="color: #0088ff; font-weight: 700;">{sig['trend']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">Real RSI Indicator:</span><span style="color: #f3ba2f; font-weight: 700;">{sig['rsi']}</span></div>
-                <div class="metric-row"><span style="color: #94a3b8;">Bollinger Bands:</span><span style="color: #38bdf8; font-weight: 700;">{sig['bands']}</span></div>
+                <div class="metric-row"><span style="color: #38bdf8;">Bollinger Bands:</span><span style="color: #38bdf8; font-weight: 700;">{sig['bands']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">MACD Momentum:</span><span style="color: #c084fc; font-weight: 700;">{sig['macd']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">Prediction Accuracy:</span><span style="color: #0088ff; font-weight: 800;">{sig['conf']}% High Win-Rate Probability</span></div>
                 <div class="metric-row" style="border: none;"><span style="color: #94a3b8;">Recommended Trade Stake:</span><span style="color: #ffcc00; font-weight: 800;">${sig['stake']}</span></div>
