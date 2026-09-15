@@ -20,7 +20,6 @@ st.markdown("""
         color-scheme: dark;
     }
     
-    /* 100% Hide Streamlit Header & Three Dots Menu */
     #MainMenu {visibility: hidden !important;}
     header {visibility: hidden !important;}
     footer {visibility: hidden !important;}
@@ -272,12 +271,12 @@ TELEGRAM_BOT_TOKEN = "8962828738:AAH787ztmRyKM6bRIGHdfVbiI6eeX7U0oFs"
 TELEGRAM_CHAT_ID = "8633830998"
 BROKER_REF_LINK = "https://broker-qx.pro/?lid=2146490"
 
-def send_telegram_alert(txid, user_name):
+def send_telegram_alert(order_id, user_name):
     try:
         message = (
             f"🚨 *New Binance Pay Submission - ENZO PRO*\n\n"
             f"👤 *User Name:* {user_name}\n"
-            f"🆔 *Transaction ID / UID:* `{txid}`\n"
+            f"🆔 *Order ID / UID:* `{order_id}`\n"
             f"🕒 *Time:* {time.ctime()}"
         )
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
@@ -585,30 +584,34 @@ if st.session_state.page == "auth":
         """, unsafe_allow_html=True)
         
         bp_name = st.text_input("Enter Your Username", placeholder="Type your trading name...", key="bp_name")
-        txid = st.text_input("Enter Binance Pay UID / Transaction ID (TxID)", placeholder="Paste UID or TxID here...", key="bp_txid")
+        order_id_input = st.text_input("Enter Order ID", placeholder="Enter Order ID / UID here...", key="bp_order_id")
+        dep_screenshot_bp = st.file_uploader("Upload Binance Payment Proof Screenshot", type=["png", "jpg", "jpeg"], key="bp_file")
         
         if st.button("Submit Binance Payment Proof ➡️"):
             clean_bp_name = bp_name.strip()
-            clean_txid = txid.strip()
+            clean_order_id = order_id_input.strip()
             
             if not clean_bp_name:
                 st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter your username!</p>", unsafe_allow_html=True)
-            elif not clean_txid or len(clean_txid) < 4:
-                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Binance Pay UID or TxID!</p>", unsafe_allow_html=True)
+            elif not clean_order_id or len(clean_order_id) < 3:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please enter a valid Order ID!</p>", unsafe_allow_html=True)
+            elif dep_screenshot_bp is None:
+                st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ Please upload your payment proof screenshot!</p>", unsafe_allow_html=True)
             else:
-                cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_txid,))
+                cursor.execute("SELECT order_id FROM binance_orders WHERE order_id = ?", (clean_order_id,))
                 if cursor.fetchone():
-                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Transaction ID / UID has already been submitted!</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#ff3366; font-size:13px;'>⚠️ This Order ID has already been submitted!</p>", unsafe_allow_html=True)
                 else:
                     with st.spinner("Submitting payment proof to Admin..."):
                         time.sleep(1.0)
-                        cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_txid,))
-                        cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_txid, f"BINANCE: {clean_bp_name} (UID/TxID: {clean_txid})"))
+                        cursor.execute("INSERT INTO binance_orders (order_id) VALUES (?)", (clean_order_id,))
+                        cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_order_id, f"BINANCE: {clean_bp_name} (Order ID: {clean_order_id})"))
                         conn.commit()
                         
-                        send_telegram_alert(clean_txid, f"{clean_bp_name} (Binance UID/TxID: {clean_txid})")
+                        send_telegram_alert(clean_order_id, f"{clean_bp_name} (Binance Order ID: {clean_order_id})")
+                        send_telegram_photo(dep_screenshot_bp.getvalue(), f"📸 Binance Payment Proof\n👤 User: `{clean_bp_name}`\n🆔 Order ID: `{clean_order_id}`")
                         
-                        st.success("✅ Payment proof submitted successfully! Admin will verify your UID/TxID and assign your access key.")
+                        st.success("✅ Payment proof submitted successfully! Admin will verify your Order ID and assign your access key.")
                         st.markdown(f"""
                             <div style="text-align: center; margin-top: 15px;">
                                 <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Message on Telegram for Fast Approval</a>
@@ -698,7 +701,7 @@ if st.session_state.page == "auth":
                 for p in pending_list:
                     st.markdown(f"""
                         <div style="background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b;">
-                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>UID / TxID:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
+                            <div>👤 <b>User/Type:</b> {p[1]}<br>🆔 <b>Order ID / Ref:</b> <span style="color:#f3ba2f;">{p[0]}</span></div>
                             <a href="{TELEGRAM_URL}" target="_blank" style="background:#0088cc; color:white; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:13px;">💬 Chat on Telegram</a>
                         </div>
                     """, unsafe_allow_html=True)
@@ -955,3 +958,4 @@ elif st.session_state.page == "dashboard":
                 <div class="metric-row" style="border: none;"><span style="color: #94a3b8;">Recommended Trade Stake:</span><span style="color: #ffcc00; font-weight: 800;">${sig['stake']}</span></div>
             </div>
         """, unsafe_allow_html=True)
+
