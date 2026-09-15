@@ -88,13 +88,14 @@ st.markdown("""
     }
     
     .sub-title { 
-        color: #94a3b8; 
+        color: #ff4d4d; 
         text-align: center; 
         font-size: 14px; 
-        font-weight: 600; 
-        letter-spacing: 1.5px;
+        font-weight: 800; 
+        letter-spacing: 1px;
         margin-bottom: 8px; 
         text-transform: uppercase;
+        text-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
     }
     
     .telegram-box { 
@@ -116,15 +117,15 @@ st.markdown("""
         animation: aggressiveGlow 3s infinite;
     }
     
-    .popup-error-box { 
-        background-color: #1a080c; 
-        border: 2px solid #ff3366; 
-        padding: 30px; 
-        border-radius: 16px; 
-        text-align: center; 
-        margin-top: 20px; 
-        margin-bottom: 20px; 
-        box-shadow: 0 0 35px rgba(255, 51, 102, 0.4); 
+    .maintenance-alert-tab {
+        background: linear-gradient(135deg, #3d0c0c 0%, #1a080c 100%);
+        border: 2px solid #ff3333;
+        padding: 22px;
+        border-radius: 14px;
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 0 25px rgba(255, 51, 51, 0.5);
     }
     
     .popup-title { color: #ff3366; font-size: 24px; font-weight: 900; margin-bottom: 10px; }
@@ -183,6 +184,18 @@ st.markdown("""
         color: #ff5722 !important;
         font-weight: 900 !important;
         font-size: 15px !important;
+    }
+
+    div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) {
+        background: linear-gradient(135deg, rgba(255, 51, 51, 0.25) 0%, rgba(20, 5, 5, 0.95) 100%) !important;
+        border: 2px solid #ff3333 !important;
+        padding: 8px 14px !important;
+        border-radius: 12px !important;
+    }
+    div.row-widget.stRadio > div[role="radiogroup"] > label:nth-child(3) p {
+        color: #ff4d4d !important;
+        font-weight: 800 !important;
+        font-size: 14px !important;
     }
     
     .logout-btn > button { background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important; color: #ffffff !important; }
@@ -401,19 +414,19 @@ if "user" in query_params and "key" in query_params and st.session_state.page ==
 
 if st.session_state.page == "auth":
     st.markdown('<p class="title-text">🦅 ENZO PRO ROBOT</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-title">✨ Professional Binary Trading Robot</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-title">🚨 ALERT: AVOID SCAMS - BUY ONLY FROM OFFICIALS</p>', unsafe_allow_html=True)
 
     st.markdown(f"""
         <div class="telegram-box">
-            <span>💬 Need Help? Contact Support: </span>
+            <span>💬 Official Support Channel: </span>
             <a class="telegram-link" href="{TELEGRAM_URL}" target="_blank">✈️ Telegram Support</a>
         </div>
     """, unsafe_allow_html=True)
 
     st.markdown("### 🔐 Step 1: Authentication & Verification")
-    st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key or Unlock Free Lifetime Access via Broker Referral.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#94a3b8; font-size:14px; margin-bottom: 15px;'>Enter your License Key or Unlock Free Access via Broker Referral.</p>", unsafe_allow_html=True)
     
-    mode = st.radio("Authentication Mode", ["License Key", "🔥 FREE LIFETIME ACCESS (15 Days Offer)", "Binance Pay Gateway (Under Maintenance)"], horizontal=True)
+    mode = st.radio("Authentication Mode", ["License Key", "🔥 FREE ACCESS", "⚠️ Binance Pay (Under Maintenance)"], horizontal=True)
     
     if mode == "License Key":
         username = st.text_input("Enter Your Username", placeholder="Type your trading name...")
@@ -482,12 +495,12 @@ if st.session_state.page == "auth":
                 </div>
             """, unsafe_allow_html=True)
 
-    elif mode == "Binance Pay Gateway (Under Maintenance)":
+    elif mode == "⚠️ Binance Pay (Under Maintenance)":
         st.markdown(f"""
-            <div class="popup-error-box">
-                <div class="popup-title">⚠️ TECHNICAL MAINTENANCE NOTICE</div>
-                <div class="popup-desc">Binance Pay Gateway is currently closed and temporarily disabled due to unexpected technical issues on the payment network. Please use our <b>🔥 FREE LIFETIME ACCESS (15 Days Offer)</b> via Broker Referral below to claim your access instantly!</div>
-                <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Contact Support for Help</a>
+            <div class="maintenance-alert-tab">
+                <div style="color: #ff4d4d; font-size: 22px; font-weight: 900; margin-bottom: 8px;">🚨 TEMPORARY SYSTEM MAINTENANCE</div>
+                <div style="color: #cbd5e1; font-size: 15px; margin-bottom: 16px; line-height: 1.6;">Binance Pay Gateway is currently closed and under strict technical maintenance due to network upgrades. Please use our <b>🔥 FREE ACCESS</b> option via Broker Referral to get instant access right away!</div>
+                <a class="popup-btn" href="{TELEGRAM_URL}" target="_blank">✈️ Contact Support on Telegram</a>
             </div>
         """, unsafe_allow_html=True)
 
@@ -495,11 +508,11 @@ if st.session_state.page == "auth":
         st.markdown(f"""
             <div class="referral-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h3 style="color: #ff4500; margin: 0; font-size: 20px; font-weight: 900;">🔥 SPECIAL VIP OFFER: FREE LIFETIME ACCESS!</h3>
-                    <span style="background: #ff4500; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; text-transform: uppercase;">⏳ Valid for 15 Days</span>
+                    <h3 style="color: #ff4500; margin: 0; font-size: 20px; font-weight: 900;">🔥 SPECIAL VIP OFFER: FREE ACCESS!</h3>
+                    <span style="background: #ff4500; color: #ffffff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 900; text-transform: uppercase;">🚀 EXCLUSIVE OFFER</span>
                 </div>
-                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">Want Enzo Pro Bot for absolute lifetime free? Register your trading account using our exclusive referral link and make a deposit within 15 days to claim your free key instantly!</p>
-                <a class="offer-btn" href="{BROKER_REF_LINK}" target="_blank">🚀 CLAIM FREE LIFETIME ACCESS (REGISTER NOW)</a>
+                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 15px; line-height: 1.5;">Want Enzo Pro Bot for free? Register your trading account using our exclusive referral link and make a deposit to claim your free access key instantly!</p>
+                <a class="offer-btn" href="{BROKER_REF_LINK}" target="_blank">🚀 CLAIM FREE ACCESS (REGISTER NOW)</a>
             </div>
         """, unsafe_allow_html=True)
         
@@ -528,8 +541,8 @@ if st.session_state.page == "auth":
                         cursor.execute("INSERT OR REPLACE INTO pending_approvals (order_id, username) VALUES (?, ?)", (clean_uid, f"REF: {clean_ref_name}"))
                         conn.commit()
                         
-                        send_telegram_alert(clean_uid, f"{clean_ref_name} (Free Lifetime Access Deposit)")
-                        send_telegram_photo(dep_screenshot.getvalue(), f"📸 Free Lifetime Access Proof\n👤 User: `{clean_ref_name}`\n🆔 Trader ID: `{clean_uid}`")
+                        send_telegram_alert(clean_uid, f"{clean_ref_name} (Free Access Deposit)")
+                        send_telegram_photo(dep_screenshot.getvalue(), f"📸 Free Access Proof\n👤 User: `{clean_ref_name}`\n🆔 Trader ID: `{clean_uid}`")
                         
                         st.success("✅ Deposit proof submitted! Admin will verify your deposit through referral and assign your access key.")
                         st.markdown(f"""
@@ -826,7 +839,7 @@ elif st.session_state.page == "dashboard":
                 <div class="metric-row"><span style="color: #94a3b8;">Price Action & Trend:</span><span style="color: #0088ff; font-weight: 700;">{sig['trend']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">RSI Indicator State:</span><span style="color: #f3ba2f; font-weight: 700;">{sig['rsi']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">Bollinger Bands:</span><span style="color: #38bdf8; font-weight: 700;">{sig['bands']}</span></div>
-                <div class="metric-row"><span style="color: #94a3b8;">MACD Momentum:</span><span style="color: #c084fc; font-weight: 700;">{sig['macd']}</span></div>
+                <div class="metric-row"><span style="color: #94a3b8;">MACD Momentum:*/span><span style="color: #c084fc; font-weight: 700;">{sig['macd']}</span></div>
                 <div class="metric-row"><span style="color: #94a3b8;">Prediction Accuracy:</span><span style="color: #0088ff; font-weight: 800;">{sig['conf']}% High Win-Rate Probability</span></div>
                 <div class="metric-row" style="border: none;"><span style="color: #94a3b8;">Recommended Trade Stake:</span><span style="color: #ffcc00; font-weight: 800;">${sig['stake']}</span></div>
             </div>
